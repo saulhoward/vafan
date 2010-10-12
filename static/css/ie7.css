@@ -1,0 +1,27 @@
+/* IE7 only fixes */
+
+div, img, input, li, .nav a, nav a, article,section,nav,header,footer, .previous a, .next a   {
+	zoom: 1;
+}
+
+.nav {
+	margin-left: -202px;
+	list-style-type: none;
+	padding: 0;}
+
+.copyright {
+	margin-left: -940px;
+}
+
+article img {
+	width: 100%;
+	}
+	
+.search #q {
+	margin: 0;
+	padding: 0.6em 0.5em;}
+
+.playlist li,#zootool-badge li { width: 49%;}
+.previous a, .next a {width: 46%; display: inline-block;}
+
+header {margin: -160px 22% 1em 0;}

@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="mp_wrapper">
+    <div id="mp_content_wrapper" class="mp_content_wrapper">
+        <div class="mp_content" id="c_album_1">
+            <img src="music/album1/album.jpg" alt="album1"/>
+            <a href="#" class="mp_playall">Play all</a>
+            <div class="mp_description">
+                <h2>Strings of Freedom</h2>
+                <p>
+                Recording began in 2009 and and we finally finished this album in the
+                end of this month. Strings of Freedom is our acoustic achievement. We dedicate
+                it to all our families and friends. Its about living freely and enjoy life.
+                </p>
+            </div>
+            <div class="mp_songs">
+                <div>
+                    <h3>Our Resolve</h3>
+                    <div class="mp_options">
+                        <span class="mp_play">Play</span>
+                        <span class="mp_addpl">Add to playlist</span>
+                    </div>
+                    <div class="mp_song_info" style="display:none;">
+                        <span class="mp_song_title">Our Resolve</span>
+                        <span class="mp_mp3">music/album1/ramblinglibrarian_-_Our_Resolve.mp3</span>
+                        <span class="mp_ogg">music/album1/ramblinglibrarian_-_Our_Resolve.ogg</span>
+                    </div>
+                </div>
+                <div>
+                    <h3>How do I make you see</h3>
+                    <div class="mp_options">
+                        <span class="mp_play">Play</span>
+                        <span class="mp_addpl">Add to playlist</span>
+                    </div>
+                    <div class="mp_song_info" style="display:none;">
+                        <span class="mp_song_title">How do I make you see</span>
+                        <span class="mp_mp3">music/album1/ramblinglibrarian_-_Rock_Version_-_How_Do_I_Make_You_See_1.mp3</span>
+                        <span class="mp_ogg">music/album1/ramblinglibrarian_-_Rock_Version_-_How_Do_I_Make_You_See_1.ogg</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mp_content" id="c_album_2" style="display:none;">
+            <img src="music/album2/album.jpg" alt="album2"/>
+            <a href="#" class="mp_playall">Play all</a>
+            <div class="mp_description">
+                <h2>Time to Shine</h2>
+                <p>
+                Experimental sounds for enjoying life and music as it comes. This album was inspired by the great
+                Eduardo MacGregor who experimented with double sided guitars to achieve a unique sound experience.
+                Time to shine wants to make people shine.
+                </p>
+            </div>
+            <div class="mp_songs">
+                <div>
+                    <h3>Bass (Drifting)</h3>
+                    <div class="mp_options">
+                        <span class="mp_play">Play</span>
+                        <span class="mp_addpl">Add to playlist</span>
+                    </div>
+                    <div class="mp_song_info" style="display:none;">
+                        <span class="mp_song_title">Bass (Drifting)</span>
+                        <span class="mp_mp3">music/album2/ramblinglibrarian_-_Bass_(Drifting).mp3</span>
+                        <span class="mp_ogg">music/album2/ramblinglibrarian_-_Bass_(Drifting).ogg</span>
+                    </div>
+                </div>
+                <div>
+                    <h3>Briefly us</h3>
+                    <div class="mp_options">
+                        <span class="mp_play">Play</span>
+                        <span class="mp_addpl">Add to playlist</span>
+                    </div>
+                    <div class="mp_song_info" style="display:none;">
+                        <span class="mp_song_title">Briefly us</span>
+                        <span class="mp_mp3">music/album2/ramblinglibrarian_-_Briefly_Us.mp3</span>
+                        <span class="mp_ogg">music/album2/ramblinglibrarian_-_Briefly_Us.ogg</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mp_player">
+        <div id="jquery_jplayer"></div>
+        <div class="jp-playlist-player">
+            <div class="jp-interface">
+                <ul class="jp-controls">
+                    <li><a href="#" id="jplayer_play" class="jp-play" tabindex="1">play</a></li>
+                    <li><a href="#" id="jplayer_pause" class="jp-pause" tabindex="1">pause</a></li>
+                    <li><a href="#" id="jplayer_stop" class="jp-stop" tabindex="1">stop</a></li>
+                    <li><a href="#" id="jplayer_volume_min" class="jp-volume-min" tabindex="1">min volume</a></li>
+                    <li><a href="#" id="jplayer_volume_max" class="jp-volume-max" tabindex="1">max volume</a></li>
+                    <li><a href="#" id="jplayer_previous" class="jp-previous" tabindex="1">previous</a></li>
+                    <li><a href="#" id="jplayer_next" class="jp-next" tabindex="1">next</a></li>
+                </ul>
+                <div class="jp-progress">
+                    <div id="jplayer_load_bar" class="jp-load-bar">
+                        <div id="jplayer_play_bar" class="jp-play-bar"></div>
+                    </div>
+                </div>
+                <div id="jplayer_volume_bar" class="jp-volume-bar">
+                    <div id="jplayer_volume_bar_value" class="jp-volume-bar-value"></div>
+                </div>
+                <div id="jplayer_play_time" class="jp-play-time"></div>
+                <div id="jplayer_total_time" class="jp-total-time"></div>
+            </div>
+            <div id="jplayer_playlist" class="jp-playlist"><ul></ul></div>
+        </div>
+    </div>
+    <ul id="mp_albums" class="mp_albums jcarousel-skin">
+        <li><img src="music/album1/thumb.jpg" alt="album1" /></li>
+        <li><img src="music/album2/thumb.jpg" alt="album2" /></li>
+    </ul>
+</div>
+<div class="reference">
+    <a href="http://tympanus.net/codrops/2010/07/26/music-portfolio-template/">back to the Codrops article</a>
+    <a href="http://www.flickr.com/photos/rickharris/">Photos by Rick Harris</a>
+    <div xmlns:cc="http://creativecommons.org/ns#" about="urn:sha1:SFMAAK7FTYXXBHDZUWL7QNJJAUE5WD4J"><a rel="cc:attributionURL" property="cc:attributionName" href="http://ccmixter.org/people/ramblinglibrarian/profile">Music Samples by Ivan Chew</a> <a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/">CC BY-NC 3.0</a></div>
+</div>
+
+{% endblock %}
