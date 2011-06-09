@@ -1,0 +1,392 @@
+go object linux 386 release.r57.1 8322+
+  exports automatically generated from
+  vafan.go in package "main"
+
+$$  // exports
+    package main
+	import web "github.com/hoisie/web.go"
+	import runtime "runtime"
+	import os "os" // indirect
+	type "os".Error interface { String() string }
+	type "github.com/hoisie/web.go".Context struct { ? *"github.com/hoisie/web.go".Request; ? *"github.com/hoisie/web.go".Server; ? "github.com/hoisie/web.go".conn; responseStarted bool }
+	func (ctx *"github.com/hoisie/web.go".Context) Abort (status int, body string)
+	func (ctx *"github.com/hoisie/web.go".Context) ContentType (ext string)
+	func (ctx *"github.com/hoisie/web.go".Context) GetSecureCookie (name string) (? string, ? bool)
+	func (ctx *"github.com/hoisie/web.go".Context) NotFound (message string)
+	func (ctx *"github.com/hoisie/web.go".Context) NotModified ()
+	func (ctx *"github.com/hoisie/web.go".Context) Redirect (status int, url string)
+	func (ctx *"github.com/hoisie/web.go".Context) SetCookie (name string, value string, age int64)
+	func (ctx *"github.com/hoisie/web.go".Context) SetSecureCookie (name string, val string, age int64)
+	func (ctx *"github.com/hoisie/web.go".Context) StartResponse (status int)
+	func (ctx *"github.com/hoisie/web.go".Context) Write (data []uint8) (n int, err "os".Error)
+	func (ctx *"github.com/hoisie/web.go".Context) WriteString (content string)
+	import reflect "reflect" // indirect
+	type "reflect".Kind uint8
+	func (k "reflect".Kind) String () string
+	type "reflect".Type interface { Align() int; AssignableTo(u "reflect".Type) bool; Bits() int; ChanDir() "reflect".ChanDir; Elem() "reflect".Type; Field(i int) "reflect".StructField; FieldAlign() int; FieldByIndex(index []int) "reflect".StructField; FieldByName(name string) (? "reflect".StructField, ? bool); FieldByNameFunc(match func(? string) bool) (? "reflect".StructField, ? bool); Implements(u "reflect".Type) bool; In(i int) "reflect".Type; IsVariadic() bool; Key() "reflect".Type; Kind() "reflect".Kind; Len() int; Method(? int) "reflect".Method; Name() string; NumField() int; NumIn() int; NumMethod() int; NumOut() int; Out(i int) "reflect".Type; PkgPath() string; Size() uintptr; String() string; "reflect".common() *"reflect".commonType; "reflect".runtimeType() *"runtime".Type; "reflect".uncommon() *"reflect".uncommonType }
+	type "reflect".ChanDir int
+	func (d "reflect".ChanDir) String () string
+	type "reflect".StructField struct { PkgPath string; Name string; Type "reflect".Type; Tag string; Offset uintptr; Index []int; Anonymous bool }
+	type "reflect".Method struct { PkgPath string; Name string; Type "reflect".Type; Func "reflect".Value }
+	type "runtime".Type interface { }
+	type "reflect".commonType struct { size uintptr; hash uint32; alg uint8; align uint8; fieldAlign uint8; kind uint8; string *string; ? *"reflect".uncommonType; ptrToThis *"runtime".Type }
+	func (t *"reflect".commonType) Align () int
+	func (t *"reflect".commonType) AssignableTo (u "reflect".Type) bool
+	func (t *"reflect".commonType) Bits () int
+	func (t *"reflect".commonType) ChanDir () "reflect".ChanDir
+	func (t *"reflect".commonType) Elem () "reflect".Type
+	func (t *"reflect".commonType) Field (i int) "reflect".StructField
+	func (t *"reflect".commonType) FieldAlign () int
+	func (t *"reflect".commonType) FieldByIndex (index []int) "reflect".StructField
+	func (t *"reflect".commonType) FieldByName (name string) (? "reflect".StructField, ? bool)
+	func (t *"reflect".commonType) FieldByNameFunc (match func(? string) bool) (? "reflect".StructField, ? bool)
+	func (t *"reflect".commonType) Implements (u "reflect".Type) bool
+	func (t *"reflect".commonType) In (i int) "reflect".Type
+	func (t *"reflect".commonType) IsVariadic () bool
+	func (t *"reflect".commonType) Key () "reflect".Type
+	func (t *"reflect".commonType) Kind () "reflect".Kind
+	func (t *"reflect".commonType) Len () int
+	func (t *"reflect".commonType) Method (i int) "reflect".Method
+	func (t *"reflect".commonType) Name () string
+	func (t *"reflect".commonType) NumField () int
+	func (t *"reflect".commonType) NumIn () int
+	func (t *"reflect".commonType) NumMethod () int
+	func (t *"reflect".commonType) NumOut () int
+	func (t *"reflect".commonType) Out (i int) "reflect".Type
+	func (t *"reflect".commonType) PkgPath () string
+	func (t *"reflect".commonType) Size () uintptr
+	func (t *"reflect".commonType) String () string
+	func (t *"reflect".commonType) common () *"reflect".commonType
+	func (t *"reflect".commonType) runtimeType () *"runtime".Type
+	func (t *"reflect".commonType) toType () "reflect".Type
+	type "reflect".uncommonType struct { name *string; pkgPath *string; methods []"reflect".method }
+	func (t *"reflect".uncommonType) Method (i int) "reflect".Method
+	func (t *"reflect".uncommonType) Name () string
+	func (t *"reflect".uncommonType) NumMethod () int
+	func (t *"reflect".uncommonType) PkgPath () string
+	func (t *"reflect".uncommonType) uncommon () *"reflect".uncommonType
+	type "reflect".method struct { name *string; pkgPath *string; mtyp *"runtime".Type; typ *"runtime".Type; ifn "unsafe".Pointer; tfn "unsafe".Pointer }
+	type "reflect".internalValue struct { typ *"reflect".commonType; kind "reflect".Kind; flag uint32; word "reflect".iword; addr "unsafe".Pointer; rcvr "reflect".iword; method bool; nilmethod bool }
+	func (iv "reflect".internalValue) Elem () "reflect".Value
+	func (iv "reflect".internalValue) Interface () interface { }
+	func (iv "reflect".internalValue) IsNil () bool
+	func (iv "reflect".internalValue) call (method string, in []"reflect".Value) []"reflect".Value
+	func (iv "reflect".internalValue) mustBe (want "reflect".Kind)
+	func (iv "reflect".internalValue) mustBeAssignable ()
+	func (iv "reflect".internalValue) mustBeExported ()
+	func (iv "reflect".internalValue) recv (nb bool) (val "reflect".Value, ok bool)
+	func (iv "reflect".internalValue) send (x "reflect".Value, nb bool) bool
+	type "reflect".iword uintptr
+	type "reflect".Value struct { Internal interface { }; InternalMethod int }
+	func (v "reflect".Value) Addr () "reflect".Value
+	func (v "reflect".Value) Bool () bool
+	func (v "reflect".Value) Call (in []"reflect".Value) []"reflect".Value
+	func (v "reflect".Value) CallSlice (in []"reflect".Value) []"reflect".Value
+	func (v "reflect".Value) CanAddr () bool
+	func (v "reflect".Value) CanInterface () bool
+	func (v "reflect".Value) CanSet () bool
+	func (v "reflect".Value) Cap () int
+	func (v "reflect".Value) Close ()
+	func (v "reflect".Value) Complex () complex128
+	func (v "reflect".Value) Elem () "reflect".Value
+	func (v "reflect".Value) Field (i int) "reflect".Value
+	func (v "reflect".Value) FieldByIndex (index []int) "reflect".Value
+	func (v "reflect".Value) FieldByName (name string) "reflect".Value
+	func (v "reflect".Value) FieldByNameFunc (match func(? string) bool) "reflect".Value
+	func (v "reflect".Value) Float () float64
+	func (v "reflect".Value) Index (i int) "reflect".Value
+	func (v "reflect".Value) Int () int64
+	func (v "reflect".Value) Interface () interface { }
+	func (v "reflect".Value) InterfaceData () [2]uintptr
+	func (v "reflect".Value) IsNil () bool
+	func (v "reflect".Value) IsValid () bool
+	func (v "reflect".Value) Kind () "reflect".Kind
+	func (v "reflect".Value) Len () int
+	func (v "reflect".Value) MapIndex (key "reflect".Value) "reflect".Value
+	func (v "reflect".Value) MapKeys () []"reflect".Value
+	func (v "reflect".Value) Method (i int) "reflect".Value
+	func (v "reflect".Value) NumField () int
+	func (v "reflect".Value) OverflowComplex (x complex128) bool
+	func (v "reflect".Value) OverflowFloat (x float64) bool
+	func (v "reflect".Value) OverflowInt (x int64) bool
+	func (v "reflect".Value) OverflowUint (x uint64) bool
+	func (v "reflect".Value) Pointer () uintptr
+	func (v "reflect".Value) Recv () (x "reflect".Value, ok bool)
+	func (v "reflect".Value) Send (x "reflect".Value)
+	func (v "reflect".Value) Set (x "reflect".Value)
+	func (v "reflect".Value) SetBool (x bool)
+	func (v "reflect".Value) SetComplex (x complex128)
+	func (v "reflect".Value) SetFloat (x float64)
+	func (v "reflect".Value) SetInt (x int64)
+	func (v "reflect".Value) SetLen (n int)
+	func (v "reflect".Value) SetMapIndex (key "reflect".Value, val "reflect".Value)
+	func (v "reflect".Value) SetPointer (x "unsafe".Pointer)
+	func (v "reflect".Value) SetString (x string)
+	func (v "reflect".Value) SetUint (x uint64)
+	func (v "reflect".Value) Slice (beg int, end int) "reflect".Value
+	func (v "reflect".Value) String () string
+	func (v "reflect".Value) TryRecv () (x "reflect".Value, ok bool)
+	func (v "reflect".Value) TrySend (x "reflect".Value) bool
+	func (v "reflect".Value) Type () "reflect".Type
+	func (v "reflect".Value) Uint () uint64
+	func (v "reflect".Value) UnsafeAddr () uintptr
+	func (v "reflect".Value) internal () "reflect".internalValue
+	type "github.com/hoisie/web.go".Request struct { Method string; RawURL string; URL *"http".URL; Proto string; ProtoMajor int; ProtoMinor int; Headers "http".Header; Body "io".Reader; Close bool; Host string; Referer string; UserAgent string; FullParams map[string] []string; Params map[string] string; ParamData []uint8; Cookies map[string] string; Cookie []*"http".Cookie; Files map[string] "github.com/hoisie/web.go".filedata; RemoteAddr string; RemotePort int }
+	func (r *"github.com/hoisie/web.go".Request) HasFile (name string) bool
+	func (r *"github.com/hoisie/web.go".Request) UnmarshalParams (val interface { }) "os".Error
+	func (r *"github.com/hoisie/web.go".Request) parseParams () "os".Error
+	func (r *"github.com/hoisie/web.go".Request) writeToContainer (val "reflect".Value) "os".Error
+	import http "http" // indirect
+	type "http".URL struct { Raw string; Scheme string; RawAuthority string; RawUserinfo string; Host string; RawPath string; Path string; OpaquePath bool; RawQuery string; Fragment string }
+	func (url *"http".URL) IsAbs () bool
+	func (base *"http".URL) ParseURL (ref string) (? *"http".URL, ? "os".Error)
+	func (base *"http".URL) ResolveReference (ref *"http".URL) *"http".URL
+	func (url *"http".URL) String () string
+	type "http".Header map[string] []string
+	func (h "http".Header) Add (key string, value string)
+	func (h "http".Header) Del (key string)
+	func (h "http".Header) Get (key string) string
+	func (h "http".Header) Set (key string, value string)
+	import io "io" // indirect
+	type "io".Reader interface { Read(p []uint8) (n int, err "os".Error) }
+	type "http".Cookie struct { Name string; Value string; Path string; Domain string; Expires "time".Time; RawExpires string; MaxAge int; Secure bool; HttpOnly bool; Raw string; Unparsed []string }
+	import time "time" // indirect
+	type "time".Time struct { Year int64; Month int; Day int; Hour int; Minute int; Second int; Weekday int; ZoneOffset int; Zone string }
+	func (t *"time".Time) Format (layout string) string
+	func (t *"time".Time) Seconds () int64
+	func (t *"time".Time) String () string
+	type "github.com/hoisie/web.go".filedata struct { Filename string; Data []uint8 }
+	type "http".ResponseWriter interface { Header() "http".Header; Write(? []uint8) (? int, ? "os".Error); WriteHeader(? int) }
+	import multipart "mime/multipart" // indirect
+	type "mime/multipart".File interface { Close() "os".Error; Read(p []uint8) (n int, err "os".Error); ReadAt(p []uint8, off int64) (n int, err "os".Error); Seek(offset int64, whence int) (ret int64, err "os".Error) }
+	type "mime/multipart".FileHeader struct { Filename string; Header "net/textproto".MIMEHeader; content []uint8; tmpfile string }
+	func (fh *"mime/multipart".FileHeader) Open () (? "mime/multipart".File, ? "os".Error)
+	import textproto "net/textproto" // indirect
+	type "net/textproto".MIMEHeader map[string] []string
+	func (h "net/textproto".MIMEHeader) Add (key string, value string)
+	func (h "net/textproto".MIMEHeader) Del (key string)
+	func (h "net/textproto".MIMEHeader) Get (key string) string
+	func (h "net/textproto".MIMEHeader) Set (key string, value string)
+	type "mime/multipart".Reader interface { NextPart() (? *"mime/multipart".Part, ? "os".Error); ReadForm(maxMemory int64) (? *"mime/multipart".Form, ? "os".Error) }
+	type "mime/multipart".Part struct { Header "net/textproto".MIMEHeader; buffer *"bytes".Buffer; mr *"mime/multipart".multiReader; dispositionParams map[string] string }
+	func (bp *"mime/multipart".Part) Close () "os".Error
+	func (p *"mime/multipart".Part) FormName () string
+	func (bp *"mime/multipart".Part) Read (p []uint8) (n int, err "os".Error)
+	func (bp *"mime/multipart".Part) populateHeaders () "os".Error
+	import bytes "bytes" // indirect
+	type "io".Writer interface { Write(p []uint8) (n int, err "os".Error) }
+	type "bytes".Buffer struct { buf []uint8; off int; runeBytes [4]uint8; bootstrap [64]uint8; lastRead "bytes".readOp }
+	func (b *"bytes".Buffer) Bytes () []uint8
+	func (b *"bytes".Buffer) Len () int
+	func (b *"bytes".Buffer) Next (n int) []uint8
+	func (b *"bytes".Buffer) Read (p []uint8) (n int, err "os".Error)
+	func (b *"bytes".Buffer) ReadByte () (c uint8, err "os".Error)
+	func (b *"bytes".Buffer) ReadBytes (delim uint8) (line []uint8, err "os".Error)
+	func (b *"bytes".Buffer) ReadFrom (r "io".Reader) (n int64, err "os".Error)
+	func (b *"bytes".Buffer) ReadRune () (r int, size int, err "os".Error)
+	func (b *"bytes".Buffer) ReadString (delim uint8) (line string, err "os".Error)
+	func (b *"bytes".Buffer) Reset ()
+	func (b *"bytes".Buffer) String () string
+	func (b *"bytes".Buffer) Truncate (n int)
+	func (b *"bytes".Buffer) UnreadByte () "os".Error
+	func (b *"bytes".Buffer) UnreadRune () "os".Error
+	func (b *"bytes".Buffer) Write (p []uint8) (n int, err "os".Error)
+	func (b *"bytes".Buffer) WriteByte (c uint8) "os".Error
+	func (b *"bytes".Buffer) WriteRune (r int) (n int, err "os".Error)
+	func (b *"bytes".Buffer) WriteString (s string) (n int, err "os".Error)
+	func (b *"bytes".Buffer) WriteTo (w "io".Writer) (n int64, err "os".Error)
+	func (b *"bytes".Buffer) grow (n int) int
+	type "bytes".readOp int
+	type "mime/multipart".Form struct { Value map[string] []string; File map[string] []*"mime/multipart".FileHeader }
+	func (f *"mime/multipart".Form) RemoveAll () "os".Error
+	type "mime/multipart".multiReader struct { bufReader *"bufio".Reader; currentPart *"mime/multipart".Part; partsRead int; nlDashBoundary []uint8; dashBoundaryDash []uint8; dashBoundary []uint8 }
+	func (mr *"mime/multipart".multiReader) NextPart () (? *"mime/multipart".Part, ? "os".Error)
+	func (r *"mime/multipart".multiReader) ReadForm (maxMemory int64) (f *"mime/multipart".Form, err "os".Error)
+	func (mr *"mime/multipart".multiReader) isBoundaryDelimiterLine (line []uint8) bool
+	import bufio "bufio" // indirect
+	type "bufio".Reader struct { buf []uint8; rd "io".Reader; r int; w int; err "os".Error; lastByte int; lastRuneSize int }
+	func (b *"bufio".Reader) Buffered () int
+	func (b *"bufio".Reader) Peek (n int) (? []uint8, ? "os".Error)
+	func (b *"bufio".Reader) Read (p []uint8) (n int, err "os".Error)
+	func (b *"bufio".Reader) ReadByte () (c uint8, err "os".Error)
+	func (b *"bufio".Reader) ReadBytes (delim uint8) (line []uint8, err "os".Error)
+	func (b *"bufio".Reader) ReadLine () (line []uint8, isPrefix bool, err "os".Error)
+	func (b *"bufio".Reader) ReadRune () (rune int, size int, err "os".Error)
+	func (b *"bufio".Reader) ReadSlice (delim uint8) (line []uint8, err "os".Error)
+	func (b *"bufio".Reader) ReadString (delim uint8) (line string, err "os".Error)
+	func (b *"bufio".Reader) UnreadByte () "os".Error
+	func (b *"bufio".Reader) UnreadRune () "os".Error
+	func (b *"bufio".Reader) fill ()
+	type "http".Request struct { Method string; RawURL string; URL *"http".URL; Proto string; ProtoMajor int; ProtoMinor int; Header "http".Header; Cookie []*"http".Cookie; Body "io".ReadCloser; ContentLength int64; TransferEncoding []string; Close bool; Host string; Referer string; UserAgent string; Form map[string] []string; MultipartForm *"mime/multipart".Form; Trailer "http".Header; RemoteAddr string; TLS *"crypto/tls".ConnectionState }
+	func (r *"http".Request) FormFile (key string) (? "mime/multipart".File, ? *"mime/multipart".FileHeader, ? "os".Error)
+	func (r *"http".Request) FormValue (key string) string
+	func (r *"http".Request) MultipartReader () (? "mime/multipart".Reader, ? "os".Error)
+	func (r *"http".Request) ParseForm () "os".Error
+	func (r *"http".Request) ParseMultipartForm (maxMemory int64) "os".Error
+	func (r *"http".Request) ProtoAtLeast (major int, minor int) bool
+	func (req *"http".Request) Write (w "io".Writer) "os".Error
+	func (req *"http".Request) WriteProxy (w "io".Writer) "os".Error
+	func (r *"http".Request) expectsContinue () bool
+	func (r *"http".Request) multipartReader () (? "mime/multipart".Reader, ? "os".Error)
+	func (r *"http".Request) wantsHttp10KeepAlive () bool
+	func (req *"http".Request) write (w "io".Writer, usingProxy bool) "os".Error
+	type "io".ReadCloser interface { Close() "os".Error; Read(p []uint8) (n int, err "os".Error) }
+	import tls "crypto/tls" // indirect
+	type "crypto/tls".ConnectionState struct { HandshakeComplete bool; CipherSuite uint16; NegotiatedProtocol string; NegotiatedProtocolIsMutual bool; PeerCertificates []*"crypto/x509".Certificate }
+	import x509 "crypto/x509" // indirect
+	type "crypto/x509".VerifyOptions struct { DNSName string; Intermediates *"crypto/x509".CertPool; Roots *"crypto/x509".CertPool; CurrentTime int64 }
+	type "crypto/x509".CertPool struct { bySubjectKeyId map[string] []int; byName map[string] []int; certs []*"crypto/x509".Certificate }
+	func (s *"crypto/x509".CertPool) AddCert (cert *"crypto/x509".Certificate)
+	func (s *"crypto/x509".CertPool) AppendCertsFromPEM (pemCerts []uint8) bool
+	func (s *"crypto/x509".CertPool) findVerifiedParents (cert *"crypto/x509".Certificate) []int
+	type "crypto/x509".Certificate struct { Raw []uint8; RawTBSCertificate []uint8; Signature []uint8; SignatureAlgorithm "crypto/x509".SignatureAlgorithm; PublicKeyAlgorithm "crypto/x509".PublicKeyAlgorithm; PublicKey interface { }; Version int; SerialNumber []uint8; Issuer "crypto/x509".Name; Subject "crypto/x509".Name; NotBefore *"time".Time; NotAfter *"time".Time; KeyUsage "crypto/x509".KeyUsage; ExtKeyUsage []"crypto/x509".ExtKeyUsage; UnknownExtKeyUsage []"asn1".ObjectIdentifier; BasicConstraintsValid bool; IsCA bool; MaxPathLen int; SubjectKeyId []uint8; AuthorityKeyId []uint8; DNSNames []string; EmailAddresses []string; PermittedDNSDomainsCritical bool; PermittedDNSDomains []string; PolicyIdentifiers []"asn1".ObjectIdentifier }
+	func (c *"crypto/x509".Certificate) CheckSignatureFrom (parent *"crypto/x509".Certificate) "os".Error
+	func (c *"crypto/x509".Certificate) Equal (other *"crypto/x509".Certificate) bool
+	func (c *"crypto/x509".Certificate) Verify (opts "crypto/x509".VerifyOptions) (chains [][]*"crypto/x509".Certificate, err "os".Error)
+	func (c *"crypto/x509".Certificate) VerifyHostname (h string) "os".Error
+	func (c *"crypto/x509".Certificate) buildChains (cache map[int] [][]*"crypto/x509".Certificate, currentChain []*"crypto/x509".Certificate, opts *"crypto/x509".VerifyOptions) (chains [][]*"crypto/x509".Certificate, err "os".Error)
+	func (c *"crypto/x509".Certificate) isValid (certType int, opts *"crypto/x509".VerifyOptions) "os".Error
+	type "crypto/x509".SignatureAlgorithm int
+	type "crypto/x509".PublicKeyAlgorithm int
+	type "crypto/x509".rdnSequence []"crypto/x509".relativeDistinguishedNameSET
+	type "crypto/x509".relativeDistinguishedNameSET []"crypto/x509".attributeTypeAndValue
+	type "crypto/x509".attributeTypeAndValue struct { Type "asn1".ObjectIdentifier; Value interface { } }
+	import asn1 "asn1" // indirect
+	type "asn1".ObjectIdentifier []int
+	func (oi "asn1".ObjectIdentifier) Equal (other "asn1".ObjectIdentifier) bool
+	type "crypto/x509".Name struct { Country []string; Organization []string; OrganizationalUnit []string; Locality []string; Province []string; StreetAddress []string; PostalCode []string; SerialNumber string; CommonName string }
+	func (n *"crypto/x509".Name) fillFromRDNSequence (rdns *"crypto/x509".rdnSequence)
+	func (n "crypto/x509".Name) toRDNSequence () "crypto/x509".rdnSequence
+	type "crypto/x509".KeyUsage int
+	type "crypto/x509".ExtKeyUsage int
+	import log "log" // indirect
+	type "log".Logger struct { prefix string; flag int; mu "sync".Mutex; out "io".Writer; buf "bytes".Buffer }
+	func (l *"log".Logger) Fatal (v ...interface { })
+	func (l *"log".Logger) Fatalf (format string, v ...interface { })
+	func (l *"log".Logger) Fatalln (v ...interface { })
+	func (l *"log".Logger) Flags () int
+	func (l *"log".Logger) Output (calldepth int, s string) "os".Error
+	func (l *"log".Logger) Panic (v ...interface { })
+	func (l *"log".Logger) Panicf (format string, v ...interface { })
+	func (l *"log".Logger) Panicln (v ...interface { })
+	func (l *"log".Logger) Prefix () string
+	func (l *"log".Logger) Print (v ...interface { })
+	func (l *"log".Logger) Printf (format string, v ...interface { })
+	func (l *"log".Logger) Println (v ...interface { })
+	func (l *"log".Logger) SetFlags (flag int)
+	func (l *"log".Logger) SetPrefix (prefix string)
+	func (l *"log".Logger) formatHeader (buf *"bytes".Buffer, ns int64, file string, line int)
+	import sync "sync" // indirect
+	type "sync".Mutex struct { key int32; sema uint32 }
+	func (m *"sync".Mutex) Lock ()
+	func (m *"sync".Mutex) Unlock ()
+	type "io".ReadWriteCloser interface { Close() "os".Error; Read(p []uint8) (n int, err "os".Error); Write(p []uint8) (n int, err "os".Error) }
+	type "github.com/hoisie/web.go".conn interface { Close(); SetHeader(hdr string, val string, unique bool); StartResponse(status int); Write(data []uint8) (n int, err "os".Error) }
+	type "github.com/hoisie/web.go".Server struct { Config *"github.com/hoisie/web.go".ServerConfig; routes "container/vector".Vector; Logger *"log".Logger; l "net".Listener; closed bool }
+	func (s *"github.com/hoisie/web.go".Server) Close ()
+	func (s *"github.com/hoisie/web.go".Server) Delete (route string, handler interface { })
+	func (s *"github.com/hoisie/web.go".Server) Get (route string, handler interface { })
+	func (s *"github.com/hoisie/web.go".Server) Post (route string, handler interface { })
+	func (s *"github.com/hoisie/web.go".Server) Put (route string, handler interface { })
+	func (s *"github.com/hoisie/web.go".Server) Run (addr string)
+	func (s *"github.com/hoisie/web.go".Server) RunFcgi (addr string)
+	func (s *"github.com/hoisie/web.go".Server) RunScgi (addr string)
+	func (s *"github.com/hoisie/web.go".Server) ServeHTTP (c "http".ResponseWriter, req *"http".Request)
+	func (s *"github.com/hoisie/web.go".Server) SetLogger (logger *"log".Logger)
+	func (s *"github.com/hoisie/web.go".Server) addRoute (r string, method string, handler interface { })
+	func (s *"github.com/hoisie/web.go".Server) handleFcgiConnection (fd "io".ReadWriteCloser)
+	func (s *"github.com/hoisie/web.go".Server) handleScgiRequest (fd "io".ReadWriteCloser)
+	func (s *"github.com/hoisie/web.go".Server) initServer ()
+	func (s *"github.com/hoisie/web.go".Server) listenAndServeFcgi (addr string) "os".Error
+	func (s *"github.com/hoisie/web.go".Server) listenAndServeScgi (addr string) "os".Error
+	func (s *"github.com/hoisie/web.go".Server) routeHandler (req *"github.com/hoisie/web.go".Request, c "github.com/hoisie/web.go".conn)
+	func (s *"github.com/hoisie/web.go".Server) safelyCall (function "reflect".Value, args []"reflect".Value) (resp []"reflect".Value, e interface { })
+	type "github.com/hoisie/web.go".ServerConfig struct { StaticDir string; Addr string; Port int; CookieSecret string; RecoverPanic bool }
+	import vector "container/vector" // indirect
+	type "container/vector".Vector []interface { }
+	func (p *"container/vector".Vector) AppendVector (x *"container/vector".Vector)
+	func (p *"container/vector".Vector) At (i int) interface { }
+	func (p *"container/vector".Vector) Cap () int
+	func (p *"container/vector".Vector) Copy () "container/vector".Vector
+	func (p *"container/vector".Vector) Cut (i int, j int)
+	func (p *"container/vector".Vector) Delete (i int)
+	func (p *"container/vector".Vector) Do (f func(elem interface { }))
+	func (p *"container/vector".Vector) Expand (i int, n int)
+	func (p *"container/vector".Vector) Extend (n int)
+	func (p *"container/vector".Vector) Insert (i int, x interface { })
+	func (p *"container/vector".Vector) InsertVector (i int, x *"container/vector".Vector)
+	func (p *"container/vector".Vector) Last () interface { }
+	func (p *"container/vector".Vector) Len () int
+	func (p *"container/vector".Vector) Less (i int, j int) bool
+	func (p *"container/vector".Vector) Pop () interface { }
+	func (p *"container/vector".Vector) Push (x interface { })
+	func (p *"container/vector".Vector) Resize (length int, capacity int) *"container/vector".Vector
+	func (p *"container/vector".Vector) Set (i int, x interface { })
+	func (p *"container/vector".Vector) Slice (i int, j int) *"container/vector".Vector
+	func (p *"container/vector".Vector) Swap (i int, j int)
+	func (p *"container/vector".Vector) realloc (length int, capacity int) []interface { }
+	import net "net" // indirect
+	type "net".Listener interface { Accept() (c "net".Conn, err "os".Error); Addr() "net".Addr; Close() "os".Error }
+	type "net".Conn interface { Close() "os".Error; LocalAddr() "net".Addr; Read(b []uint8) (n int, err "os".Error); RemoteAddr() "net".Addr; SetReadTimeout(nsec int64) "os".Error; SetTimeout(nsec int64) "os".Error; SetWriteTimeout(nsec int64) "os".Error; Write(b []uint8) (n int, err "os".Error) }
+	type "net".Addr interface { Network() string; String() string }
+	func "".route_requests (ctx *"github.com/hoisie/web.go".Context, val string) string
+	func "".main ()
+	var "".initdoneÂ· uint8
+	func "".init ()
+
+$$  // local types
+
+$$
+
+!
+~ E</ ~ E<home ~ E<saul ~ E<repos ~ E<vafan ~ E<vafan.go 7      ~ E<github.com ~ E<hoisie ~ E<web.go.a 7     ÿÿÿÿA7      ~ ="".route_requests ~ =type.func(*github%2ecom/hoisie/web%2ego.Context, string) string Ü    ‘=E      A~ @"".ctx ~ =type.*github%2ecom/hoisie/web%2ego.Context p 	   ‘@p 	   R	 	   4   Ap 	   ~ ?"".host ~ =type.string a 	   •øÿÿÿ?! 	     y 	     y 	     a 
+   •øÿÿÿ?~ @""..noname a 
+      @! 
+     y 
+     y 
+     £ 
+     ~ =runtime.throwreturn      =£      ~ =	"".main ~ =
+type.func() Ü    ‘	=
+(   A~ =type.uint8 ~ Sruntime.typ p    “= DSp    “= D~ Sruntime.elem p       S~ =runtime.convT2E ~ =type.func(*uint8, func(*github%2ecom/hoisie/web%2ego.Context, string) string) interface { }      ‘=a       Sp    ~ Sgithub%2ecom/hoisie/web%2ego.handler a       S!      y      y      ~ =go.string."/(.*)" a    =~ Sgithub%2ecom/hoisie/web%2ego.route a    S!      y      y      ~ =github%2ecom/hoisie/web%2ego.Get ~ =type.func(string, interface { })      ‘=~ =go.string."0.0.0.0:9999" a    =~ Sgithub%2ecom/hoisie/web%2ego.addr a    S!      y      y      ~ =github%2ecom/hoisie/web%2ego.Run ~ =type.func(string)      ‘=£      ~ ="".init Ü    ‘=
+   A~ ="".initdoneÂ· s    ‘=	W     -   <W     8   <%    	AO     ,   <W     1   <W     6   <p    	%    	   AX     0   <£      W     6   <~ =runtime.throwinit      ‘=
+W     8   <o       A‘=~ =github%2ecom/hoisie/web%2ego.init      ‘=
+o       A‘=£      £      5    ‘=   A~ =type.*runtime.FuncType -    ;== D-    ;   ==    D-    ;   =   A-    ;   =2W;¢A-    ;   =   A-    ;   =   A-    ;   =   A-    ;   =   A~ =go.string."func(*web.Context, string) string" -    ;   == D~ =weak.type.*func(*github%2ecom/hoisie/web%2ego.Context, string) string -    ;   == D-    ;    =A-    ;$   == <   D-    ;(   =   A-    ;,   =   A-    ;0   == D   D-    ;4   =   A-    ;8   =   A-    ;<   == D-    ;@   == D-    ;D   == D5    ;
+=H   A-    ;
+== D-    ;   
+==    
+D-    ;   
+=   A-    ;   
+=ö¼‚öA-    ;   
+=   A-    ;   
+=   A-    ;   
+=   A-    ;   
+=   A~ = go.string."func()" -    ;   
+==  D~ =!weak.type.*func() -    ;   
+== !D-    ;    
+=A-    ;$   
+== <   
+D-    ;(   
+=A-    ;,   
+=A-    ;0   
+== <   
+D-    ;4   
+=A-    ;8   
+=A5    ;
+
+=<   A~ ="type.interface { } ~ =#type.*runtime.InterfaceType -    ;"== #D-    ;   "==    "D-    ;   "=   A-    ;   "=ô¤BóA-    ;   "=   A-    ;   "=   A-    ;   "=   A-    ;   "=   A~ =$go.string."interface { }" -    ;   "== $D~ =%weak.type.*interface { } -    ;   "== %D-    ;    "== ,   "D-    ;$   "=A-    ;(   "=A5    ;
+"=,   A-    ;== D-    ;   ==    D-    ;   =   A-    ;   =x¦ƒA-    ;   =   A-    ;   =   A-    ;   =   A-    ;   =   A~ =&go.string."func(*uint8, func(*web.Context, string) string) interface { }" -    ;   == &D~ ='weak.type.*func(*uint8, func(*github%2ecom/hoisie/web%2ego.Context, string) string) interface { } -    ;   == 'D-    ;    =A-    ;$   == <   D-    ;(   =   A-    ;,   =   A-    ;0   == D   D-    ;4   =   A-    ;8   =   A~ =(type.*uint8 -    ;<   == (D-    ;@   == D-    ;D   == "D5    ;
+=H   A-    ;== D-    ;   ==    D-    ;   =   A-    ;   =½;;QA-    ;   =   A-    ;   =   A-    ;   =   A-    ;   =   A~ =)go.string."func(string, interface { })" -    ;   == )D~ =*weak.type.*func(string, interface { }) -    ;   == *D-    ;    =A-    ;$   == <   D-    ;(   =   A-    ;,   =   A-    ;0   == D   D-    ;4   =A-    ;8   =A-    ;<   == D-    ;@   == "D5    ;
+=D   A-    ;== D-    ;   ==    D-    ;   =   A-    ;   =ŠÇ¹¾A-    ;   =   A-    ;   =   A-    ;   =   A-    ;   =   A~ =+go.string."func(string)" -    ;   == +D~ =,weak.type.*func(string) -    ;   == ,D-    ;    =A-    ;$   == <   D-    ;(   =   A-    ;,   =   A-    ;0   == @   D-    ;4   =A-    ;8   =A-    ;<   == D5    ;
+=@   A~ =-go.importpath.github%2ecom/hoisie/web%2ego. ~ =.go.string."github.com/hoisie/web.go" -    ;-==    .D-    ;   -=   A5    ;
+-=   A~ =/go.importpath.runtime. ~ =0go.string."runtime" -    ;/==    0D-    ;   /=   A5    ;
+/=   A-    ;==    D-    ;   =   A-    ;   = /(.*)   -    ;   =A5    ;
+=   A-    ;==    D-    ;   =   A-    ;   = 0.0.0.0:-    ;   = 9999    -    ;   =A5    ;
+=   A-    ;==    D-    ;   =!   A-    ;   = func(*we-    ;   = b.Contex-    ;   = t, strin-    ;    = g) strin-    ;(   = g       -    ;)   =A5    ;
+=*   A-    ; ==     D-    ;    =   A-    ;    = func()  -    ;    =A5    ;
+ =   A-    ;$==    $D-    ;   $=   A-    ;   $= interfac-    ;   $= e { }   -    ;   $=A5    ;
+$=   A-    ;&==    &D-    ;   &==   A-    ;   &= func(*ui-    ;   &= nt8, fun-    ;   &= c(*web.C-    ;    &= ontext, -    ;(   &= string) -    ;0   &= string) -    ;8   &= interfac-    ;@   &= e { }   -    ;E   &=A5    ;
+&=F   A-    ;)==    )D-    ;   )=   A-    ;   )= func(str-    ;   )= ing, int-    ;   )= erface {-    ;    )=  })     -    ;#   )=A5    ;
+)=$   A-    ;+==    +D-    ;   +=   A-    ;   += func(str-    ;   += ing)    -    ;   +=A5    ;
++=   A-    ;.==    .D-    ;   .=   A-    ;   .= github.c-    ;   .= om/hoisi-    ;   .= e/web.go-    ;    .=A5    ;
+.=!   A-    ;0==    0D-    ;   0=   A-    ;   0= runtime -    ;   0=A5    ;
+0=   AM      
