@@ -14,20 +14,25 @@ To install Vafan on a new machine. This will only work on Natty.
 1. Install Ubuntu
 
 2. Install git
-    sudo apt-get install git-core
+
+        sudo apt-get install git-core
 
 3. Clone vafan
-    cd /srv/
-    git clone git://github.com/saulhoward/vafan.git
+
+        cd /srv/
+        git clone git://github.com/saulhoward/vafan.git
 
 4. As root, run the setup script to install apt packages
-    sudo /srv/vafan/scripts/natty-setup.sh
+
+        sudo /srv/vafan/scripts/natty-setup.sh
 
 5. Optionally, set up your Go environment. Eg.:
-    echo "export GOROOT=$HOME/go" >> ~/.bashrc
-    source ~/.bashrc
+
+        echo "export GOROOT=$HOME/go" >> ~/.bashrc
+        source ~/.bashrc
 
 6. Run the goinstall script
-    /srv/vafan/scripts/goinstall.sh
+
+        /srv/vafan/scripts/goinstall.sh
     
 
