@@ -6,8 +6,7 @@ A media server.
 Installation Instructions 
 -------------------------
 
-Ubuntu Natty
-------------
+### Ubuntu Natty
 
 To install Vafan on a new machine. This will only work on Natty.
 
@@ -28,7 +27,9 @@ To install Vafan on a new machine. This will only work on Natty.
 
 5. Optionally, set up your Go environment. Eg.:
 
-        echo "export GOROOT=$HOME/go" >> ~/.bashrc
+        echo "export GOROOT=/usr/lib/go" >> ~/.bashrc
+        echo "export GOARCH=386" >> ~/.bashrc
+        echo "export GOOS=linux" >> ~/.bashrc
         source ~/.bashrc
 
 6. Run the goinstall script
