@@ -15,3 +15,6 @@ goinstall -v github.com/kless/goconfig/config
 
 # mustache.go
 goinstall -v github.com/hoisie/mustache.go
+
+# mgo mongodb driver
+goinstall -v launchpad.net/mgo
