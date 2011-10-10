@@ -1,3 +1,39 @@
 Vafan
+=====
 
 A media server.
+
+Installation Instructions 
+-------------------------
+
+### Ubuntu Natty
+
+To install Vafan on a new machine. This will only work on Natty.
+
+1. Install Ubuntu
+
+2. Install git
+
+        sudo apt-get install git-core
+
+3. Clone vafan
+
+        cd /srv/
+        git clone git://github.com/saulhoward/vafan.git
+
+4. As root, run the setup script to install apt packages
+
+        sudo /srv/vafan/scripts/natty-setup.sh
+
+5. Optionally, set up your Go environment. Eg.:
+
+        echo "export GOROOT=/usr/lib/go" >> ~/.bashrc
+        echo "export GOARCH=386" >> ~/.bashrc
+        echo "export GOOS=linux" >> ~/.bashrc
+        source ~/.bashrc
+
+6. Run the goinstall script
+
+        /srv/vafan/scripts/goinstall.sh
+    
+
