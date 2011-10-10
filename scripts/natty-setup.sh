@@ -15,7 +15,9 @@ fi
 apt-get update && apt-get upgrade 
 
 # required packages 
-apt-get --assume-yes install python-software-properties couchdb
+apt-get --assume-yes install \
+    python-software-properties \
+    couchdb
 
 # Go - needs its own repository on natty
 add-apt-repository ppa:gophers/go
