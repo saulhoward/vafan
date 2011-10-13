@@ -2,37 +2,30 @@ package main
 
 import (
     "saulhoward.com/vafan"
-    //"github.com/hoisie/web.go"
+    "github.com/hoisie/web.go"
     /* "github.com/hoisie/mustache.go" */
     //"launchpad.net/mgo"
     /* "path" */
     /* "os" */
 )
 
-/* type Host struct { */
-    /* Name string */
-    /* Title string */
-/* } */
-
-/* type Resource struct { */
-    /* Name string */
-/* } */
-
 func routeRequest(ctx *web.Context, val string) string {
 
     //host := getHost(ctx.Request.Host)
-    resource := vafan.Resource(ctx.URL.Path)
-    return resource.Name
+    r := vafan.Path(ctx.URL.Path)
+    h := vafan.Host(ctx.Request.Host)
+    s := ""
+    for _, p := range r {
+        s += p
+        s += " "
+    }
+    s += " "
+    s += h
+    return s
 
     /* filename := path.Join(path.Join(os.Getenv("PWD"), "templates"), "index.html.mustache")
     return mustache.RenderFile(filename, map[string]string{"host":host.Name}) */
 }
-
-/* func getHost(hostname string) *Host { */
-    /* // TODO: get the host details from the DB (or config?) and fill this in properly */
-    /* h := Host{hostname, hostname} */
-    /* return &h */
-/* } */
 
 //func parse(filename string) string {
     //output := mustache.RenderFile(filename, map[string]string{"host": host})

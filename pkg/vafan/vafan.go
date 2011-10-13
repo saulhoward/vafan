@@ -1,23 +1,32 @@
 package vafan
 
 type resource struct {
-    parts []string
+    parts []item
 }
 
-func ParseResource(path string) {
+func Path(path string) []string {
+
     l := lex("path", path)
-    items := []item
-    r := resource
+
+    /* r := resource{} */
+
+    parts := make([]string, 1)
+
     for {
         item := l.nextItem()
-        r.parts = append(r.parts, item)
+        if item.typ == itemText {
+            /* parts = append(r.parts, item) */
+            parts = append(parts, item.val)
+        }
         if item.typ == itemEnd || item.typ == itemError {
               break
         }
     }
+    return parts
 }
 
-func (r *resource)Root() {
-    if r.parts
-
+func Host(hostname string) string {
+    return hostname
 }
+
+
