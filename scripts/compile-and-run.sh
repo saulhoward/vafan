@@ -1,1 +1,5 @@
-8g ./lib/vafan.go && 8l -o vafan vafan.8 && ./vafan
+rm pkg/vafan/_go_.8
+rm cmd/vafan/_go_.8
+gomake install -C pkg/vafan/
+gomake install -C cmd/vafan/
+/usr/lib/go/bin/vafan

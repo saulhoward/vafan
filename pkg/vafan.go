@@ -6,6 +6,7 @@ import (
     //"launchpad.net/mgo"
     "path"
     "os"
+    "vafan"
 )
 
 type Host struct {
@@ -30,6 +31,18 @@ func routeRequest(ctx *web.Context, val string) string {
         resource = Resource{"404"}
     }
     */
+
+    path := '/brighton/'
+
+    l := vafan.lex('path', path)
+    for {
+        item := l.nextItem()
+        printf item
+        if item.typ == itemEnd || item.typ == itemError {
+              break
+        }
+    }
+    return
 
     filename := path.Join(path.Join(os.Getenv("PWD"), "templates"), "index.html.mustache")
     return mustache.RenderFile(filename, map[string]string{"host":host.Name})
