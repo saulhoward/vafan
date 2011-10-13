@@ -20,7 +20,8 @@ fi
 apt-get update && apt-get upgrade 
 
 # required packages 
-apt-get --assume-yes install python-software-properties mongodb build-essential
+apt-get --assume-yes install python-software-properties \
+    mongodb mongodb-clients build-essential
 
 # Go - needs its own repository on natty
 add-apt-repository ppa:gophers/go
