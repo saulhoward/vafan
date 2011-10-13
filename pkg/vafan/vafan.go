@@ -1,7 +1,15 @@
+// This package provides a server framework.
+// http://saulhoward.com/vafan
+// @author saul@saulhoward.com
+
 package vafan
 
 type resource struct {
     parts []item
+}
+
+type host struct {
+    name string
 }
 
 func Path(path string) []string {
@@ -25,8 +33,17 @@ func Path(path string) []string {
     return parts
 }
 
-func Host(hostname string) string {
-    return hostname
+func Host(host string) string {
+    l := lex("host", host)
+    var h string
+    for {
+        item := l.nextItem()
+        if item.typ == itemText {
+            h = item.val
+        }
+        if item.typ == itemEnd || item.typ == itemError || item.typ == itemColon {
+              break
+        }
+    }
+    return h
 }
-
-

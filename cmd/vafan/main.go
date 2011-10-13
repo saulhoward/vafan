@@ -4,14 +4,12 @@ import (
     "saulhoward.com/vafan"
     "github.com/hoisie/web.go"
     /* "github.com/hoisie/mustache.go" */
-    //"launchpad.net/mgo"
+    // "launchpad.net/mgo"
     /* "path" */
     /* "os" */
 )
 
 func routeRequest(ctx *web.Context, val string) string {
-
-    //host := getHost(ctx.Request.Host)
     r := vafan.Path(ctx.URL.Path)
     h := vafan.Host(ctx.Request.Host)
     s := ""
@@ -22,7 +20,6 @@ func routeRequest(ctx *web.Context, val string) string {
     s += " "
     s += h
     return s
-
     /* filename := path.Join(path.Join(os.Getenv("PWD"), "templates"), "index.html.mustache")
     return mustache.RenderFile(filename, map[string]string{"host":host.Name}) */
 }

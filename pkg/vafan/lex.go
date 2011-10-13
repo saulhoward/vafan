@@ -1,4 +1,9 @@
+// http://saulhoward.com/vafan
+// @author saul@saulhoward.com
+
 package vafan
+
+// This file provides the lexer for parsing hostnames and paths.
 
 import (
 	"fmt"
@@ -6,6 +11,7 @@ import (
 	"utf8"
 )
 
+// lex items
 type item struct {
 	typ itemType // Type, such as itemSlash
 	val string   // Value such as "videos"
@@ -31,11 +37,12 @@ const (
 	itemError itemType = iota // error occured value is text of error
 	itemSlash                 // seperator for path '/'
 	itemText
+	itemColon
 	itemEnd
 	itemGroup
 )
 
-const eof = -1
+const end = -1
 
 type stateFn func(*lexer) stateFn
 
@@ -54,7 +61,7 @@ type lexer struct {
 func (l *lexer) next() (rune int) {
 	if l.pos >= len(l.input) {
 		l.width = 0
-		return eof
+		return end
 	}
 	rune, l.width =
 		utf8.DecodeRuneInString(l.input[l.pos:])
@@ -106,6 +113,7 @@ func (l *lexer) emit(t itemType) {
 // state fucntions
 
 const slash = "/"
+const colon = ":"
 
 func lexText(l *lexer) stateFn {
 	for {
@@ -115,7 +123,13 @@ func lexText(l *lexer) stateFn {
 			}
 			return lexSlash // Next state.
 		}
-		if l.next() == eof {
+		if strings.HasPrefix(l.input[l.pos:], colon) {
+			if l.pos > l.start {
+				l.emit(itemText)
+			}
+			return lexColon // Next state.
+		}
+		if l.next() == end {
 			break
 		}
 	}
@@ -123,13 +137,19 @@ func lexText(l *lexer) stateFn {
 	if l.pos > l.start {
 		l.emit(itemText)
 	}
-	l.emit(itemEnd) // Useful to make EOF a token.
+	l.emit(itemEnd) // Useful to make End a token.
 	return nil      // Stop the run loop.
 }
 
 func lexSlash(l *lexer) stateFn {
 	l.pos += len(slash) // move past it
 	l.emit(itemSlash)
+	return lexText // Now back to text
+}
+
+func lexColon(l *lexer) stateFn {
+	l.pos += len(colon) // move past it
+	l.emit(itemColon)
 	return lexText // Now back to text
 }
 
