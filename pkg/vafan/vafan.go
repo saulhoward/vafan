@@ -4,46 +4,81 @@
 
 package vafan
 
+import (
+    "github.com/hoisie/web.go"
+)
+
 type resource struct {
-    parts []item
+    parts []string
 }
 
-type host struct {
+type site struct {
     name string
 }
 
-func Path(path string) []string {
+// env identifies the environment type
+type env int
+const (
+	dev env = iota
+	staging
+	production
+)
 
-    l := lex("path", path)
-
-    /* r := resource{} */
-
-    parts := make([]string, 1)
-
+func getResource(p string) (r resource) {
+    l := lex(path, p)
     for {
         item := l.nextItem()
         if item.typ == itemText {
-            /* parts = append(r.parts, item) */
-            parts = append(parts, item.val)
+            r.parts = append(r.parts, item.val)
         }
         if item.typ == itemEnd || item.typ == itemError {
-              break
+            break
         }
     }
-    return parts
+    return r
 }
 
-func Host(host string) string {
-    l := lex("host", host)
-    var h string
+func getSite(h string) (s site, e env) {
+    l := lex(host, h)
     for {
         item := l.nextItem()
         if item.typ == itemText {
-            h = item.val
+            if item.val == "dev" {
+                e = dev
+            }
+            if item.val == "production" {
+                e = production
+            }
+            if item.val == "staging" {
+                e = staging
+            }
+            s.name = item.val
         }
-        if item.typ == itemEnd || item.typ == itemError || item.typ == itemColon {
-              break
-        }
+        if item.typ == itemEnd ||
+            item.typ == itemError ||
+            item.typ == itemColon {
+                break
+            }
     }
-    return h
+    return s
 }
+
+func Route(ctx *web.Context, val string) string {
+    r := getResource(ctx.URL.Path)
+    s, e := parseHost(ctx.Request.Host)
+    s := ""
+    for _, p := range r.parts {
+        s += p
+        s += " "
+    }
+    s += " "
+    s += h.name
+    if (h.env != "") {
+        s += " .. "
+        s += h.env
+    }
+    return s
+    /* filename := path.Join(path.Join(os.Getenv("PWD"), "templates"), "index.html.mustache")
+    return mustache.RenderFile(filename, map[string]string{"host":host.Name}) */
+}
+
