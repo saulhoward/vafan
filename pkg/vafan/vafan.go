@@ -24,7 +24,7 @@ const (
 	production
 )
 
-func getResource(p string) (r resource) {
+func parsePath(p string) (r resource) {
     l := lex(path, p)
     for {
         item := l.nextItem()
@@ -38,7 +38,7 @@ func getResource(p string) (r resource) {
     return r
 }
 
-func getSite(h string) (s site, e env) {
+func parseHost(h string) (s site, e env) {
     l := lex(host, h)
     for {
         item := l.nextItem()
@@ -60,24 +60,23 @@ func getSite(h string) (s site, e env) {
                 break
             }
     }
-    return s
+    return s, e
 }
 
 func Route(ctx *web.Context, val string) string {
-    r := getResource(ctx.URL.Path)
+    r := parsePath(ctx.URL.Path)
     s, e := parseHost(ctx.Request.Host)
-    s := ""
+    out := ""
     for _, p := range r.parts {
-        s += p
-        s += " "
+        out += p
+        out += " "
     }
-    s += " "
-    s += h.name
-    if (h.env != "") {
-        s += " .. "
-        s += h.env
+    out += " "
+    out += s.name
+    if (e == dev) {
+        out += " ... dev "
     }
-    return s
+    return out
     /* filename := path.Join(path.Join(os.Getenv("PWD"), "templates"), "index.html.mustache")
     return mustache.RenderFile(filename, map[string]string{"host":host.Name}) */
 }
