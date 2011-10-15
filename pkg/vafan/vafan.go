@@ -19,9 +19,9 @@ type site struct {
 // env identifies the environment type
 type env int
 const (
-	dev env = iota
+	production env = iota
 	staging
-	production
+    dev
 )
 
 func parsePath(p string) (r resource) {
@@ -42,6 +42,7 @@ func parseHost(h string) (s site, e env) {
     l := lex(host, h)
     for {
         item := l.nextItem()
+
         if item.typ == itemText {
             if item.val == "dev" {
                 e = dev
@@ -60,13 +61,14 @@ func parseHost(h string) (s site, e env) {
                 break
             }
     }
-    return s, e
+    return
 }
 
-func Route(ctx *web.Context, val string) string {
+func Route(ctx *web.Context, val string) (out string) {
     r := parsePath(ctx.URL.Path)
     s, e := parseHost(ctx.Request.Host)
-    out := ""
+
+    out = ""
     for _, p := range r.parts {
         out += p
         out += " "
@@ -76,7 +78,7 @@ func Route(ctx *web.Context, val string) string {
     if (e == dev) {
         out += " ... dev "
     }
-    return out
+    return
     /* filename := path.Join(path.Join(os.Getenv("PWD"), "templates"), "index.html.mustache")
     return mustache.RenderFile(filename, map[string]string{"host":host.Name}) */
 }
