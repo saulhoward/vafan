@@ -9,11 +9,12 @@ package vafan
 
 import (
     "github.com/hoisie/web.go"
-    "github.com/kless/goconfig/config"
+    //"github.com/kless/goconfig/config"
 )
 type request struct {
     site site
     env env
+    resource resource
 }
 type site struct {
     domain string
@@ -27,8 +28,9 @@ const (
     dev
 )
 
-func parsePath(p string) (r resource) {
+func parsePath(p string) resource {
     l := lex(path, p)
+    var r video
     for {
         item := l.nextItem()
         if item.typ == itemText {
@@ -91,11 +93,11 @@ func parseHost(h string) (s site, e env) {
 }
 
 func Route(ctx *web.Context, val string) (output string) {
-    req := request
+    var req request
     // get the resource from the path
-    r := parsePath(ctx.URL.Path)
+    req.resource = parsePath(ctx.URL.Path)
     // get the host and env from the host
-    req.site, req.env := parseHost(ctx.Request.Host)
+    req.site, req.env = parseHost(ctx.Request.Host)
     // with the request, get the data
     output = get(req)
     return
