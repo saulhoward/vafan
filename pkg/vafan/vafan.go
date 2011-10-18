@@ -13,6 +13,7 @@ type resource struct {
 }
 
 type site struct {
+    domain string
     name string
 }
 
@@ -40,20 +41,11 @@ func parsePath(p string) (r resource) {
 
 func parseHost(h string) (s site, e env) {
     l := lex(host, h)
+    var texts []string
     for {
         item := l.nextItem()
-
         if item.typ == itemText {
-            if item.val == "dev" {
-                e = dev
-            }
-            if item.val == "production" {
-                e = production
-            }
-            if item.val == "staging" {
-                e = staging
-            }
-            s.name = item.val
+            texts = append(texts, item.val)
         }
         if item.typ == itemEnd ||
             item.typ == itemError ||
@@ -61,6 +53,33 @@ func parseHost(h string) (s site, e env) {
                 break
             }
     }
+    domain := texts[:]
+
+    // Determine environment,
+    // assuming dev.sitedomain or just sitedomain
+    switch texts[0] {
+    case "dev":
+        e = dev
+        domain = texts[1:]
+        break
+    case "staging":
+        e = staging
+        domain = texts[1:]
+        break
+    case "production":
+        domain = texts[1:]
+        e = production
+        break
+    default:
+        e = production
+        break
+    }
+    s.domain = ""
+    // Determine site, look up domain in config
+    for _, d := range domain {
+        s.domain += d
+    }
+    //s.name = item.val
     return
 }
 
@@ -75,6 +94,9 @@ func Route(ctx *web.Context, val string) (out string) {
     }
     out += " "
     out += s.name
+    out += "/ "
+    out += s.domain
+    out += "\\ "
     if (e == dev) {
         out += " ... dev "
     }
