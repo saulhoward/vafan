@@ -11,16 +11,14 @@ import (
     "github.com/hoisie/web.go"
     "github.com/kless/goconfig/config"
 )
-
-type resource struct {
-    parts []string
+type request struct {
+    site site
+    env env
 }
-
 type site struct {
     domain string
     name string
 }
-
 // env identifies the environment type
 type env int
 const (
@@ -92,25 +90,14 @@ func parseHost(h string) (s site, e env) {
     return
 }
 
-func Route(ctx *web.Context, val string) (out string) {
+func Route(ctx *web.Context, val string) (output string) {
+    req := request
+    // get the resource from the path
     r := parsePath(ctx.URL.Path)
-    s, e := parseHost(ctx.Request.Host)
-
-    out = ""
-    for _, p := range r.parts {
-        out += p
-        out += " "
-    }
-    out += " "
-    out += s.name
-    out += "/ "
-    out += s.domain
-    out += "\\ "
-    if (e == dev) {
-        out += " ... dev "
-    }
+    // get the host and env from the host
+    req.site, req.env := parseHost(ctx.Request.Host)
+    // with the request, get the data
+    output = get(req)
     return
-    /* filename := path.Join(path.Join(os.Getenv("PWD"), "templates"), "index.html.mustache")
-    return mustache.RenderFile(filename, map[string]string{"host":host.Name}) */
 }
 
