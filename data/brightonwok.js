@@ -8,5 +8,10 @@
     resource: 'movie',
     title : 'Brighton Wok: The Legend of Ganja Boxing',
     director : 'Gabriel Howard',
-    tags : [ 'movie', 'convict films' ]
+    tags : [ 'movie', 'convict films' ],
+    core: [
+        'trailer',
+        'dvd'
+        ]
+
 }
