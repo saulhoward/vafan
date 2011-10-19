@@ -1,11 +1,15 @@
-// This package provides a server framework.
-// http://saulhoward.com/vafan
-// @author saul@saulhoward.com
+/*
+    This package provides a server framework.
 
+    http://saulhoward.com/vafan
+
+    @author saul@saulhoward.com
+*/
 package vafan
 
 import (
     "github.com/hoisie/web.go"
+    "github.com/kless/goconfig/config"
 )
 
 type resource struct {
@@ -39,13 +43,14 @@ func parsePath(p string) (r resource) {
     return r
 }
 
+// 
 func parseHost(h string) (s site, e env) {
     l := lex(host, h)
-    var texts []string
+    var levels []string
     for {
         item := l.nextItem()
         if item.typ == itemText {
-            texts = append(texts, item.val)
+            levels = append(levels, item.val)
         }
         if item.typ == itemEnd ||
             item.typ == itemError ||
@@ -53,21 +58,21 @@ func parseHost(h string) (s site, e env) {
                 break
             }
     }
-    domain := texts[:]
+    domain := levels[:]
 
     // Determine environment,
     // assuming dev.sitedomain or just sitedomain
-    switch texts[0] {
+    switch levels[0] {
     case "dev":
         e = dev
-        domain = texts[1:]
+        domain = levels[1:]
         break
     case "staging":
         e = staging
-        domain = texts[1:]
+        domain = levels[1:]
         break
     case "production":
-        domain = texts[1:]
+        domain = levels[1:]
         e = production
         break
     default:
@@ -75,8 +80,12 @@ func parseHost(h string) (s site, e env) {
         break
     }
     s.domain = ""
-    // Determine site, look up domain in config
+    first := true
     for _, d := range domain {
+        if !first {
+            s.domain += "."
+        }
+        first = false
         s.domain += d
     }
     //s.name = item.val
