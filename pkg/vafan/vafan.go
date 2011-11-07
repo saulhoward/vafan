@@ -30,7 +30,7 @@ const (
 
 func parsePath(p string) resource {
     l := lex(path, p)
-    var r video
+    var parts []string
     for {
         item := l.nextItem()
         if item.typ == itemText {
