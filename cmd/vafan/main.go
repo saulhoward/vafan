@@ -1,8 +1,8 @@
 package main
 
 import (
-    "saulhoward.com/vafan"
-    "github.com/hoisie/web.go"
+    "vafan"
+    "net/http"
     /* "github.com/hoisie/mustache.go" */
     // "launchpad.net/mgo"
     /* "path" */
