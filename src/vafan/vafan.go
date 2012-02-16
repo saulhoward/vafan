@@ -1,16 +1,31 @@
-/*
-    This package provides a server framework.
-
-    http://saulhoward.com/vafan
-
-    @author saul@saulhoward.com
-*/
+// This package provides a server framework.
+//
+// @url http://saulhoward.com/vafan
+// @author saul@saulhoward.com
+//
 package vafan
 
 import (
-    "github.com/hoisie/web.go"
+    "fmt"
+    "net/http"
+    "code.google.com/p/gorilla/mux"
+    //"github.com/hoisie/web.go"
     //"github.com/kless/goconfig/config"
 )
+
+func Route() {
+    r := mux.NewRouter()
+    r.HandleFunc("/", homeHandler)
+    http.Handle("/", r)
+    http.ListenAndServe(":8888", nil)
+}
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Add("Content-Type", "text/html")
+    fmt.Fprintf(w, "Hello yo")
+}
+
+/*
 type request struct {
     site site
     env env
@@ -103,3 +118,5 @@ func Route(ctx *web.Context, val string) (output string) {
     return
 }
 
+
+*/

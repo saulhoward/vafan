@@ -1,592 +1,0 @@
-go object linux 386 release.r59 9199+
-  exports automatically generated from
-  ./lib/vafan.go in package "main"
-
-$$  // exports
-    package main
-	import runtime "runtime"
-	import mustache "github.com/hoisie/mustache.go"
-	import os "os"
-	import web "github.com/fiber/web.go"
-	import path "path"
-	type "".Host struct { Name string; Title string }
-	type "".Resource struct { Name string }
-	type "os".Error interface { String() string }
-	type "github.com/fiber/web.go".Context struct { ? *"github.com/fiber/web.go".Request; ? *"github.com/fiber/web.go".Server; ? "github.com/fiber/web.go".conn; responseStarted bool }
-	func (ctx *"github.com/fiber/web.go".Context) Abort (status int, body string)
-	func (ctx *"github.com/fiber/web.go".Context) ContentType (ext string)
-	func (ctx *"github.com/fiber/web.go".Context) GetSecureCookie (name string) (? string, ? bool)
-	func (ctx *"github.com/fiber/web.go".Context) NotFound (message string)
-	func (ctx *"github.com/fiber/web.go".Context) NotModified ()
-	func (ctx *"github.com/fiber/web.go".Context) Redirect (status int, url string)
-	func (ctx *"github.com/fiber/web.go".Context) SetCookie (name string, value string, age int64)
-	func (ctx *"github.com/fiber/web.go".Context) SetSecureCookie (name string, val string, age int64)
-	func (ctx *"github.com/fiber/web.go".Context) StartResponse (status int)
-	func (ctx *"github.com/fiber/web.go".Context) Write (data []uint8) (n int, err "os".Error)
-	func (ctx *"github.com/fiber/web.go".Context) WriteString (content string)
-	import reflect "reflect" // indirect
-	type "reflect".Kind uint8
-	func (k "reflect".Kind) String () string
-	type "reflect".Type interface { Align() int; AssignableTo(u "reflect".Type) bool; Bits() int; ChanDir() "reflect".ChanDir; Elem() "reflect".Type; Field(i int) "reflect".StructField; FieldAlign() int; FieldByIndex(index []int) "reflect".StructField; FieldByName(name string) (? "reflect".StructField, ? bool); FieldByNameFunc(match func(? string) bool) (? "reflect".StructField, ? bool); Implements(u "reflect".Type) bool; In(i int) "reflect".Type; IsVariadic() bool; Key() "reflect".Type; Kind() "reflect".Kind; Len() int; Method(? int) "reflect".Method; MethodByName(? string) (? "reflect".Method, ? bool); Name() string; NumField() int; NumIn() int; NumMethod() int; NumOut() int; Out(i int) "reflect".Type; PkgPath() string; Size() uintptr; String() string; "reflect".common() *"reflect".commonType; "reflect".runtimeType() *"runtime".Type; "reflect".uncommon() *"reflect".uncommonType }
-	type "reflect".ChanDir int
-	func (d "reflect".ChanDir) String () string
-	type "reflect".StructField struct { PkgPath string; Name string; Type "reflect".Type; Tag "reflect".StructTag; Offset uintptr; Index []int; Anonymous bool }
-	type "reflect".StructTag string
-	func (tag "reflect".StructTag) Get (key string) string
-	type "reflect".Method struct { PkgPath string; Name string; Type "reflect".Type; Func "reflect".Value; Index int }
-	type "runtime".Type interface { }
-	type "reflect".commonType struct { size uintptr; hash uint32; alg uint8; align uint8; fieldAlign uint8; kind uint8; string *string; ? *"reflect".uncommonType; ptrToThis *"runtime".Type }
-	func (t *"reflect".commonType) Align () int
-	func (t *"reflect".commonType) AssignableTo (u "reflect".Type) bool
-	func (t *"reflect".commonType) Bits () int
-	func (t *"reflect".commonType) ChanDir () "reflect".ChanDir
-	func (t *"reflect".commonType) Elem () "reflect".Type
-	func (t *"reflect".commonType) Field (i int) "reflect".StructField
-	func (t *"reflect".commonType) FieldAlign () int
-	func (t *"reflect".commonType) FieldByIndex (index []int) "reflect".StructField
-	func (t *"reflect".commonType) FieldByName (name string) (? "reflect".StructField, ? bool)
-	func (t *"reflect".commonType) FieldByNameFunc (match func(? string) bool) (? "reflect".StructField, ? bool)
-	func (t *"reflect".commonType) Implements (u "reflect".Type) bool
-	func (t *"reflect".commonType) In (i int) "reflect".Type
-	func (t *"reflect".commonType) IsVariadic () bool
-	func (t *"reflect".commonType) Key () "reflect".Type
-	func (t *"reflect".commonType) Kind () "reflect".Kind
-	func (t *"reflect".commonType) Len () int
-	func (t *"reflect".commonType) Method (i int) "reflect".Method
-	func (t *"reflect".commonType) MethodByName (name string) (m "reflect".Method, ok bool)
-	func (t *"reflect".commonType) Name () string
-	func (t *"reflect".commonType) NumField () int
-	func (t *"reflect".commonType) NumIn () int
-	func (t *"reflect".commonType) NumMethod () int
-	func (t *"reflect".commonType) NumOut () int
-	func (t *"reflect".commonType) Out (i int) "reflect".Type
-	func (t *"reflect".commonType) PkgPath () string
-	func (t *"reflect".commonType) Size () uintptr
-	func (t *"reflect".commonType) String () string
-	func (t *"reflect".commonType) common () *"reflect".commonType
-	func (t *"reflect".commonType) runtimeType () *"runtime".Type
-	func (t *"reflect".commonType) toType () "reflect".Type
-	type "reflect".uncommonType struct { name *string; pkgPath *string; methods []"reflect".method }
-	func (t *"reflect".uncommonType) Method (i int) "reflect".Method
-	func (t *"reflect".uncommonType) MethodByName (name string) (m "reflect".Method, ok bool)
-	func (t *"reflect".uncommonType) Name () string
-	func (t *"reflect".uncommonType) NumMethod () int
-	func (t *"reflect".uncommonType) PkgPath () string
-	func (t *"reflect".uncommonType) uncommon () *"reflect".uncommonType
-	type "reflect".method struct { name *string; pkgPath *string; mtyp *"runtime".Type; typ *"runtime".Type; ifn "unsafe".Pointer; tfn "unsafe".Pointer }
-	type "reflect".internalValue struct { typ *"reflect".commonType; kind "reflect".Kind; flag uint32; word "reflect".iword; addr "unsafe".Pointer; rcvr "reflect".iword; method bool; nilmethod bool }
-	func (iv "reflect".internalValue) Elem () "reflect".Value
-	func (iv "reflect".internalValue) Interface () interface { }
-	func (iv "reflect".internalValue) IsNil () bool
-	func (iv "reflect".internalValue) call (method string, in []"reflect".Value) []"reflect".Value
-	func (iv "reflect".internalValue) mustBe (want "reflect".Kind)
-	func (iv "reflect".internalValue) mustBeAssignable ()
-	func (iv "reflect".internalValue) mustBeExported ()
-	func (iv "reflect".internalValue) recv (nb bool) (val "reflect".Value, ok bool)
-	func (iv "reflect".internalValue) send (x "reflect".Value, nb bool) bool
-	type "reflect".iword uintptr
-	type "reflect".Value struct { Internal interface { }; InternalMethod int }
-	func (v "reflect".Value) Addr () "reflect".Value
-	func (v "reflect".Value) Bool () bool
-	func (v "reflect".Value) Call (in []"reflect".Value) []"reflect".Value
-	func (v "reflect".Value) CallSlice (in []"reflect".Value) []"reflect".Value
-	func (v "reflect".Value) CanAddr () bool
-	func (v "reflect".Value) CanInterface () bool
-	func (v "reflect".Value) CanSet () bool
-	func (v "reflect".Value) Cap () int
-	func (v "reflect".Value) Close ()
-	func (v "reflect".Value) Complex () complex128
-	func (v "reflect".Value) Elem () "reflect".Value
-	func (v "reflect".Value) Field (i int) "reflect".Value
-	func (v "reflect".Value) FieldByIndex (index []int) "reflect".Value
-	func (v "reflect".Value) FieldByName (name string) "reflect".Value
-	func (v "reflect".Value) FieldByNameFunc (match func(? string) bool) "reflect".Value
-	func (v "reflect".Value) Float () float64
-	func (v "reflect".Value) Index (i int) "reflect".Value
-	func (v "reflect".Value) Int () int64
-	func (v "reflect".Value) Interface () interface { }
-	func (v "reflect".Value) InterfaceData () [2]uintptr
-	func (v "reflect".Value) IsNil () bool
-	func (v "reflect".Value) IsValid () bool
-	func (v "reflect".Value) Kind () "reflect".Kind
-	func (v "reflect".Value) Len () int
-	func (v "reflect".Value) MapIndex (key "reflect".Value) "reflect".Value
-	func (v "reflect".Value) MapKeys () []"reflect".Value
-	func (v "reflect".Value) Method (i int) "reflect".Value
-	func (v "reflect".Value) MethodByName (name string) "reflect".Value
-	func (v "reflect".Value) NumField () int
-	func (v "reflect".Value) OverflowComplex (x complex128) bool
-	func (v "reflect".Value) OverflowFloat (x float64) bool
-	func (v "reflect".Value) OverflowInt (x int64) bool
-	func (v "reflect".Value) OverflowUint (x uint64) bool
-	func (v "reflect".Value) Pointer () uintptr
-	func (v "reflect".Value) Recv () (x "reflect".Value, ok bool)
-	func (v "reflect".Value) Send (x "reflect".Value)
-	func (v "reflect".Value) Set (x "reflect".Value)
-	func (v "reflect".Value) SetBool (x bool)
-	func (v "reflect".Value) SetComplex (x complex128)
-	func (v "reflect".Value) SetFloat (x float64)
-	func (v "reflect".Value) SetInt (x int64)
-	func (v "reflect".Value) SetLen (n int)
-	func (v "reflect".Value) SetMapIndex (key "reflect".Value, val "reflect".Value)
-	func (v "reflect".Value) SetPointer (x "unsafe".Pointer)
-	func (v "reflect".Value) SetString (x string)
-	func (v "reflect".Value) SetUint (x uint64)
-	func (v "reflect".Value) Slice (beg int, end int) "reflect".Value
-	func (v "reflect".Value) String () string
-	func (v "reflect".Value) TryRecv () (x "reflect".Value, ok bool)
-	func (v "reflect".Value) TrySend (x "reflect".Value) bool
-	func (v "reflect".Value) Type () "reflect".Type
-	func (v "reflect".Value) Uint () uint64
-	func (v "reflect".Value) UnsafeAddr () uintptr
-	func (v "reflect".Value) internal () "reflect".internalValue
-	type "github.com/fiber/web.go".Request struct { Method string; RawURL string; URL *"http".URL; Proto string; ProtoMajor int; ProtoMinor int; Headers "http".Header; Body "io".Reader; Close bool; Host string; Referer string; UserAgent string; FullParams map[string] []string; Params map[string] string; ParamData []uint8; Cookies map[string] string; Cookie []*"http".Cookie; Files map[string] "github.com/fiber/web.go".filedata; RemoteAddr string; RemotePort int }
-	func (r *"github.com/fiber/web.go".Request) HasFile (name string) bool
-	func (r *"github.com/fiber/web.go".Request) UnmarshalParams (val interface { }) "os".Error
-	func (r *"github.com/fiber/web.go".Request) parseParams () "os".Error
-	func (r *"github.com/fiber/web.go".Request) writeToContainer (val "reflect".Value) "os".Error
-	import http "http" // indirect
-	type "http".Values map[string] []string
-	func (v "http".Values) Add (key string, value string)
-	func (v "http".Values) Del (key string)
-	func (v "http".Values) Encode () string
-	func (v "http".Values) Get (key string) string
-	func (v "http".Values) Set (key string, value string)
-	type "http".URL struct { Raw string; Scheme string; RawAuthority string; RawUserinfo string; Host string; RawPath string; Path string; OpaquePath bool; RawQuery string; Fragment string }
-	func (url *"http".URL) IsAbs () bool
-	func (base *"http".URL) ParseURL (ref string) (? *"http".URL, ? "os".Error)
-	func (u *"http".URL) Query () "http".Values
-	func (base *"http".URL) ResolveReference (ref *"http".URL) *"http".URL
-	func (url *"http".URL) String () string
-	import io "io" // indirect
-	type "io".Writer interface { Write(p []uint8) (n int, err "os".Error) }
-	type "http".Header map[string] []string
-	func (h "http".Header) Add (key string, value string)
-	func (h "http".Header) Del (key string)
-	func (h "http".Header) Get (key string) string
-	func (h "http".Header) Set (key string, value string)
-	func (h "http".Header) Write (w "io".Writer) "os".Error
-	func (h "http".Header) WriteSubset (w "io".Writer, exclude map[string] bool) "os".Error
-	type "io".Reader interface { Read(p []uint8) (n int, err "os".Error) }
-	type "http".Cookie struct { Name string; Value string; Path string; Domain string; Expires "time".Time; RawExpires string; MaxAge int; Secure bool; HttpOnly bool; Raw string; Unparsed []string }
-	func (c *"http".Cookie) String () string
-	import time "time" // indirect
-	type "time".Time struct { Year int64; Month int; Day int; Hour int; Minute int; Second int; Weekday int; ZoneOffset int; Zone string }
-	func (t *"time".Time) Format (layout string) string
-	func (t *"time".Time) Seconds () int64
-	func (t *"time".Time) String () string
-	type "github.com/fiber/web.go".filedata struct { Filename string; Data []uint8 }
-	type "http".ResponseWriter interface { Header() "http".Header; Write(? []uint8) (? int, ? "os".Error); WriteHeader(? int) }
-	import multipart "mime/multipart" // indirect
-	type "mime/multipart".File interface { Close() "os".Error; Read(p []uint8) (n int, err "os".Error); ReadAt(p []uint8, off int64) (n int, err "os".Error); Seek(offset int64, whence int) (ret int64, err "os".Error) }
-	type "mime/multipart".FileHeader struct { Filename string; Header "net/textproto".MIMEHeader; content []uint8; tmpfile string }
-	func (fh *"mime/multipart".FileHeader) Open () (? "mime/multipart".File, ? "os".Error)
-	import textproto "net/textproto" // indirect
-	type "net/textproto".MIMEHeader map[string] []string
-	func (h "net/textproto".MIMEHeader) Add (key string, value string)
-	func (h "net/textproto".MIMEHeader) Del (key string)
-	func (h "net/textproto".MIMEHeader) Get (key string) string
-	func (h "net/textproto".MIMEHeader) Set (key string, value string)
-	type "mime/multipart".Part struct { Header "net/textproto".MIMEHeader; buffer *"bytes".Buffer; mr *"mime/multipart".Reader; disposition string; dispositionParams map[string] string }
-	func (bp *"mime/multipart".Part) Close () "os".Error
-	func (p *"mime/multipart".Part) FileName () string
-	func (p *"mime/multipart".Part) FormName () string
-	func (bp *"mime/multipart".Part) Read (p []uint8) (n int, err "os".Error)
-	func (p *"mime/multipart".Part) parseContentDisposition ()
-	func (bp *"mime/multipart".Part) populateHeaders () "os".Error
-	import bytes "bytes" // indirect
-	type "bytes".Buffer struct { buf []uint8; off int; runeBytes [4]uint8; bootstrap [64]uint8; lastRead "bytes".readOp }
-	func (b *"bytes".Buffer) Bytes () []uint8
-	func (b *"bytes".Buffer) Len () int
-	func (b *"bytes".Buffer) Next (n int) []uint8
-	func (b *"bytes".Buffer) Read (p []uint8) (n int, err "os".Error)
-	func (b *"bytes".Buffer) ReadByte () (c uint8, err "os".Error)
-	func (b *"bytes".Buffer) ReadBytes (delim uint8) (line []uint8, err "os".Error)
-	func (b *"bytes".Buffer) ReadFrom (r "io".Reader) (n int64, err "os".Error)
-	func (b *"bytes".Buffer) ReadRune () (r int, size int, err "os".Error)
-	func (b *"bytes".Buffer) ReadString (delim uint8) (line string, err "os".Error)
-	func (b *"bytes".Buffer) Reset ()
-	func (b *"bytes".Buffer) String () string
-	func (b *"bytes".Buffer) Truncate (n int)
-	func (b *"bytes".Buffer) UnreadByte () "os".Error
-	func (b *"bytes".Buffer) UnreadRune () "os".Error
-	func (b *"bytes".Buffer) Write (p []uint8) (n int, err "os".Error)
-	func (b *"bytes".Buffer) WriteByte (c uint8) "os".Error
-	func (b *"bytes".Buffer) WriteRune (r int) (n int, err "os".Error)
-	func (b *"bytes".Buffer) WriteString (s string) (n int, err "os".Error)
-	func (b *"bytes".Buffer) WriteTo (w "io".Writer) (n int64, err "os".Error)
-	func (b *"bytes".Buffer) grow (n int) int
-	type "bytes".readOp int
-	type "mime/multipart".Form struct { Value map[string] []string; File map[string] []*"mime/multipart".FileHeader }
-	func (f *"mime/multipart".Form) RemoveAll () "os".Error
-	type "mime/multipart".Reader struct { bufReader *"bufio".Reader; currentPart *"mime/multipart".Part; partsRead int; nl []uint8; nlDashBoundary []uint8; dashBoundaryDash []uint8; dashBoundary []uint8 }
-	func (mr *"mime/multipart".Reader) NextPart () (? *"mime/multipart".Part, ? "os".Error)
-	func (r *"mime/multipart".Reader) ReadForm (maxMemory int64) (f *"mime/multipart".Form, err "os".Error)
-	func (mr *"mime/multipart".Reader) isBoundaryDelimiterLine (line []uint8) bool
-	import bufio "bufio" // indirect
-	type "bufio".Reader struct { buf []uint8; rd "io".Reader; r int; w int; err "os".Error; lastByte int; lastRuneSize int }
-	func (b *"bufio".Reader) Buffered () int
-	func (b *"bufio".Reader) Peek (n int) (? []uint8, ? "os".Error)
-	func (b *"bufio".Reader) Read (p []uint8) (n int, err "os".Error)
-	func (b *"bufio".Reader) ReadByte () (c uint8, err "os".Error)
-	func (b *"bufio".Reader) ReadBytes (delim uint8) (line []uint8, err "os".Error)
-	func (b *"bufio".Reader) ReadLine () (line []uint8, isPrefix bool, err "os".Error)
-	func (b *"bufio".Reader) ReadRune () (rune int, size int, err "os".Error)
-	func (b *"bufio".Reader) ReadSlice (delim uint8) (line []uint8, err "os".Error)
-	func (b *"bufio".Reader) ReadString (delim uint8) (line string, err "os".Error)
-	func (b *"bufio".Reader) UnreadByte () "os".Error
-	func (b *"bufio".Reader) UnreadRune () "os".Error
-	func (b *"bufio".Reader) fill ()
-	func (b *"bufio".Reader) readErr () "os".Error
-	type "http".Request struct { Method string; RawURL string; URL *"http".URL; Proto string; ProtoMajor int; ProtoMinor int; Header "http".Header; Body "io".ReadCloser; ContentLength int64; TransferEncoding []string; Close bool; Host string; Form "http".Values; MultipartForm *"mime/multipart".Form; Trailer "http".Header; RemoteAddr string; TLS *"crypto/tls".ConnectionState }
-	func (r *"http".Request) AddCookie (c *"http".Cookie)
-	func (r *"http".Request) Cookie (name string) (? *"http".Cookie, ? "os".Error)
-	func (r *"http".Request) Cookies () []*"http".Cookie
-	func (r *"http".Request) FormFile (key string) (? "mime/multipart".File, ? *"mime/multipart".FileHeader, ? "os".Error)
-	func (r *"http".Request) FormValue (key string) string
-	func (r *"http".Request) MultipartReader () (? *"mime/multipart".Reader, ? "os".Error)
-	func (r *"http".Request) ParseForm () "os".Error
-	func (r *"http".Request) ParseMultipartForm (maxMemory int64) "os".Error
-	func (r *"http".Request) ProtoAtLeast (major int, minor int) bool
-	func (r *"http".Request) Referer () string
-	func (r *"http".Request) SetBasicAuth (username string, password string)
-	func (r *"http".Request) UserAgent () string
-	func (req *"http".Request) Write (w "io".Writer) "os".Error
-	func (req *"http".Request) WriteProxy (w "io".Writer) "os".Error
-	func (r *"http".Request) expectsContinue () bool
-	func (r *"http".Request) multipartReader () (? *"mime/multipart".Reader, ? "os".Error)
-	func (r *"http".Request) wantsHttp10KeepAlive () bool
-	func (req *"http".Request) write (w "io".Writer, usingProxy bool) "os".Error
-	type "io".ReadCloser interface { Close() "os".Error; Read(p []uint8) (n int, err "os".Error) }
-	import tls "crypto/tls" // indirect
-	type "crypto/tls".ConnectionState struct { HandshakeComplete bool; CipherSuite uint16; NegotiatedProtocol string; NegotiatedProtocolIsMutual bool; PeerCertificates []*"crypto/x509".Certificate; VerifiedChains [][]*"crypto/x509".Certificate }
-	import x509 "crypto/x509" // indirect
-	import pkix "crypto/x509/pkix" // indirect
-	type "crypto/x509/pkix".CertificateList struct { TBSCertList "crypto/x509/pkix".TBSCertificateList; SignatureAlgorithm "crypto/x509/pkix".AlgorithmIdentifier; SignatureValue "asn1".BitString }
-	func (certList *"crypto/x509/pkix".CertificateList) HasExpired (currentTimeSeconds int64) bool
-	type "crypto/x509/pkix".TBSCertificateList struct { Raw "asn1".RawContent; Version int :"asn1:\"optional,default:2\""; Signature "crypto/x509/pkix".AlgorithmIdentifier; Issuer "crypto/x509/pkix".RDNSequence; ThisUpdate *"time".Time; NextUpdate *"time".Time; RevokedCertificates []"crypto/x509/pkix".RevokedCertificate :"asn1:\"optional\""; Extensions []"crypto/x509/pkix".Extension :"asn1:\"tag:0,optional,explicit\"" }
-	import asn1 "asn1" // indirect
-	type "asn1".RawContent []uint8
-	type "crypto/x509/pkix".AlgorithmIdentifier struct { Algorithm "asn1".ObjectIdentifier; Parameters "asn1".RawValue :"asn1:\"optional\"" }
-	type "asn1".ObjectIdentifier []int
-	func (oi "asn1".ObjectIdentifier) Equal (other "asn1".ObjectIdentifier) bool
-	type "asn1".RawValue struct { Class int; Tag int; IsCompound bool; Bytes []uint8; FullBytes []uint8 }
-	type "crypto/x509/pkix".RDNSequence []"crypto/x509/pkix".RelativeDistinguishedNameSET
-	type "crypto/x509/pkix".RelativeDistinguishedNameSET []"crypto/x509/pkix".AttributeTypeAndValue
-	type "crypto/x509/pkix".AttributeTypeAndValue struct { Type "asn1".ObjectIdentifier; Value interface { } }
-	type "crypto/x509/pkix".RevokedCertificate struct { SerialNumber *"big".Int; RevocationTime *"time".Time; Extensions []"crypto/x509/pkix".Extension :"asn1:\"optional\"" }
-	import big "big" // indirect
-	import fmt "fmt" // indirect
-	type "fmt".State interface { Flag(c int) bool; Precision() (prec int, ok bool); Width() (wid int, ok bool); Write(b []uint8) (ret int, err "os".Error) }
-	import rand "rand" // indirect
-	type "rand".Rand struct { src "rand".Source }
-	func (r *"rand".Rand) ExpFloat64 () float64
-	func (r *"rand".Rand) Float32 () float32
-	func (r *"rand".Rand) Float64 () float64
-	func (r *"rand".Rand) Int () int
-	func (r *"rand".Rand) Int31 () int32
-	func (r *"rand".Rand) Int31n (n int32) int32
-	func (r *"rand".Rand) Int63 () int64
-	func (r *"rand".Rand) Int63n (n int64) int64
-	func (r *"rand".Rand) Intn (n int) int
-	func (r *"rand".Rand) NormFloat64 () float64
-	func (r *"rand".Rand) Perm (n int) []int
-	func (r *"rand".Rand) Seed (seed int64)
-	func (r *"rand".Rand) Uint32 () uint32
-	type "rand".Source interface { Int63() int64; Seed(seed int64) }
-	type "fmt".ScanState interface { Read(buf []uint8) (n int, err "os".Error); ReadRune() (rune int, size int, err "os".Error); SkipSpace(); Token(skipSpace bool, f func(? int) bool) (token []uint8, err "os".Error); UnreadRune() "os".Error; Width() (wid int, ok bool) }
-	type "io".RuneScanner interface { ReadRune() (rune int, size int, err "os".Error); UnreadRune() "os".Error }
-	type "big".Int struct { neg bool; abs "big".nat }
-	func (z *"big".Int) Abs (x *"big".Int) *"big".Int
-	func (z *"big".Int) Add (x *"big".Int, y *"big".Int) *"big".Int
-	func (z *"big".Int) And (x *"big".Int, y *"big".Int) *"big".Int
-	func (z *"big".Int) AndNot (x *"big".Int, y *"big".Int) *"big".Int
-	func (z *"big".Int) Binomial (n int64, k int64) *"big".Int
-	func (z *"big".Int) Bit (i int) uint
-	func (z *"big".Int) BitLen () int
-	func (z *"big".Int) Bytes () []uint8
-	func (x *"big".Int) Cmp (y *"big".Int) int
-	func (z *"big".Int) Div (x *"big".Int, y *"big".Int) *"big".Int
-	func (z *"big".Int) DivMod (x *"big".Int, y *"big".Int, m *"big".Int) (? *"big".Int, ? *"big".Int)
-	func (z *"big".Int) Exp (x *"big".Int, y *"big".Int, m *"big".Int) *"big".Int
-	func (x *"big".Int) Format (s "fmt".State, ch int)
-	func (z *"big".Int) GobDecode (buf []uint8) "os".Error
-	func (z *"big".Int) GobEncode () (? []uint8, ? "os".Error)
-	func (x *"big".Int) Int64 () int64
-	func (z *"big".Int) Lsh (x *"big".Int, n uint) *"big".Int
-	func (z *"big".Int) Mod (x *"big".Int, y *"big".Int) *"big".Int
-	func (z *"big".Int) ModInverse (g *"big".Int, p *"big".Int) *"big".Int
-	func (z *"big".Int) Mul (x *"big".Int, y *"big".Int) *"big".Int
-	func (z *"big".Int) MulRange (a int64, b int64) *"big".Int
-	func (z *"big".Int) Neg (x *"big".Int) *"big".Int
-	func (z *"big".Int) Not (x *"big".Int) *"big".Int
-	func (z *"big".Int) Or (x *"big".Int, y *"big".Int) *"big".Int
-	func (z *"big".Int) Quo (x *"big".Int, y *"big".Int) *"big".Int
-	func (z *"big".Int) QuoRem (x *"big".Int, y *"big".Int, r *"big".Int) (? *"big".Int, ? *"big".Int)
-	func (z *"big".Int) Rand (rnd *"rand".Rand, n *"big".Int) *"big".Int
-	func (z *"big".Int) Rem (x *"big".Int, y *"big".Int) *"big".Int
-	func (z *"big".Int) Rsh (x *"big".Int, n uint) *"big".Int
-	func (z *"big".Int) Scan (s "fmt".ScanState, ch int) "os".Error
-	func (z *"big".Int) Set (x *"big".Int) *"big".Int
-	func (z *"big".Int) SetBit (x *"big".Int, i int, b uint) *"big".Int
-	func (z *"big".Int) SetBytes (buf []uint8) *"big".Int
-	func (z *"big".Int) SetInt64 (x int64) *"big".Int
-	func (z *"big".Int) SetString (s string, base int) (? *"big".Int, ? bool)
-	func (x *"big".Int) Sign () int
-	func (x *"big".Int) String () string
-	func (z *"big".Int) Sub (x *"big".Int, y *"big".Int) *"big".Int
-	func (z *"big".Int) Xor (x *"big".Int, y *"big".Int) *"big".Int
-	func (z *"big".Int) scan (r "io".RuneScanner, base int) (? *"big".Int, ? int, ? "os".Error)
-	type "big".Word uintptr
-	type "big".nat []"big".Word
-	func (z "big".nat) add (x "big".nat, y "big".nat) "big".nat
-	func (z "big".nat) and (x "big".nat, y "big".nat) "big".nat
-	func (z "big".nat) andNot (x "big".nat, y "big".nat) "big".nat
-	func (z "big".nat) bit (i uint) uint
-	func (x "big".nat) bitLen () int
-	func (z "big".nat) bytes (buf []uint8) int
-	func (z "big".nat) clear ()
-	func (x "big".nat) cmp (y "big".nat) int
-	func (x "big".nat) decimalString () string
-	func (z "big".nat) div (z2 "big".nat, u "big".nat, v "big".nat) (q "big".nat, r "big".nat)
-	func (z "big".nat) divLarge (u "big".nat, uIn "big".nat, v "big".nat) (q "big".nat, r "big".nat)
-	func (z "big".nat) divW (x "big".nat, y "big".Word) (q "big".nat, r "big".Word)
-	func (z "big".nat) expNN (x "big".nat, y "big".nat, m "big".nat) "big".nat
-	func (z "big".nat) make (n int) "big".nat
-	func (x "big".nat) modW (d "big".Word) "big".Word
-	func (z "big".nat) mul (x "big".nat, y "big".nat) "big".nat
-	func (z "big".nat) mulAddWW (x "big".nat, y "big".Word, r "big".Word) "big".nat
-	func (z "big".nat) mulRange (a uint64, b uint64) "big".nat
-	func (z "big".nat) norm () "big".nat
-	func (z "big".nat) or (x "big".nat, y "big".nat) "big".nat
-	func (x "big".nat) powersOfTwoDecompose () (q "big".nat, k int)
-	func (n "big".nat) probablyPrime (reps int) bool
-	func (z "big".nat) random (rand *"rand".Rand, limit "big".nat, n int) "big".nat
-	func (z "big".nat) scan (r "io".RuneScanner, base int) (? "big".nat, ? int, ? "os".Error)
-	func (z "big".nat) set (x "big".nat) "big".nat
-	func (z "big".nat) setBit (x "big".nat, i uint, b uint) "big".nat
-	func (z "big".nat) setBytes (buf []uint8) "big".nat
-	func (z "big".nat) setUint64 (x uint64) "big".nat
-	func (z "big".nat) setWord (x "big".Word) "big".nat
-	func (z "big".nat) shl (x "big".nat, s uint) "big".nat
-	func (z "big".nat) shr (x "big".nat, s uint) "big".nat
-	func (x "big".nat) string (charset string) string
-	func (z "big".nat) sub (x "big".nat, y "big".nat) "big".nat
-	func (z "big".nat) xor (x "big".nat, y "big".nat) "big".nat
-	type "crypto/x509/pkix".Extension struct { Id "asn1".ObjectIdentifier; Critical bool :"asn1:\"optional\""; Value []uint8 }
-	type "asn1".BitString struct { Bytes []uint8; BitLength int }
-	func (b "asn1".BitString) At (i int) int
-	func (b "asn1".BitString) RightAlign () []uint8
-	type "crypto/x509".SignatureAlgorithm int
-	import rsa "crypto/rsa" // indirect
-	type "crypto/rsa".PrivateKey struct { ? "crypto/rsa".PublicKey; D *"big".Int; Primes []*"big".Int; Precomputed "crypto/rsa".PrecomputedValues }
-	func (priv *"crypto/rsa".PrivateKey) Precompute ()
-	func (priv *"crypto/rsa".PrivateKey) Validate () "os".Error
-	type "crypto/rsa".PublicKey struct { N *"big".Int; E int }
-	type "crypto/rsa".PrecomputedValues struct { Dp *"big".Int; Dq *"big".Int; Qinv *"big".Int; CRTValues []"crypto/rsa".CRTValue }
-	type "crypto/rsa".CRTValue struct { Exp *"big".Int; Coeff *"big".Int; R *"big".Int }
-	type "crypto/x509".VerifyOptions struct { DNSName string; Intermediates *"crypto/x509".CertPool; Roots *"crypto/x509".CertPool; CurrentTime int64 }
-	type "crypto/x509".CertPool struct { bySubjectKeyId map[string] []int; byName map[string] []int; certs []*"crypto/x509".Certificate }
-	func (s *"crypto/x509".CertPool) AddCert (cert *"crypto/x509".Certificate)
-	func (s *"crypto/x509".CertPool) AppendCertsFromPEM (pemCerts []uint8) bool
-	func (s *"crypto/x509".CertPool) findVerifiedParents (cert *"crypto/x509".Certificate) []int
-	type "crypto/x509".Certificate struct { Raw []uint8; RawTBSCertificate []uint8; RawSubjectPublicKeyInfo []uint8; Signature []uint8; SignatureAlgorithm "crypto/x509".SignatureAlgorithm; PublicKeyAlgorithm "crypto/x509".PublicKeyAlgorithm; PublicKey interface { }; Version int; SerialNumber *"big".Int; Issuer "crypto/x509/pkix".Name; Subject "crypto/x509/pkix".Name; NotBefore *"time".Time; NotAfter *"time".Time; KeyUsage "crypto/x509".KeyUsage; ExtKeyUsage []"crypto/x509".ExtKeyUsage; UnknownExtKeyUsage []"asn1".ObjectIdentifier; BasicConstraintsValid bool; IsCA bool; MaxPathLen int; SubjectKeyId []uint8; AuthorityKeyId []uint8; DNSNames []string; EmailAddresses []string; PermittedDNSDomainsCritical bool; PermittedDNSDomains []string; PolicyIdentifiers []"asn1".ObjectIdentifier }
-	func (c *"crypto/x509".Certificate) CheckCRLSignature (crl *"crypto/x509/pkix".CertificateList) "os".Error
-	func (c *"crypto/x509".Certificate) CheckSignature (algo "crypto/x509".SignatureAlgorithm, signed []uint8, signature []uint8) "os".Error
-	func (c *"crypto/x509".Certificate) CheckSignatureFrom (parent *"crypto/x509".Certificate) "os".Error
-	func (c *"crypto/x509".Certificate) CreateCRL (rand "io".Reader, priv *"crypto/rsa".PrivateKey, revokedCerts []"crypto/x509/pkix".RevokedCertificate, now *"time".Time, expiry *"time".Time) (crlBytes []uint8, err "os".Error)
-	func (c *"crypto/x509".Certificate) Equal (other *"crypto/x509".Certificate) bool
-	func (c *"crypto/x509".Certificate) Verify (opts "crypto/x509".VerifyOptions) (chains [][]*"crypto/x509".Certificate, err "os".Error)
-	func (c *"crypto/x509".Certificate) VerifyHostname (h string) "os".Error
-	func (c *"crypto/x509".Certificate) buildChains (cache map[int] [][]*"crypto/x509".Certificate, currentChain []*"crypto/x509".Certificate, opts *"crypto/x509".VerifyOptions) (chains [][]*"crypto/x509".Certificate, err "os".Error)
-	func (c *"crypto/x509".Certificate) isValid (certType int, opts *"crypto/x509".VerifyOptions) "os".Error
-	type "crypto/x509".PublicKeyAlgorithm int
-	type "crypto/x509/pkix".Name struct { Country []string; Organization []string; OrganizationalUnit []string; Locality []string; Province []string; StreetAddress []string; PostalCode []string; SerialNumber string; CommonName string }
-	func (n *"crypto/x509/pkix".Name) FillFromRDNSequence (rdns *"crypto/x509/pkix".RDNSequence)
-	func (n "crypto/x509/pkix".Name) ToRDNSequence () "crypto/x509/pkix".RDNSequence
-	type "crypto/x509".KeyUsage int
-	type "crypto/x509".ExtKeyUsage int
-	import log "log" // indirect
-	type "log".Logger struct { prefix string; flag int; mu "sync".Mutex; out "io".Writer; buf "bytes".Buffer }
-	func (l *"log".Logger) Fatal (v ...interface { })
-	func (l *"log".Logger) Fatalf (format string, v ...interface { })
-	func (l *"log".Logger) Fatalln (v ...interface { })
-	func (l *"log".Logger) Flags () int
-	func (l *"log".Logger) Output (calldepth int, s string) "os".Error
-	func (l *"log".Logger) Panic (v ...interface { })
-	func (l *"log".Logger) Panicf (format string, v ...interface { })
-	func (l *"log".Logger) Panicln (v ...interface { })
-	func (l *"log".Logger) Prefix () string
-	func (l *"log".Logger) Print (v ...interface { })
-	func (l *"log".Logger) Printf (format string, v ...interface { })
-	func (l *"log".Logger) Println (v ...interface { })
-	func (l *"log".Logger) SetFlags (flag int)
-	func (l *"log".Logger) SetPrefix (prefix string)
-	func (l *"log".Logger) formatHeader (buf *"bytes".Buffer, ns int64, file string, line int)
-	import sync "sync" // indirect
-	type "sync".Mutex struct { state int32; sema uint32 }
-	func (m *"sync".Mutex) Lock ()
-	func (m *"sync".Mutex) Unlock ()
-	type "io".ReadWriteCloser interface { Close() "os".Error; Read(p []uint8) (n int, err "os".Error); Write(p []uint8) (n int, err "os".Error) }
-	type "github.com/fiber/web.go".conn interface { Close(); SetHeader(hdr string, val string, unique bool); StartResponse(status int); Write(data []uint8) (n int, err "os".Error) }
-	type "github.com/fiber/web.go".Server struct { Config *"github.com/fiber/web.go".ServerConfig; routes "container/vector".Vector; Logger *"log".Logger; l "net".Listener; closed bool }
-	func (s *"github.com/fiber/web.go".Server) Close ()
-	func (s *"github.com/fiber/web.go".Server) Delete (route string, handler interface { })
-	func (s *"github.com/fiber/web.go".Server) Get (route string, handler interface { })
-	func (s *"github.com/fiber/web.go".Server) Post (route string, handler interface { })
-	func (s *"github.com/fiber/web.go".Server) Put (route string, handler interface { })
-	func (s *"github.com/fiber/web.go".Server) Run (addr string)
-	func (s *"github.com/fiber/web.go".Server) RunFcgi (addr string)
-	func (s *"github.com/fiber/web.go".Server) RunScgi (addr string)
-	func (s *"github.com/fiber/web.go".Server) ServeHTTP (c "http".ResponseWriter, req *"http".Request)
-	func (s *"github.com/fiber/web.go".Server) SetLogger (logger *"log".Logger)
-	func (s *"github.com/fiber/web.go".Server) addRoute (r string, method string, handler interface { })
-	func (s *"github.com/fiber/web.go".Server) handleFcgiConnection (fd "io".ReadWriteCloser)
-	func (s *"github.com/fiber/web.go".Server) handleScgiRequest (fd "io".ReadWriteCloser)
-	func (s *"github.com/fiber/web.go".Server) initServer ()
-	func (s *"github.com/fiber/web.go".Server) listenAndServeFcgi (addr string) "os".Error
-	func (s *"github.com/fiber/web.go".Server) listenAndServeScgi (addr string) "os".Error
-	func (s *"github.com/fiber/web.go".Server) routeHandler (req *"github.com/fiber/web.go".Request, c "github.com/fiber/web.go".conn)
-	func (s *"github.com/fiber/web.go".Server) safelyCall (function "reflect".Value, args []"reflect".Value) (resp []"reflect".Value, e interface { })
-	type "github.com/fiber/web.go".ServerConfig struct { StaticDir string; Addr string; Port int; CookieSecret string; RecoverPanic bool }
-	import vector "container/vector" // indirect
-	type "container/vector".Vector []interface { }
-	func (p *"container/vector".Vector) AppendVector (x *"container/vector".Vector)
-	func (p *"container/vector".Vector) At (i int) interface { }
-	func (p *"container/vector".Vector) Cap () int
-	func (p *"container/vector".Vector) Copy () "container/vector".Vector
-	func (p *"container/vector".Vector) Cut (i int, j int)
-	func (p *"container/vector".Vector) Delete (i int)
-	func (p *"container/vector".Vector) Do (f func(elem interface { }))
-	func (p *"container/vector".Vector) Expand (i int, n int)
-	func (p *"container/vector".Vector) Extend (n int)
-	func (p *"container/vector".Vector) Insert (i int, x interface { })
-	func (p *"container/vector".Vector) InsertVector (i int, x *"container/vector".Vector)
-	func (p *"container/vector".Vector) Last () interface { }
-	func (p *"container/vector".Vector) Len () int
-	func (p *"container/vector".Vector) Less (i int, j int) bool
-	func (p *"container/vector".Vector) Pop () interface { }
-	func (p *"container/vector".Vector) Push (x interface { })
-	func (p *"container/vector".Vector) Resize (length int, capacity int) *"container/vector".Vector
-	func (p *"container/vector".Vector) Set (i int, x interface { })
-	func (p *"container/vector".Vector) Slice (i int, j int) *"container/vector".Vector
-	func (p *"container/vector".Vector) Swap (i int, j int)
-	func (p *"container/vector".Vector) realloc (length int, capacity int) []interface { }
-	import net "net" // indirect
-	type "net".Listener interface { Accept() (c "net".Conn, err "os".Error); Addr() "net".Addr; Close() "os".Error }
-	type "net".Conn interface { Close() "os".Error; LocalAddr() "net".Addr; Read(b []uint8) (n int, err "os".Error); RemoteAddr() "net".Addr; SetReadTimeout(nsec int64) "os".Error; SetTimeout(nsec int64) "os".Error; SetWriteTimeout(nsec int64) "os".Error; Write(b []uint8) (n int, err "os".Error) }
-	type "net".Addr interface { Network() string; String() string }
-	func "".routeRequest (ctx *"github.com/fiber/web.go".Context, val string) string
-	func "".getHost (hostname string) *"".Host
-	func "".main ()
-	var "".initdoneÂ· uint8
-	func "".init ()
-
-$$  // local types
-
-$$
-
-!
-~ E</ ~ E<srv ~ E<vafan ~ E<. ~ E<lib ~ E<vafan.go 7      ~ E<github.com ~ E<fiber ~ E<web.go.a 7     ÿÿÿÿA~ E<github.com ~ E<hoisie ~ E<mustache.go.a 7     ÿÿÿÿA~ E<path.a 7     ÿÿÿÿA~ E<os.a 7     ÿÿÿÿA7 5     ~ ="".routeRequest ~ =type.func(*github%2ecom/fiber/web%2ego.Context, string) string Ü    ‘=EP      A~ @"".ctx ~ =type.*github%2ecom/fiber/web%2ego.Context p    ‘@p    R	    4   A~ S"".hostname a    S!      y      y      ~ ="".getHost ~ =type.func(string) *"".Host      ‘=p       S~ ?"".host ~ =	type.*"".Host p    •àÿÿÿ?	~ =
-"".statictmp_0001 ~ =go.string."templates" - "   ;   
-==    D- "   ;   
-=	   Ap "      AS~ =runtime.new ~ =type.func(int32) *[2]string  "    ‘=p "      S
-a "   
-=p "   
-! "     p "      A	¡ "     y "     ~ ?"".autotmp_0000 p "      Aìÿÿÿ?p "      Aðÿÿÿ?p "   
-èÿÿÿ?~ =go.string."PWD" a "   =~ Sos.key a "   S! "     y "     y "     ~ =os.Getenv ~ =type.func(string) string  "    ‘=a "      Sp "   a "   èÿÿÿ?p "   R! "     y "     y "     ~ ="".statictmp_0004 ~ =go.string."index.html.mustache" - "   ;   ==    D- "   ;   =   Ap "      AS "    ‘=p "      S
-a "   =p "   
-! "     p "      A	¡ "     y "     ~ ?"".autotmp_0003 p "      AØÿÿÿ?p "      AÜÿÿÿ?p "   
-Ôÿÿÿ?a "   èÿÿÿ?~ Spath.elem a "   S! "     y "     y "     y "     ~ =path.Join ~ =type.func(...string) string  "    ‘=a "      Sp "   a "   Ôÿÿÿ?p "   R! "     y "     y "     a "   Ôÿÿÿ?a "   S! "     y "     y "     y "      "    ‘=a "      Sp "   ~ ?"".filename ~ =type.string a "   •Ìÿÿÿ?! "     y "     y "     ~ =type.uint8 ~ Sruntime.key p #   “= DS~ Sruntime.val p #   “= D   S~ Sruntime.hint p #   A   Sp #   A   S~ =runtime.makemap ~ = type.func(*uint8, *uint8, int64) map[string] string  #    ‘= p #      S~ ?!"".autotmp_0006 p #   äÿÿÿ!?~ S"runtime.hmap p #   "S~ =#go.string."host" a #   #=a #      S! #     y #     y #     p #   •àÿÿÿ?	a #      S! #     y #     y #     ~ =$runtime.mapassign1 ~ =%type.func(map[string] string, string, string)  #    ‘$=%p #      AS~ =&type.func(int32) *[1]interface { }  #    ‘=&p #      S~ ?'"".autotmp_0007 p #      Aøÿÿÿ'?p #      Aüÿÿÿ'?p #   ôÿÿÿ'?~ =(type.map[string] string ~ S)runtime.typ p #   “= (D)Sp #   äÿÿÿ!?~ S*runtime.elem p #      *S~ =+runtime.convT2E ~ =,type.func(*uint8, map[string] string) interface { }  #    ‘+=,a #      Sp #   a #   ôÿÿÿ'?p #   R! #     y #     y #     a #   •Ìÿÿÿ?~ S-github%2ecom/hoisie/mustache%2ego.filename a #   -S! #     y #     y #     a #   ôÿÿÿ'?~ S.github%2ecom/hoisie/mustache%2ego.context a #      .S! #     y #     y #     y #     ~ =/github%2ecom/hoisie/mustache%2ego.RenderFile ~ =0type.func(string, ...interface { }) string  #    ‘/=0a #      Sp #   p #   ~ @1""..noname a #      1@! #     y #     y #     £ #     ~ =runtime.throwreturn  $    =£ $     Ü &   ‘=E      Ap (      AS~ =type.func(int32) *"".Host  (    ‘=p (      S
-~ ="".statictmp_0044 a (   =~ ?"".autotmp_0043 a (   ðÿÿÿ?! (     p (      A	¡ (     y (     a (   ðÿÿÿ?~ @"".hostname a (   ‘@p (   ! (     y (     y (     p (   	 (      Aa (   ‘@! (     y (     y (     p (   
-a (   ðÿÿÿ?p (   
-! (     p (      A	¡ (     y (     p )   
-   1@£ )      *    =£ *     ~ ="".main ~ =type.func() Ü 0   ‘=   A~ =type.func(*github%2ecom/fiber/web%2ego.Context, string) string p 1   “= D)S~ =	"".routeRequest p 1   “= 	Dp 1      *S~ =
-type.func(*uint8, func(*github%2ecom/fiber/web%2ego.Context, string) string) interface { }  1    ‘+=
-a 1      Sp 1   ~ Sgithub%2ecom/fiber/web%2ego.handler a 1      S! 1     y 1     y 1     ~ =go.string."/(.*)" a 1   =~ Sgithub%2ecom/fiber/web%2ego.route a 1   S! 1     y 1     y 1     ~ =github%2ecom/fiber/web%2ego.Get ~ =type.func(string, interface { })  1    ‘=~ =go.string."0.0.0.0:9999" a 2   =~ Sgithub%2ecom/fiber/web%2ego.addr a 2   S! 2     y 2     y 2     ~ =github%2ecom/fiber/web%2ego.Run ~ =type.func(string)  2    ‘=£ 3     ~ ="".init Ü 3   ‘=A~ ="".initdoneÂ· s 3   ‘=	W 3    Â   <W 3    Í   <% 3   	AO 3    Á   <W 3    Æ   <W 3    Ë   <p 3   	% 3   	   AX 3    Å   <£ 3     W 3    Ë   <~ =runtime.throwinit  3    ‘=W 3    Í   <o 3      A‘=~ =os.init  3    ‘=~ =path.init  3    ‘=~ =github%2ecom/hoisie/mustache%2ego.init  3    ‘=~ =github%2ecom/fiber/web%2ego.init  3    ‘=o 3      A‘=£ 3     £ 3     ~ ="".statictmp_0001 5 "   ;=   A~ ="".statictmp_0004 5 "   ;=   A5 (   ;=   A~ =type.uint8 5 3   ‘=   A~ =type.*runtime.MapType - 3   ;(== D- 3   ;   (==    (D- 3   ;   (=   A- 3   ;   (=èúA- 3   ;   (=   A- 3   ;   (=   A- 3   ;   (=   A- 3   ;   (=   A~ =go.string."map[string] string" - 3   ;   (== D~ = weak.type.*map[string] string - 3   ;   (==  D~ =!type.string - 3   ;    (== !D- 3   ;$   (== !D5 3   ;
-(=(   A~ ="type.*runtime.FuncType - 3   ;== "D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =2W;¢A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =#go.string."func(*web.Context, string) string" - 3   ;   == #D~ =$weak.type.*func(*github%2ecom/fiber/web%2ego.Context, string) string - 3   ;   == $D- 3   ;    =A- 3   ;$   == <   D- 3   ;(   =   A- 3   ;,   =   A- 3   ;0   == D   D- 3   ;4   =   A- 3   ;8   =   A~ =%type.*github%2ecom/fiber/web%2ego.Context - 3   ;<   == %D- 3   ;@   == !D- 3   ;D   == !D5 3   ;
-=H   A~ =&type."".Host ~ ='type.*runtime.StructType - 3   ;&== 'D- 3   ;   &==    &D- 3   ;   &=   A- 3   ;   &=h–mA- 3   ;   &=   A- 3   ;   &=   A- 3   ;   &=   A- 3   ;   &=   A~ =(go.string."main.Host" - 3   ;   &== (D~ =)type.*"".Host - 3   ;   &== )D- 3   ;    &== ,   &D- 3   ;$   &=   A- 3   ;(   &=   A~ =*go.string."Name" - 3   ;,   &== *D- 3   ;0   &=A- 3   ;4   &== !D- 3   ;8   &=A- 3   ;<   &=A~ =+go.string."Title" - 3   ;@   &== +D- 3   ;D   &=A- 3   ;H   &== !D- 3   ;L   &=A- 3   ;P   &=   A- 3   ;   &== T   &D~ =,go.string."Host" - 3   ;T   &== ,D~ =-go.importpath."". - 3   ;X   &== -D- 3   ;\   &== h   &D- 3   ;`   &=A- 3   ;d   &=A5 3   ;&=h   A~ =.type.*runtime.PtrType - 3   ;)== .D- 3   ;   )==    )D- 3   ;   )=   A- 3   ;   )=ñT‚=A- 3   ;   )=   A- 3   ;   )=   A- 3   ;   )=   A- 3   ;   )=   A~ =/go.string."*main.Host" - 3   ;   )== /D~ =0weak.type.**"".Host - 3   ;   )== 0D- 3   ;    )== &D5 3   ;)=$   A~ =1type.func(string) *"".Host - 3   ;1== "D- 3   ;   1==    1D- 3   ;   1=   A- 3   ;   1=á¬!LA- 3   ;   1=   A- 3   ;   1=   A- 3   ;   1=   A- 3   ;   1=   A~ =go.string."func(string) *main.Host" - 3   ;   1== D~ =weak.type.*func(string) *"".Host - 3   ;   1== D- 3   ;    1=A- 3   ;$   1== <   1D- 3   ;(   1=   A- 3   ;,   1=   A- 3   ;0   1== @   1D- 3   ;4   1=   A- 3   ;8   1=   A- 3   ;<   1== !D- 3   ;@   1== )D5 3   ;
-1=D   A~ =type.[]string ~ =type.*runtime.SliceType - 3   ;== D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =Ó¨ó
-A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =go.string."[]string" - 3   ;   == D~ =weak.type.*[]string - 3   ;   == D- 3   ;    == !D5 3   ;
-=$   A~ =type.[2]string ~ =type.*runtime.ArrayType - 3   ;== D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =PXåéA- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =	go.string."[2]string" - 3   ;   == 	D~ =
-weak.type.*[2]string - 3   ;   == 
-D- 3   ;    == !D- 3   ;$   == D- 3   ;(   =   A5 3   ;
-=,   A~ =type.*[2]string - 3   ;== .D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =f<A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =go.string."*[2]string" - 3   ;   == D~ =weak.type.**[2]string - 3   ;   == D- 3   ;    == D5 3   ;
-=$   A~ =type.func(int32) *[2]string - 3   ;== "D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =/œäËA- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =go.string."func(int32) *[2]string" - 3   ;   == D~ =weak.type.*func(int32) *[2]string - 3   ;   == D- 3   ;    =A- 3   ;$   == <   D- 3   ;(   =   A- 3   ;,   =   A- 3   ;0   == @   D- 3   ;4   =   A- 3   ;8   =   A~ =type.int32 - 3   ;<   == D- 3   ;@   == D5 3   ;
-=D   A~ =type.func(string) string - 3   ;== "D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =Mü¨çA- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =go.string."func(string) string" - 3   ;   == D~ =weak.type.*func(string) string - 3   ;   == D- 3   ;    =A- 3   ;$   == <   D- 3   ;(   =   A- 3   ;,   =   A- 3   ;0   == @   D- 3   ;4   =   A- 3   ;8   =   A- 3   ;<   == !D- 3   ;@   == !D5 3   ;
-=D   A~ =type.func(...string) string - 3   ;== "D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =Òlç²A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =go.string."func(...string) string" - 3   ;   == D~ =weak.type.*func(...string) string - 3   ;   == D- 3   ;    =   A- 3   ;$   == <   D- 3   ;(   =   A- 3   ;,   =   A- 3   ;0   == @   D- 3   ;4   =   A- 3   ;8   =   A- 3   ;<   == D- 3   ;@   == !D5 3   ;
-=D   A~ =type.func(*uint8, *uint8, int64) map[string] string - 3   ;== "D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =£®f A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =go.string."func(*uint8, *uint8, int64) map[string] string" - 3   ;   == D~ =weak.type.*func(*uint8, *uint8, int64) map[string] string - 3   ;   == D- 3   ;    =A- 3   ;$   == <   D- 3   ;(   =   A- 3   ;,   =   A- 3   ;0   == H   D- 3   ;4   =   A- 3   ;8   =   A~ =type.*uint8 - 3   ;<   == D- 3   ;@   == D~ =type.int64 - 3   ;D   == D~ =type.map[string] string - 3   ;H   == D5 3   ;
-=L   A~ =type.func(map[string] string, string, string) - 3   ;== "D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =`j-(A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =go.string."func(map[string] string, string, string)" - 3   ;   == D~ = weak.type.*func(map[string] string, string, string) - 3   ;   ==  D- 3   ;    =A- 3   ;$   == <   D- 3   ;(   =   A- 3   ;,   =   A- 3   ;0   == H   D- 3   ;4   =A- 3   ;8   =A- 3   ;<   == D- 3   ;@   == !D- 3   ;D   == !D5 3   ;
-=H   A~ =!type.interface { } ~ ="type.*runtime.InterfaceType - 3   ;!== "D- 3   ;   !==    !D- 3   ;   !=   A- 3   ;   !=ô¤BóA- 3   ;   !=   A- 3   ;   !=   A- 3   ;   !=   A- 3   ;   !=   A~ =#go.string."interface { }" - 3   ;   !== #D~ =$weak.type.*interface { } - 3   ;   !== $D- 3   ;    !== ,   !D- 3   ;$   !=A- 3   ;(   !=A5 3   ;
-!=,   A~ =%type.[]interface { } - 3   ;%== D- 3   ;   %==    %D- 3   ;   %=   A- 3   ;   %=6ûýlA- 3   ;   %=   A- 3   ;   %=   A- 3   ;   %=   A- 3   ;   %=   A~ =&go.string."[]interface { }" - 3   ;   %== &D~ ='weak.type.*[]interface { } - 3   ;   %== 'D- 3   ;    %== !D5 3   ;
-%=$   A~ =(type.[1]interface { } - 3   ;(== D- 3   ;   (==    (D- 3   ;   (=   A- 3   ;   (=ÝcÏçA- 3   ;   (=   A- 3   ;   (=   A- 3   ;   (=   A- 3   ;   (=   A~ =)go.string."[1]interface { }" - 3   ;   (== )D~ =*weak.type.*[1]interface { } - 3   ;   (== *D- 3   ;    (== !D- 3   ;$   (== %D- 3   ;(   (=   A5 3   ;
-(=,   A~ =+type.*[1]interface { } - 3   ;+== .D- 3   ;   +==    +D- 3   ;   +=   A- 3   ;   +=VDÀ_A- 3   ;   +=   A- 3   ;   +=   A- 3   ;   +=   A- 3   ;   +=   A~ =,go.string."*[1]interface { }" - 3   ;   +== ,D~ =-weak.type.**[1]interface { } - 3   ;   +== -D- 3   ;    +== (D5 3   ;
-+=$   A~ =.type.func(int32) *[1]interface { } ~ =/type.*runtime.FuncType - 3   ;.== /D- 3   ;   .==    .D- 3   ;   .=   A- 3   ;   .=:ŸA- 3   ;   .=   A- 3   ;   .=   A- 3   ;   .=   A- 3   ;   .=   A~ =0go.string."func(int32) *[1]interface { }" - 3   ;   .== 0D~ =1weak.type.*func(int32) *[1]interface { } - 3   ;   .== 1D- 3   ;    .=A- 3   ;$   .== <   .D- 3   ;(   .=   A- 3   ;,   .=   A- 3   ;0   .== @   .D- 3   ;4   .=   A- 3   ;8   .=   A- 3   ;<   .== D- 3   ;@   .== +D5 3   ;
-.=D   A~ =type.func(*uint8, map[string] string) interface { } - 3   ;== /D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =—1å4A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =go.string."func(*uint8, map[string] string) interface { }" - 3   ;   == D~ =weak.type.*func(*uint8, map[string] string) interface { } - 3   ;   == D- 3   ;    =A- 3   ;$   == <   D- 3   ;(   =   A- 3   ;,   =   A- 3   ;0   == D   D- 3   ;4   =   A- 3   ;8   =   A- 3   ;<   == D- 3   ;@   == D- 3   ;D   == !D5 3   ;
-=H   A~ =type.func(string, ...interface { }) string - 3   ;== /D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =@¨úšA- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =go.string."func(string, ...interface { }) string" - 3   ;   == D~ =weak.type.*func(string, ...interface { }) string - 3   ;   == D- 3   ;    =   A- 3   ;$   == <   D- 3   ;(   =   A- 3   ;,   =   A- 3   ;0   == D   D- 3   ;4   =   A- 3   ;8   =   A~ =type.string - 3   ;<   == D- 3   ;@   == %D- 3   ;D   == D5 3   ;
-=H   A~ =type.func(int32) *"".Host - 3   ;== /D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =ý(\A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =	go.string."func(int32) *main.Host" - 3   ;   == 	D~ =
-weak.type.*func(int32) *"".Host - 3   ;   == 
-D- 3   ;    =A- 3   ;$   == <   D- 3   ;(   =   A- 3   ;,   =   A- 3   ;0   == @   D- 3   ;4   =   A- 3   ;8   =   A- 3   ;<   == D~ =type.*"".Host - 3   ;@   == D5 3   ;
-=D   A~ =type.func() - 3   ;== /D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =ö¼‚öA- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =go.string."func()" - 3   ;   == D~ =weak.type.*func() - 3   ;   == D- 3   ;    =A- 3   ;$   == <   D- 3   ;(   =A- 3   ;,   =A- 3   ;0   == <   D- 3   ;4   =A- 3   ;8   =A5 3   ;
-=<   A~ =type.func(*uint8, func(*github%2ecom/fiber/web%2ego.Context, string) string) interface { } - 3   ;== /D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =x¦ƒA- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =go.string."func(*uint8, func(*web.Context, string) string) interface { }" - 3   ;   == D~ =weak.type.*func(*uint8, func(*github%2ecom/fiber/web%2ego.Context, string) string) interface { } - 3   ;   == D- 3   ;    =A- 3   ;$   == <   D- 3   ;(   =   A- 3   ;,   =   A- 3   ;0   == D   D- 3   ;4   =   A- 3   ;8   =   A- 3   ;<   == D~ =type.func(*github%2ecom/fiber/web%2ego.Context, string) string - 3   ;@   == D- 3   ;D   == !D5 3   ;
-=H   A~ =type.func(string, interface { }) - 3   ;== /D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =½;;QA- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =go.string."func(string, interface { })" - 3   ;   == D~ =weak.type.*func(string, interface { }) - 3   ;   == D- 3   ;    =A- 3   ;$   == <   D- 3   ;(   =   A- 3   ;,   =   A- 3   ;0   == D   D- 3   ;4   =A- 3   ;8   =A- 3   ;<   == D- 3   ;@   == !D5 3   ;
-=D   A~ =type.func(string) - 3   ;== /D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =ŠÇ¹¾A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =go.string."func(string)" - 3   ;   == D~ =weak.type.*func(string) - 3   ;   == D- 3   ;    =A- 3   ;$   == <   D- 3   ;(   =   A- 3   ;,   =   A- 3   ;0   == @   D- 3   ;4   =A- 3   ;8   =A- 3   ;<   == D5 3   ;
-=@   A~ =type.*"".Resource ~ =type.*runtime.PtrType - 3   ;== D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =o+¹A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =go.string."*main.Resource" - 3   ;   == D~ =weak.type.**"".Resource - 3   ;   == D~ =type."".Resource - 3   ;    == D5 3   ;=$   A~ =type.*runtime.StructType - 3   ;== D- 3   ;   ==    D- 3   ;   =   A- 3   ;   =UÜA- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A- 3   ;   =   A~ =go.string."main.Resource" - 3   ;   == D- 3   ;   == D- 3   ;    == ,   D- 3   ;$   =   A- 3   ;(   =   A~ = go.string."Name" - 3   ;,   ==  D- 3   ;0   =A- 3   ;4   == D- 3   ;8   =A- 3   ;<   =A- 3   ;   == @   D~ =!go.string."Resource" - 3   ;@   == !D~ ="go.importpath."". - 3   ;D   == "D- 3   ;H   == T   D- 3   ;L   =A- 3   ;P   =A5 3   ;=T   A~ =#go.importpath.runtime. ~ =$go.string."runtime" - 3   ;#==    $D- 3   ;   #=   A5 3   ;
-#=   A~ =%go.importpath.github%2ecom/hoisie/mustache%2ego. ~ =&go.string."github.com/hoisie/mustache.go" - 3   ;%==    &D- 3   ;   %=   A5 3   ;
-%=   A~ ='go.importpath.os. ~ =(go.string."os" - 3   ;'==    (D- 3   ;   '=   A5 3   ;
-'=   A~ =)go.importpath.github%2ecom/fiber/web%2ego. ~ =*go.string."github.com/fiber/web.go" - 3   ;)==    *D- 3   ;   )=   A5 3   ;
-)=   A~ =+go.importpath.path. ~ =,go.string."path" - 3   ;+==    ,D- 3   ;   +=   A5 3   ;
-+=   A~ =-go.string."templates" - "   ;-==    -D- "   ;   -=	   A- "   ;   -= template- "   ;   -= s       - "   ;   -=A5 "   ;
--=   A~ =.go.string."PWD" - "   ;.==    .D- "   ;   .=   A- "   ;   .= PWD     - "   ;   .=A5 "   ;
-.=   A~ =/go.string."index.html.mustache" - "   ;/==    /D- "   ;   /=   A- "   ;   /= index.ht- "   ;   /= ml.musta- "   ;   /= che     - "   ;   /=A5 "   ;
-/=   A~ =0go.string."host" - #   ;0==    0D- #   ;   0=   A- #   ;   0= host    - #   ;   0=A5 #   ;
-0=   A~ =1go.string."/(.*)" - 1   ;1==    1D- 1   ;   1=   A- 1   ;   1= /(.*)   - 1   ;   1=A5 1   ;
-1=   A~ =go.string."0.0.0.0:9999" - 2   ;==    D- 2   ;   =   A- 2   ;   = 0.0.0.0:- 2   ;   = 9999    - 2   ;   =A5 2   ;
-=   A~ =go.string."map[string] string" - 3   ;==    D- 3   ;   =   A- 3   ;   = map[stri- 3   ;   = ng] stri- 3   ;   = ng      - 3   ;   =A5 3   ;
-=   A~ =go.string."func(*web.Context, string) string" - 3   ;==    D- 3   ;   =!   A- 3   ;   = func(*we- 3   ;   = b.Contex- 3   ;   = t, strin- 3   ;    = g) strin- 3   ;(   = g       - 3   ;)   =A5 3   ;
-=,   A~ =go.string."main.Host" - 3   ;==    D- 3   ;   =	   A- 3   ;   = main.Hos- 3   ;   = t       - 3   ;   =A5 3   ;
-=   A- 3   ; ==     D- 3   ;    =   A- 3   ;    = Name    - 3   ;    =A5 3   ;
- =   A~ =go.string."Title" - 3   ;==    D- 3   ;   =   A- 3   ;   = Title   - 3   ;   =A5 3   ;
-=   A~ =go.string."Host" - 3   ;==    D- 3   ;   =   A- 3   ;   = Host    - 3   ;   =A5 3   ;
-=   A~ =go.string."*main.Host" - 3   ;==    D- 3   ;   =
-   A- 3   ;   = *main.Ho- 3   ;   = st      - 3   ;   =A5 3   ;
-=   A~ =go.string."func(string) *main.Host" - 3   ;==    D- 3   ;   =   A- 3   ;   = func(str- 3   ;   = ing) *ma- 3   ;   = in.Host - 3   ;   =A5 3   ;
-=    A~ =	go.string."[]string" - 3   ;	==    	D- 3   ;   	=   A- 3   ;   	= []string- 3   ;   	=A5 3   ;
-	=   A~ =
-go.string."[2]string" - 3   ;
-==    
-D- 3   ;   
-=	   A- 3   ;   
-= [2]strin- 3   ;   
-= g       - 3   ;   
-=A5 3   ;
-
-=   A~ =go.string."*[2]string" - 3   ;==    D- 3   ;   =
-   A- 3   ;   = *[2]stri- 3   ;   = ng      - 3   ;   =A5 3   ;
-=   A~ =go.string."func(int32) *[2]string" - 3   ;==    D- 3   ;   =   A- 3   ;   = func(int- 3   ;   = 32) *[2]- 3   ;   = string  - 3   ;   =A5 3   ;
-=    A~ =go.string."func(string) string" - 3   ;==    D- 3   ;   =   A- 3   ;   = func(str- 3   ;   = ing) str- 3   ;   = ing     - 3   ;   =A5 3   ;
-=   A~ =go.string."func(...string) string" - 3   ;==    D- 3   ;   =   A- 3   ;   = func(...- 3   ;   = string) - 3   ;   = string  - 3   ;   =A5 3   ;
-=    A~ =go.string."func(*uint8, *uint8, int64) map[string] string" - 3   ;==    D- 3   ;   =.   A- 3   ;   = func(*ui- 3   ;   = nt8, *ui- 3   ;   = nt8, int- 3   ;    = 64) map[- 3   ;(   = string] - 3   ;0   = string  - 3   ;6   =A5 3   ;
-=8   A~ =go.string."func(map[string] string, string, string)" - 3   ;==    D- 3   ;   =(   A- 3   ;   = func(map- 3   ;   = [string]- 3   ;   =  string,- 3   ;    =  string,- 3   ;(   =  string)- 3   ;0   =A5 3   ;
-=4   A~ =go.string."interface { }" - 3   ;==    D- 3   ;   =   A- 3   ;   = interfac- 3   ;   = e { }   - 3   ;   =A5 3   ;
-=   A~ =go.string."[]interface { }" - 3   ;==    D- 3   ;   =   A- 3   ;   = []interf- 3   ;   = ace { } - 3   ;   =A5 3   ;
-=   A~ =go.string."[1]interface { }" - 3   ;==    D- 3   ;   =   A- 3   ;   = [1]inter- 3   ;   = face { }- 3   ;   =A5 3   ;
-=   A~ =go.string."*[1]interface { }" - 3   ;==    D- 3   ;   =   A- 3   ;   = *[1]inte- 3   ;   = rface { - 3   ;   = }       - 3   ;   =A5 3   ;
-=   A~ =go.string."func(int32) *[1]interface { }" - 3   ;==    D- 3   ;   =   A- 3   ;   = func(int- 3   ;   = 32) *[1]- 3   ;   = interfac- 3   ;    = e { }   - 3   ;%   =A5 3   ;
-=(   A~ =go.string."func(*uint8, map[string] string) interface { }" - 3   ;==    D- 3   ;   =.   A- 3   ;   = func(*ui- 3   ;   = nt8, map- 3   ;   = [string]- 3   ;    =  string)- 3   ;(   =  interfa- 3   ;0   = ce { }  - 3   ;6   =A5 3   ;
-=8   A~ =go.string."func(string, ...interface { }) string" - 3   ;==    D- 3   ;   =%   A- 3   ;   = func(str- 3   ;   = ing, ...- 3   ;   = interfac- 3   ;    = e { }) s- 3   ;(   = tring   - 3   ;-   =A5 3   ;
-=0   A~ =go.string."func(int32) *main.Host" - 3   ;==    D- 3   ;   =   A- 3   ;   = func(int- 3   ;   = 32) *mai- 3   ;   = n.Host  - 3   ;   =A5 3   ;
-=    A~ =go.string."func()" - 3   ;==    D- 3   ;   =   A- 3   ;   = func()  - 3   ;   =A5 3   ;
-=   A~ =go.string."func(*uint8, func(*web.Context, string) string) interface { }" - 3   ;==    D- 3   ;   ==   A- 3   ;   = func(*ui- 3   ;   = nt8, fun- 3   ;   = c(*web.C- 3   ;    = ontext, - 3   ;(   = string) - 3   ;0   = string) - 3   ;8   = interfac- 3   ;@   = e { }   - 3   ;E   =A5 3   ;
-=H   A~ =go.string."func(string, interface { })" - 3   ;==    D- 3   ;   =   A- 3   ;   = func(str- 3   ;   = ing, int- 3   ;   = erface {- 3   ;    =  })     - 3   ;#   =A5 3   ;
-=$   A~ =go.string."func(string)" - 3   ;==    D- 3   ;   =   A- 3   ;   = func(str- 3   ;   = ing)    - 3   ;   =A5 3   ;
-=   A~ =go.string."*main.Resource" - 3   ;==    D- 3   ;   =   A- 3   ;   = *main.Re- 3   ;   = source  - 3   ;   =A5 3   ;
-=   A- 3   ;==    D- 3   ;   =   A- 3   ;   = main.Res- 3   ;   = ource   - 3   ;   =A5 3   ;
-=   A- 3   ;!==    !D- 3   ;   !=   A- 3   ;   != Resource- 3   ;   !=A5 3   ;
-!=   A- 3   ;$==    $D- 3   ;   $=   A- 3   ;   $= runtime - 3   ;   $=A5 3   ;
-$=   A- 3   ;&==    &D- 3   ;   &=   A- 3   ;   &= github.c- 3   ;   &= om/hoisi- 3   ;   &= e/mustac- 3   ;    &= he.go   - 3   ;%   &=A5 3   ;
-&=(   A- 3   ;(==    (D- 3   ;   (=   A- 3   ;   (= os      - 3   ;
-   (=A5 3   ;
-(=   A- 3   ;*==    *D- 3   ;   *=   A- 3   ;   *= github.c- 3   ;   *= om/fiber- 3   ;   *= /web.go - 3   ;   *=A5 3   ;
-*=    A- 3   ;,==    ,D- 3   ;   ,=   A- 3   ;   ,= path    - 3   ;   ,=A5 3   ;
-,=   AM      
