@@ -11,6 +11,8 @@ window.onload = function() {
     var windowCentreY = window.innerHeight / 2;                   // Window centre (Y pos)
     var WebGLSupported = isWebGLSupported();                      // Check for WebGL support
 
+
+
     document.addEventListener( 'mousemove', function( event ) {
         // Update mouseX and mouseY based on the new mouse X and Y positions
         mouseX = ( event.clientX - windowCentreX );
@@ -25,7 +27,7 @@ window.onload = function() {
     // Create the scene to hold the object
     var scene = new THREE.Scene();
     // Create the camera
-    var camera = new THREE.Camera(
+    var camera = new THREE.PerspectiveCamera(
         42,                       // Field of view
         width / height,           // Aspect ratio
         .1,                       // Near plane distance
@@ -33,53 +35,76 @@ window.onload = function() {
     );
 
     // Position the camera
-    camera.position.set( -5, -2, 12 );
+    //camera.position.set( -5, -2, 12 );
+    camera.position.z = 13;
 
     // Add the lights
-    var light = new THREE.PointLight( 0xffffff, .4 );
-    light.position.set( 10, 10, 10 );
-    scene.addLight( light );
-    ambientLight = new THREE.AmbientLight( 0xbbbbbb );
-    scene.addLight( ambientLight );
+    var light = new THREE.PointLight( 0xffffff, 0.8 );
+    light.position.z = 50;
+    scene.add( light );
+
+    var ambientLight = new THREE.AmbientLight( 0xbbbbbb );
+    ambientLight.position.z = 50;
+    scene.add( ambientLight );
+
+    // red point light shining from the front
+    //var pointLight = new THREE.PointLight( 0xff0000 );
+    //pointLight.position.set( 0, 0, -10 );
+    //scene.add( pointLight );
 
     // Create the materials
-    var materialClass = WebGLSupported ? THREE.MeshLambertMaterial : THREE.MeshBasicMaterial;
+    var materialClass = WebGLSupported ? THREE.MeshPhongMaterial : THREE.MeshBasicMaterial;
     var darkGrey =  new materialClass( { color: 0x333333 } );
-    var bookCover = new materialClass( { color: 0xffffff, map: THREE.ImageUtils.loadTexture( '/img/brighton-wok/dvd/front.png' ) } );
-    var bookSpine = new materialClass( { color: 0x000000 } );
-    var bookPages = new materialClass( { color: 0x000000 } );
-    var bookPagesTop = new materialClass( { color: 0x333333 } );
-    var bookPagesBottom = new materialClass( { color: 0x333333 } );
+    var dvdCover = new materialClass( {
+        color: 0xffffff,
+        shininess: 100,
+        specular:  0x333333,
+        map: THREE.ImageUtils.loadTexture( '/img/brighton-wok/dvd/front.png' ) 
+    } );
+    var dvdSpine = new materialClass( { color: 0x000000 } );
+    var dvdRight = new materialClass( { color: 0x000000 } );
+    var dvdTop = new materialClass( { color: 0x333333 } );
+    var dvdBottom = new materialClass( { color: 0x333333 } );
 
     var materials = [
-        bookSpine,          // Left side
-        bookPages,          // Right side
-        bookPagesTop,       // Top side
-        bookPagesBottom,    // Bottom side
-        bookCover,          // Front side
+        dvdSpine,          // Left side
+        dvdRight,          // Right side
+        dvdTop,       // Top side
+        dvdBottom,    // Bottom side
+        dvdCover,          // Front side
         darkGrey            // Back side
     ];
 
     // Create the dvd and add it to the scene
     document.getElementById('dvd').classList.add('three-dee');
     var dvd =  new THREE.Mesh( new THREE.CubeGeometry( 6, 8.55, 0.5, 4, 4, 1, materials ), new THREE.MeshFaceMaterial() );
-    scene.addChild( dvd );
+    scene.add( dvd );
 
     // Begin the animation
     animate();
 
-
-    /*
-       Animate a frame
-       */
-
+    var frame = 0;
     function animate() {
-        // Rotate the book based on the current mouse position
+        var base = Math.sin(frame) * 0.1;
+        // Rotate the dvd based on the current mouse position
         dvd.rotation.y = mouseX * 0.0005;
         dvd.rotation.x = mouseY * 0.0005;
-        // Render the frame
+
+        // animate the camera to bob slightly
+        var rand = Math.random();
+        camera.position.x = base;
+        camera.position.z = base + 13;
+
+        // animate the light to bob slightly
+        var rand = Math.random();
+        light.position.x = (base * 50);
+        light.position.z = (base * 50) + 50;
+
+        // animate the pointLight's intensity
+        light.intensity = base + 0.9;
+
+        frame += 0.03; // speed
         renderer.render( scene, camera );
-        // Keep the animation going
         requestAnimFrame( animate );
     }
 }

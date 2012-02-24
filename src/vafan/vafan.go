@@ -56,7 +56,7 @@ func setHandlers() {
 
 // Index resource
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	var index resource
+    index := new(resource)
 	index.name = "index"
 	index.content = map[string]interface{}{"title": "Go"}
 	writeResource(w, r, index)
@@ -65,7 +65,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 // Video resource
 func videoHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	var video resource
+    video := new(resource)
 	video.name = "video"
 	video.content = map[string]interface{}{"video": vars["video"]}
 	writeResource(w, r, video)
@@ -99,7 +99,7 @@ func getFormat(r *http.Request) string {
     return "error"
 }
 
-func writeResource(w http.ResponseWriter, req *http.Request, res resource) {
+func writeResource(w http.ResponseWriter, req *http.Request, res *resource) {
 	site := getSite(req)
 	format := getFormat(req)
 	if format == "html" {
@@ -128,7 +128,7 @@ func checkError(err error) {
 
 //-- Template functions
 
-func getTemplate(format string, res resource, site string) *template.Template {
+func getTemplate(format string, res *resource, site string) *template.Template {
 	//Check for the most specific template first
     for i:= 0; templateExists(format, res, site) == false; i++ {
 		if i == 0 {
@@ -148,7 +148,7 @@ func getTemplate(format string, res resource, site string) *template.Template {
 	return t
 }
 
-func templateExists(format string, res resource, site string) bool {
+func templateExists(format string, res *resource, site string) bool {
 	path := filepath.Join(baseDir, "templates", format, res.name, site, "main.html")
 	_, err := os.Stat(path)
 	if err != nil {
