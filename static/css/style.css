@@ -9,6 +9,12 @@
  * 
  * ==|== normalize ==========================================================
  */
+/* Revenge of the IE box model */
+* {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box; 
+}
 
 
 /* =============================================================================
@@ -377,7 +383,6 @@ a.buy-dvd:hover {
 /*
  * Trailer Div
  */
-
 #video {
     width: 100%;
     position: relative;
@@ -448,12 +453,133 @@ a.buy-dvd:hover {
     box-shadow:inset 0px 0px 150px #000, 0px 0px 50px #000;
     border-left: 1px solid black;
     border-right: 1px solid black;
+    padding: 1em 0;
+    color: #FFF47B;
+}
+#links .about-group,
+#links .share-group {
+    width: 475px;
+    padding: 14px;
+    display: inline-block;
+    vertical-align: top;
+}
+#links h1.ninja {
+    font-family: 'Bangers', cursive;
+    position: relative;
+    font-size: 48px;
+    line-height: 48px;
+    font-weight: normal;
+    color: rgba(202,7,0,1);
+    text-align: center;
+    -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(202,7,0,1)), to(rgba(202,7,0,0.5)));
+    text-shadow: -1px 0 2px #333;
+    -webkit-transform: rotate(-3deg);
+    -moz-transform: rotate(-3deg);
+    -ms-transform: rotate(-3deg);
+    -o-transform: rotate(-3deg);
+    margin-bottom: 25px;
+}
+#links h1.ninja span:nth-child(2) {
+    font-size: 50px;
+}
+#links h1.ninja span:nth-child(3) {
+    font-size: 52px;
+}
+#links .reviews blockquote {
+    font-family: "helvetica neue", helvetica, arial, sans-serif;
+    font-size: 18px;
+    width: 350px;
+    margin: 25px auto 35px auto;
+    position: relative;
+    z-index: 0;
+    text-shadow: 1px 1px 2px #151515;
+}
+#links .reviews blockquote:nth-child(odd) {
+    margin-right: 0;
+    -webkit-transform: rotate(1deg);
+    -moz-transform: rotate(1deg);
+    -ms-transform: rotate(1deg);
+    -o-transform: rotate(1deg);
+}
+#links .reviews blockquote:nth-child(even) {
+    -webkit-transform: rotate(-1deg);
+    -moz-transform: rotate(-1deg);
+    -ms-transform: rotate(-1deg);
+    -o-transform: rotate(-1deg);
+}
+#links .reviews blockquote:nth-child(3) {
+    -webkit-transform: rotate(-2deg);
+    -moz-transform: rotate(-2deg);
+    -ms-transform: rotate(-2deg);
+    -o-transform: rotate(-2deg);
+}
+#links .reviews blockquote:before {
+    position: absolute;
+    width: 350px;
+    content: "“";
+    margin-left: -45px;
+    margin-top: -25px;
+    font: 600%/1 "Ultra",Georgia,"Times New Roman",serif;
+    color: #663111;
+    text-shadow: none;
+}
+#links .reviews blockquote p {
+    position: relative;
+    z-index: 10;
+}
+#links .reviews blockquote em {
+    font-style: normal;
+    font-size: 24px;
+    display: inline;
+}
+#links .reviews blockquote .attribution {
+    text-align: right;
+    font-style: italic;
+    padding: 0 15px;
+    color: #BDB453;
+    margin-top: -10px;
 }
 
+#links .about {
+    color: white;
+    font-size: 18px;
+    width: 350px;
+    margin: 45px auto;
+}
+#links .about em {
+    font-style: normal;
+    font-weight: bold;
+}
+
+/* Twitter Tweets
+ */
+#links .twitter {
+    margin-top: 50px;
+}
+#links .tweets-wrapper {
+    width: 350px;
+    color: #333;
+    margin: 0 auto;
+    padding: 10px;
+    background: #fcfbef; /* Old browsers */
+    background: -moz-linear-gradient(top, #fcfbef 0%, #fdffcc 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfbef), color-stop(100%,#fdffcc)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #fcfbef 0%,#fdffcc 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #fcfbef 0%,#fdffcc 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #fcfbef 0%,#fdffcc 100%); /* IE10+ */
+    background: linear-gradient(top, #fcfbef 0%,#fdffcc 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfbef', endColorstr='#fdffcc',GradientType=0 ); /* IE6-9 */
+    border: 1px solid #fff;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+#links .tweets {
+    background: transparent right bottom no-repeat url(/img/icons/twitter-128x128.png);
+}
 
 /*Footer
  **/
-
 footer {
     background: black;
     width: 100%;
