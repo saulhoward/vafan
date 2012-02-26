@@ -68,8 +68,8 @@ vafan.dvd = function ()
     // Set up some variables and add a mousemove handler to the page
     var mouseX = 0;                                               // Mouse X pos relative to window centre
     var mouseY = 0;                                               // Mouse Y pos relative to window centre
-    var width = 380; // renderer w
-    var height = 482; // renderer h
+    var width = 450; // renderer w
+    var height = 600; // renderer h
     var windowCentreX = window.innerWidth / 2;                    // Window centre (X pos)
     var windowCentreY = window.innerHeight / 2;                   // Window centre (Y pos)
     var WebGLSupported = isWebGLSupported();                      // Check for WebGL support
@@ -90,7 +90,7 @@ vafan.dvd = function ()
     var scene = new THREE.Scene();
     // Create the camera
     var camera = new THREE.PerspectiveCamera(
-        42,                       // Field of view
+        32,                       // Field of view
         width / height,           // Aspect ratio
         .1,                       // Near plane distance
         10000                     // Far plane distance
@@ -101,18 +101,19 @@ vafan.dvd = function ()
     camera.position.z = 13;
 
     // Add the lights
-    var light = new THREE.PointLight( 0xffffff, 0.8 );
-    light.position.z = 50;
-    scene.add( light );
-
-    var ambientLight = new THREE.AmbientLight( 0xbbbbbb );
-    ambientLight.position.z = 50;
-    scene.add( ambientLight );
-
-    // red point light shining from the back
-    var pointLight = new THREE.PointLight( 0xff0000 );
-    pointLight.position.set( 0, 0, -10 );
-    scene.add( pointLight );
+    scene.add(new THREE.AmbientLight(0xbbbbbb));
+    var mlight = new THREE.PointLight( 0xffffff, 0.4 );
+    mlight.position.set( 25, -10, 50 );
+    scene.add( mlight );
+    var llight = new THREE.PointLight( 0xffffff, 0.4 );
+    llight.position.set( -25, 10, 70 );
+    scene.add( llight );
+    /*
+    // Another light seems to kill performance
+    var rlight = new THREE.PointLight( 0xffffff, 0.2 );
+    rlight.position.set( 25, 0, 70 );
+    scene.add( rlight );
+    */
 
     // Create the materials
     var materialClass = WebGLSupported ? THREE.MeshPhongMaterial : THREE.MeshBasicMaterial;
@@ -121,51 +122,50 @@ vafan.dvd = function ()
         color: 0xffffff,
         shininess: 100,
         specular:  0x333333,
+        map: THREE.ImageUtils.loadTexture( '/img/brighton-wok/dvd/cover.png' ) 
+    } );
+    var dvdSpine = new materialClass( {
+        color: 0xffffff,
+        shininess: 100,
+        specular:  0x333333,
+        map: THREE.ImageUtils.loadTexture( '/img/brighton-wok/dvd/spine.png' ) 
+    } );
+    var dvdRight = new materialClass( {
+        color: 0x151515,
         map: THREE.ImageUtils.loadTexture( '/img/brighton-wok/dvd/front.png' ) 
     } );
-    var dvdSpine = new materialClass( { color: 0x151515 } );
-    var dvdRight = new materialClass( { color: 0x151515 } );
-    var dvdTop = new materialClass( { color: 0x333333 } );
-    var dvdBottom = new materialClass( { color: 0x333333 } );
+    var dvdTop = new materialClass( {
+        color: 0x333333,
+        map: THREE.ImageUtils.loadTexture( '/img/brighton-wok/dvd/top.png' ) 
+    } );
 
     var materials = [
-        dvdSpine,          // Left side
-        dvdRight,          // Right side
+        dvdRight,     // Right side
+        dvdSpine,     // Left side
         dvdTop,       // Top side
-        dvdBottom,    // Bottom side
-        dvdCover,          // Front side
-        darkGrey            // Back side
+        dvdTop,    // Bottom side
+        dvdCover,     // Front side
+        darkGrey      // Back side
     ];
 
     // Create the dvd and add it to the scene
     $('#dvd').addClass('three-dee');
-    var dvd =  new THREE.Mesh( new THREE.CubeGeometry( 6, 8.55, 0.5, 4, 4, 1, materials ), new THREE.MeshFaceMaterial() );
-    scene.add( dvd );
+    var dvd =  new THREE.Mesh( new THREE.CubeGeometry( 4.24, 6, 0.45, 4, 4, 1, materials ), new THREE.MeshFaceMaterial() );
+    scene.add(dvd);
 
     // Begin the animation
     animate();
 
     var frame = 0;
     function animate() {
-        var base = Math.sin(frame) * 0.1;
         // Rotate the dvd based on the current mouse position
-        dvd.rotation.y = mouseX * 0.0005;
-        dvd.rotation.x = mouseY * 0.0005;
-
+        dvd.rotation.y = mouseX * 0.002;
+        dvd.rotation.x = mouseY * 0.002;
         // animate the camera to bob slightly
-        var rand = Math.random();
-        camera.position.x = (base * 2);
-        camera.position.z = (base * 2) + 13;
+        camera.position.x = (Math.sin(frame) * 0.1);
+        camera.position.y = (Math.cos(frame) * 0.1);
 
-        // animate the light to bob slightly
-        var rand = Math.random();
-        light.position.x = (base * 50);
-        light.position.z = (base * 50) + 50;
-
-        // animate the pointLight's intensity
-        light.intensity = base + 0.9;
-
-        frame += 0.03; // speed
+        frame += 0.02; // speed 
         renderer.render( scene, camera );
         requestAnimationFrame( animate );
     }
