@@ -102,10 +102,10 @@ vafan.dvd = function ()
 
     // Add the lights
     scene.add(new THREE.AmbientLight(0xbbbbbb));
-    var mlight = new THREE.PointLight( 0xffffff, 0.4 );
+    var mlight = new THREE.PointLight( 0xffffff, 0.6 );
     mlight.position.set( 25, -10, 50 );
     scene.add( mlight );
-    var llight = new THREE.PointLight( 0xffffff, 0.4 );
+    var llight = new THREE.PointLight( 0xffffff, 0.6 );
     llight.position.set( -25, 10, 70 );
     scene.add( llight );
     /*

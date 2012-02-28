@@ -3,15 +3,15 @@
 // @url    http://saulhoward.com/vafan
 // @author saul@saulhoward.com
 //
-package main
+package vafan
 
 import (
 	"os"
-	"fmt"
+	"regexp"
+	//"fmt"
 	"log"
 	"path/filepath"
 	"net/http"
-	"html/template"
 	"encoding/json"
 	"code.google.com/p/gorilla/mux"
 	"github.com/kless/goconfig/config"
@@ -25,7 +25,7 @@ var baseDir, _ = conf.String("default", "base-dir")
 var router = new(mux.Router)
 
 // Start the server up
-func main() {
+func StartServer() {
 	setHandlers()
 	http.Handle("/", router)
 	http.ListenAndServe(":8888", router)
@@ -45,66 +45,23 @@ func setHandlers() {
 			filepath.Join(baseDir, "static", "img")))))
 
 	// Dynamic funcs
+    hostRe := `{host:[a-z]*}`
 	formatRe := `{format:(\.{1}[a-z]+)?}`
 
-	router.Path("/").HandlerFunc(indexHandler)
-	router.Path("/home" + formatRe).HandlerFunc(indexHandler)
-	router.Path("/index" + formatRe).HandlerFunc(indexHandler)
+	router.Host(hostRe).Path("/").HandlerFunc(indexHandler)
+	router.Host(hostRe).Path("/home" + formatRe).HandlerFunc(indexHandler)
+	router.Host(hostRe).Path("/index" + formatRe).HandlerFunc(indexHandler)
 
-	router.Path("/videos/{video}" + formatRe).HandlerFunc(videoHandler)
-}
-
-// Index resource
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-    index := new(resource)
-	index.name = "index"
-	index.content = map[string]interface{}{"title": "Go"}
-	writeResource(w, r, index)
-}
-
-// Video resource
-func videoHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-    video := new(resource)
-	video.name = "video"
-	video.content = map[string]interface{}{"video": vars["video"]}
-	writeResource(w, r, video)
-}
-
-// 404 resource
-func notFoundHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Does not compute")
-}
-
-//-- resource
-
-type resource struct {
-	name    string
-	content map[string]interface{}
-}
-
-func getSite(r *http.Request) string {
-	return "brighton-wok"
-}
-
-func getFormat(r *http.Request) string {
-	vars := mux.Vars(r)
-	if vars["format"] == "" || vars["format"] == ".html" {
-		return "html"
-	} else if vars["format"] == ".json" {
-		return "json"
-	}
-    // srsly?
-    os.Exit(1)
-    return "error"
+	router.Host(hostRe).Path("/videos/{video}" + formatRe).HandlerFunc(videoHandler)
 }
 
 func writeResource(w http.ResponseWriter, req *http.Request, res *resource) {
-	site := getSite(req)
+	site, env := getSite(req)
 	format := getFormat(req)
 	if format == "html" {
+        res.content["environment"] = env;
 		w.Header().Add("Content-Type", "text/html")
-		t := getTemplate(format, res, site)
+		t := getPageTemplate(format, res, site)
 		err := t.Execute(w, res.content)
 		checkError(err)
 	} else if format == "json" {
@@ -118,6 +75,62 @@ func writeResource(w http.ResponseWriter, req *http.Request, res *resource) {
 	}
 }
 
+var sites = map[string]string {
+    "brighton-wok": "brighton-wok.com",
+    "convict-films": "convictfilms.com",
+}
+
+var envs = [...]string{"dev", "testing", "production"}
+
+func getSite(r *http.Request) (site string, env string) {
+    // default values
+    env = "production"
+    site = "convict-films"
+    // get the host (from mux or in the Host: field)
+    host := r.Host
+	vars := mux.Vars(r)
+    if vars["host"] != "" {
+        host = vars["host"]
+    }
+    /* Should use one regex, like so...
+        var envRe string
+        for i, env := range envs {
+            if i != 0 {
+                envRe += "|"
+            }
+            envRe += env
+        }
+    */
+    for possSite, possHost := range sites {
+        var hostRe = regexp.MustCompile(possHost)
+        if hostRe.MatchString(host) {
+            site = possSite
+            break
+        }
+    }
+    for _, possEnv := range envs {
+        var envRe = regexp.MustCompile("^" + possEnv + ".")
+        if envRe.MatchString(host) {
+            env = possEnv
+            break
+        }
+    }
+    return
+}
+
+func getFormat(r *http.Request) string {
+    // should also allow Content-Accept
+	vars := mux.Vars(r)
+	if vars["format"] == "" || vars["format"] == ".html" {
+		return "html"
+	} else if vars["format"] == ".json" {
+		return "json"
+	}
+    // srsly?
+    os.Exit(1)
+    return "error"
+}
+
 //-- crappy helper things
 
 func checkError(err error) {
@@ -126,34 +139,3 @@ func checkError(err error) {
 	}
 }
 
-//-- Template functions
-
-func getTemplate(format string, res *resource, site string) *template.Template {
-	//Check for the most specific template first
-    for i:= 0; templateExists(format, res, site) == false; i++ {
-		if i == 0 {
-			site = "_anySite"
-		} else if i == 1 {
-			res.name = "_anyResource"
-		} else if i == 2 {
-			format = "_anyFormat"
-		} else if i > 2 {
-			// error checking here pls
-			os.Exit(1)
-		}
-	}
-	path := filepath.Join(baseDir, "templates", format, res.name, site, "main.html")
-	t, err := template.New("main.html").ParseFiles(path)
-	checkError(err)
-	return t
-}
-
-func templateExists(format string, res *resource, site string) bool {
-	path := filepath.Join(baseDir, "templates", format, res.name, site, "main.html")
-	_, err := os.Stat(path)
-	if err != nil {
-		print(err.Error() + "\n")
-		return false
-	}
-	return true
-}
