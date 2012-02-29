@@ -26,5 +26,5 @@ apt-get --assume-yes install python-software-properties \
 # Go - needs its own repository on natty
 add-apt-repository ppa:gophers/go
 apt-get update
-apt-get --assume-yes install golang
+apt-get --assume-yes install golang-weekly
 
