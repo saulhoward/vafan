@@ -14,24 +14,6 @@ import (
 	"html/template"
 )
 
-// TODO: Sort out this mess!
-/*
-
-
-CHANGE THIS to be a specific function for fetching templates for a full
-page, one that will only include
-
-    page, header, footer etc.
-
-
-THIS WOULD MEAN that if you want a 'one-off' template, they have to be
-completely generic, that is, they can't have the dimensions
-
-    eg, video, dvd, music
-
-I GUESS that's OK then? It makes it simpler anyway...
-
-*/
 func getTemplatePath(file string, format string, res *resource, site string) string {
 	//Check for the most specific template first
     checkFormat := format
@@ -73,18 +55,10 @@ func getPageTemplate(format string, res *resource, site string) *template.Templa
     }
     var paths = make([]string, 0)
     for _, file := range tmplFiles {
-        path := getTemplatePath(file, format, res, site)
-        print("\nAppend:  ")
-        print(path)
-        paths = append(paths, path)
+        paths = append(paths, getTemplatePath(file, format, res, site))
     }
-    var err error
-	t := template.New("page.html")
-    for _, path := range paths {
-        t, err = t.ParseFiles(path)
-        checkError(err)
-    }
-	//t, err := template.New("page.html").ParseFiles("/home/saul/code/vafan/templates/html/_anyResource/_anySite/page.html")
+	t, err := template.New("page").ParseFiles(paths)
+    checkError(err)
 	return t
 }
 

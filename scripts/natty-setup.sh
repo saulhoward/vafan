@@ -6,8 +6,8 @@
 #  * must be run as root
 #  * must be run from vafan root directory
 #
-# @url    http://github.com/saulhoward/vafan 
-# @author Saul <saul@saulhoward.com>
+# http://github.com/saulhoward/vafan 
+# Saul <saul@saulhoward.com>
 ###
 
 # Make sure only root can run our script

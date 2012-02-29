@@ -8,7 +8,6 @@ package vafan
 import (
 	"os"
 	"regexp"
-	//"fmt"
 	"log"
 	"path/filepath"
 	"net/http"
@@ -92,7 +91,7 @@ func getSite(r *http.Request) (site string, env string) {
     if vars["host"] != "" {
         host = vars["host"]
     }
-    /* Should use one regex, like so...
+    /* Should use one regex, perhaps like...
         var envRe string
         for i, env := range envs {
             if i != 0 {
