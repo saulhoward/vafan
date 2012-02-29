@@ -13,12 +13,13 @@ import (
 	"net/http"
 	"encoding/json"
 	"code.google.com/p/gorilla/mux"
-	"github.com/kless/goconfig/config"
+	//"github.com/kless/goconfig/config"
 )
 
 // get the config
-var conf, _ = config.ReadDefault("/home/saul/code/vafan/config/config.ini")
-var baseDir, _ = conf.String("default", "base-dir")
+//var conf, _ = config.ReadDefault("/home/saul/code/vafan/config/config.ini")
+//var baseDir, _ = conf.String("default", "base-dir")
+var baseDir string = "/srv/vafan"
 
 // set up the router
 var router = new(mux.Router)

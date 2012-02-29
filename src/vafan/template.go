@@ -57,7 +57,7 @@ func getPageTemplate(format string, res *resource, site string) *template.Templa
     for _, file := range tmplFiles {
         paths = append(paths, getTemplatePath(file, format, res, site))
     }
-	t, err := template.New("page").ParseFiles(paths)
+	t, err := template.New("page.html").ParseFiles(paths...)
     checkError(err)
 	return t
 }

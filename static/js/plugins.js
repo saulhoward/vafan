@@ -165,7 +165,7 @@ vafan.dvd = function ()
         camera.position.x = (Math.sin(frame) * 0.1);
         camera.position.y = (Math.cos(frame) * 0.1);
 
-        frame += 0.02; // speed 
+        frame += 0.01; // speed 
         renderer.render( scene, camera );
         requestAnimationFrame( animate );
     }
