@@ -29,28 +29,24 @@ audio:not([controls]) { display: none; }
 /* =============================================================================
    Base
    ========================================================================== */
-
-/*
- * 1. Correct text resizing oddly in IE6/7 when body font-size is set using em units
- * 2. Force vertical scrollbar in non-IE
- * 3. Prevent iOS text size adjust on device orientation change, without disabling user zoom: h5bp.com/g
- */
-
-html { font-size: 100%; overflow-y: scroll; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-
-body { margin: 0; font-size: 13px; line-height: 1.231; }
-
-body, button, input, select, textarea { font-family: sans-serif; color: #222; }
-
+html {
+    overflow-y: scroll;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+body, html {
+    min-height: 100%;
+}
+body {
+    background-color: #000;
+}
 /* 
  * Remove text-shadow in selection highlight: h5bp.com/i
  * These selection declarations have to be separate
  * Also: hot pink! (or customize the background color to match your design)
  */
-
 ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
 ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
-
 
 /* =============================================================================
    Links
@@ -72,8 +68,6 @@ a:hover, a:active { outline: 0; }
 abbr[title] { border-bottom: 1px dotted; }
 
 b, strong { font-weight: bold; }
-
-blockquote { margin: 1em 40px; }
 
 dfn { font-style: italic; }
 
@@ -209,7 +203,6 @@ input:invalid, textarea:invalid { background-color: #f0dddd; }
    Tables
    ========================================================================== */
 
-table { border-collapse: collapse; border-spacing: 0; }
 td { vertical-align: top; }
 
 /* =============================================================================
@@ -220,27 +213,20 @@ td { vertical-align: top; }
    Author: Saul Howard
    ========================================================================== */
 
-body, html {
-    min-height: 100%;
-}
-body {
-    background-color: #000;
-}
 #container {
+    overflow: hidden;
     min-height: 100%;
     width: 100%;
     padding: 0;
     margin: 0;
-}
-.content {
-    width: 960px;
-    margin: 0 auto;
 }
 header {
     width: 100%;
     height: 50px;
     background: url(/img/brighton-wok/metal-header-bg.png) top left repeat-x;
     border-bottom: 1px solid #222;
+    box-shadow: 0 2px 5px 0px rgba(0,0,0,0.4);
+    position: relative;
 }
 header h1 {
     margin: 0;
@@ -256,20 +242,13 @@ header h1 {
  * Movie and Title
  */
 #main {
-    -moz-box-shadow:inset 0px 6px 150px #000;
-    -webkit-box-shadow:inset 0px 6px 150px #000;
-    box-shadow:inset 0px 6px 150px #000;
-    background: url(/img/brighton-wok/pier-bg-1280x600.jpg) 50% 0 no-repeat;
+    background-color: black;
 }
 #movie {
-    height: 600px;
     margin: 0;
 }
 #information {
-    width: 500px;
-    float: right;
     padding: 0;
-    margin-top: 100px;
 }
 #title {
     margin: 0 auto;
@@ -297,7 +276,6 @@ header h1 {
     margin: 25px auto;
     padding: 10px 0;
     text-align: center;
-
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
@@ -310,13 +288,10 @@ header h1 {
     background: -ms-linear-gradient(top, #feffff 0%,#d2ebf9 100%); /* IE10+ */
     background: linear-gradient(top, #feffff 0%,#d2ebf9 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#feffff', endColorstr='#d2ebf9',GradientType=0 ); /* IE6-9 */
-    -webkit-box-shadow: inset 0px 0px 10px 2px #d2ebf9;
-    -moz-box-shadow: inset 0px 0px 10px 2px #d2ebf9;
     box-shadow: inset 0px 0px 10px 2px #d2ebf9;
 }
 #buy table.product-details {
     margin: 20px auto;
-    font-size: 12px;
 }
 #buy table.product-details th {
     padding-right: 10px;
@@ -326,31 +301,20 @@ header h1 {
     padding-left: 10px;
 }
 
-#dvd {
-    margin-top: 0;
-    margin-left: 0;
-    width: 450px;
-    float: left;
-}
-#dvd img {
-    margin-top: 50px;
-    margin-left: 100px;
-    float: right;
-}
 #dvd.three-dee img {
     display: none;
 }
 
 /*Separator Div
  **/
-#separator {
+.separator {
     width: 100%;
     height: 15px;
     background: url(/img/brighton-wok/sandstone.png) top left repeat-x;
     border-top: 1px solid #331800;
     border-bottom: 1px solid #331800;
 }
-#separator.alt {
+.separator.alt {
     background: url(/img/brighton-wok/small-wood-tile.png) top left repeat-x;
 }
  
@@ -362,39 +326,17 @@ header h1 {
     position: relative;
     background: url(/img/brighton-wok/ganja-boxing-pattern.jpg) top left repeat;
 }
-#video:before,
-#video:after {
-    content: " ";
-    position: absolute;
-    height: 100%;
-    width: 50%;
-    top: 0;
-    z-index: 1;
-    -moz-box-shadow:inset 0px 0px 150px #000;
-    -webkit-box-shadow:inset 0px 0px 150px #000;
-    box-shadow:inset 0px 0px 150px #000;
-}
-#video:before {
-    left: 0;
-    background: url(/img/brighton-wok/ganja-boxing-pattern.jpg) top left repeat;
-}
-#video:after {
-    right: 0;
-    background: url(/img/brighton-wok/ganja-boxing-pattern-2.jpg) top left repeat;
-}
 #video .content {
     position: relative;
     z-index: 2;
     background: #151515 url(/img/brighton-wok/micro-carbon.png) top left repeat;
-    -moz-box-shadow:inset 0px 6px 150px #000;
-    -webkit-box-shadow:inset 0px 6px 150px #000;
     box-shadow:inset 0px 6px 150px #000;
-    width: 960px;
     height: auto;
     padding: 50px 0;
     text-align: center;
 }
-#video .vimeo {
+#video a.video {
+    display: block;
     background: transparent;
     width: 651px;
     height: 367px;
@@ -402,40 +344,21 @@ header h1 {
     border-left: 1px solid #151515;
     border-bottom: 1px solid black;
     border-right: 1px solid black;
-    -moz-box-shadow:0px 0px 50px rgba(75,75,75,0.2);
-    -webkit-box-shadow:0px 0px 50px rgba(75,75,75,0.2);
     box-shadow:0px 0px 50px rgba(75,75,75,0.2);
     margin: 0 auto;
-}
-#video .content iframe {
+    text-indent: -3000px;
 }
 
 /*
  * Links Div
  */
-#links {
-    background: #151515 url(/img/brighton-wok/ganja-tile.jpg) top left repeat;
-    -moz-box-shadow:inset 0px 0px 150px #000;
-    -webkit-box-shadow:inset 0px 0px 150px #000;
-    box-shadow:inset 0px 0px 150px #000;
-}
 #links .content {
-    height: 700px;
     background: #5d381e url(/img/brighton-wok/wood-tile.jpg) top left repeat;
-    -moz-box-shadow:inset 0px 0px 150px #000, 0px 0px 50px #000;
-    -webkit-box-shadow:inset 0px 0px 150px #000, 0px 0px 50px #000;
     box-shadow:inset 0px 0px 150px #000, 0px 0px 50px #000;
     border-left: 1px solid black;
     border-right: 1px solid black;
     padding: 1em 0;
     color: #FFF47B;
-}
-#links .about-group,
-#links .share-group {
-    width: 475px;
-    padding: 14px;
-    display: inline-block;
-    vertical-align: top;
 }
 #links h1.ninja {
     font-family: 'Bangers', cursive;
@@ -453,6 +376,10 @@ header h1 {
     -o-transform: rotate(-3deg);
     margin-bottom: 25px;
 }
+#links h1.ninja span {
+    display: inline-block;
+    padding-left: 15px;
+}
 #links h1.ninja span:nth-child(2) {
     font-size: 50px;
 }
@@ -460,13 +387,31 @@ header h1 {
     font-size: 52px;
 }
 #links .reviews blockquote {
-    font-family: "helvetica neue", helvetica, arial, sans-serif;
+    border: none;
     font-size: 18px;
     width: 350px;
     margin: 25px auto 35px auto;
+    padding: 0;
     position: relative;
     z-index: 0;
     text-shadow: 1px 1px 2px #151515;
+}
+#links .reviews blockquote p {
+    position: relative;
+    z-index: 10;
+    margin-bottom: 10px;
+}
+#links .reviews blockquote em {
+    font-style: normal;
+    font-size: 24px;
+    display: inline;
+}
+#links .reviews blockquote .attribution {
+    text-align: right;
+    font-style: italic;
+    padding: 0 15px;
+    color: #BDB453;
+    margin-top: -10px;
 }
 #links .reviews blockquote:nth-child(odd) {
     margin-right: 0;
@@ -497,32 +442,15 @@ header h1 {
     color: #663111;
     text-shadow: none;
 }
-#links .reviews blockquote p {
-    position: relative;
-    z-index: 10;
-}
-#links .reviews blockquote em {
-    font-style: normal;
-    font-size: 24px;
-    display: inline;
-}
-#links .reviews blockquote .attribution {
-    text-align: right;
-    font-style: italic;
-    padding: 0 15px;
-    color: #BDB453;
-    margin-top: -10px;
-}
-
 #links .about {
     color: #fcfbef;
     font-size: 18px;
-    width: 400px;
+    width: 100%;
+    max-width: 400px;
     margin: 45px auto;
 }
 #links .about h1 {
     color: #fdffcc;
-    font-size: 28px;
 }
 #links .about em {
     font-style: normal;
@@ -560,14 +488,223 @@ header h1 {
  **/
 footer {
     background: black;
+    color: #666;
     width: 100%;
-    height: 300px;
+}
+footer #contentinfo {
+    margin: 25px 0;
+}
+footer #contentinfo p {
+    text-align: right;
+}
+
+/* ==|== media queries ======================================================
+   Media Queries for Responsive Design.
+   These override the primary ('mobile first') styles
+   Modify as content requires.
+   ========================================================================== */
+/*
+ * Device Specific Styles
+ */
+
+/* Bigger than standard 960 (most laptops, pcs) */
+@media only screen and (min-width: 960px) {
+    header > .content, #main > .content,
+    #video > .content, #links > .content,
+    #nav > .content, #contentinfo > .content,
+    .separator > .content {
+        width: 960px;
+        margin: 0 auto;
+    }
+    #movie {
+        height: 600px;
+    }
+    #information {
+        width: 500px;
+        float: right;
+        margin-top: 100px;
+    }
+    #dvd {
+        margin-top: 0;
+        margin-left: 0;
+        width: 450px;
+        float: left;
+    }
+    #dvd img {
+        margin-top: 50px;
+        margin-left: 100px;
+        float: right;
+    }
+    #video:before,
+    #video:after {
+        content: " ";
+        position: absolute;
+        height: 100%;
+        width: 50%;
+        top: 0;
+        z-index: 1;
+        box-shadow:inset 0px 0px 150px #000;
+    }
+    #video:before {
+        left: 0;
+        background: url(/img/brighton-wok/ganja-boxing-pattern.jpg) top left repeat;
+    }
+    #video:after {
+        right: 0;
+        background: url(/img/brighton-wok/ganja-boxing-pattern-2.jpg) top left repeat;
+    }
+    #links {
+        background: #151515 url(/img/brighton-wok/ganja-tile.jpg) top left repeat;
+        box-shadow:inset 0px 0px 150px #000;
+    }
+    #links .about-group,
+    #links .share-group {
+        width: 475px;
+        padding: 14px;
+        display: inline-block;
+        vertical-align: top;
+    }
+}
+/* Smaller than standard 960 (devices and browsers) */
+@media only screen and (max-width: 959px) {
+
 
 }
 
+/* Tablet Portrait size to standard 960 (devices and browsers) */
+@media only screen and (min-width: 768px) and (max-width: 959px) {
+    #movie {
+        height: 600px;
+    }
+    #information {
+        width: 55%;
+        float: right;
+        margin-top: 100px;
+    }
+    #dvd {
+        margin-top: 0;
+        margin-left: 0;
+        width: 45%;
+        float: left;
+    }
+    #dvd img {
+        margin-top: 50px;
+        margin-left: auto;
+        margin-right: auto;
+        float: right;
+    }
+    #links .about-group,
+    #links .share-group {
+        width: 48%;
+        padding: 14px;
+        display: inline-block;
+        vertical-align: top;
+        margin: 0 auto;
+    }
+}
+
+/* All Mobile Sizes (devices and browser) */
+@media only screen and (max-width: 767px) {
+    #dvd {
+        text-align: center;
+    }
+    #dvd img {
+        margin: 0 auto;
+    }
+    #links .reviews {
+        width: 100%;
+        max-width: 475px;
+        margin: 0 auto;
+    }
+    #links .content {
+        padding-top: 25px;
+        padding-bottom: 25px;
+    }
+}
+
+/* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+
+}
+
+/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
+@media only screen and (max-width: 479px) {
 
 
 
+}
+
+/* Specfic style requirements */
+@media only screen and (max-width: 651px) {
+    #video .content {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    #video a.video {
+        width: 100%;
+        background-size: 100%;
+    }
+}
+@media only screen and (max-width: 450px) {
+    #title h1 {
+        width: 100%;
+        background-size: 100%;
+    }
+}
+@media only screen and (max-width: 350px) {
+    #dvd img {
+        width: 100%;
+        height: 100%;
+    }
+#buy {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+}
+
+/*
+ * Pier Background image specific
+ */
+
+@media screen and (min-width: 800px) {
+    #main {
+        background-image: url(/img/brighton-wok/pier-bg/pier-bg-800x600.jpg) ;
+        background-color: black;
+        background-position: 50% 0;
+        background-repeat: no-repeat;
+    }
+}
+@media screen and (min-width: 1920px) {
+    #main {
+        background-image: url(/img/brighton-wok/pier-bg/pier-bg-1920x600.jpg) ;
+    }
+}
+@media screen and (max-width: 1440px) {
+    #main {
+        background-image: url(/img/brighton-wok/pier-bg/pier-bg-1440x600.jpg) ;
+    }
+}
+@media screen and (max-width: 1280px) {
+    #main {
+        background-image: url(/img/brighton-wok/pier-bg/pier-bg-1280x600.jpg) ;
+    }
+}
+@media screen and (max-width: 1152px) {
+    #main {
+        background-image: url(/img/brighton-wok/pier-bg/pier-bg-1152x600.jpg) ;
+    }
+}
+@media screen and (max-width: 1024px) {
+    #main {
+        background-image: url(/img/brighton-wok/pier-bg/pier-bg-1024x600.jpg) ;
+    }
+}
+@media screen and (max-width: 800px) {
+    #main {
+        background-image: none;
+    }
+}
 
 /* ==|== non-semantic helper classes ========================================
    Please define your styles before this section.
@@ -593,44 +730,6 @@ footer {
 .clearfix:before, .clearfix:after { content: ""; display: table; }
 .clearfix:after { clear: both; }
 .clearfix { zoom: 1; }
-
-
-
-/* ==|== media queries ======================================================
-   Media Queries for Responsive Design.
-   These override the primary ('mobile first') styles
-   Modify as content requires.
-   ========================================================================== */
-
-/* Smaller than standard 960 (devices and browsers) */
-@media only screen and (max-width: 959px) {
-
-
-}
-
-/* Tablet Portrait size to standard 960 (devices and browsers) */
-@media only screen and (min-width: 768px) and (max-width: 959px) {
-
-
-}
-
-/* All Mobile Sizes (devices and browser) */
-@media only screen and (max-width: 767px) {
-
-
-}
-
-/* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
-@media only screen and (min-width: 480px) and (max-width: 767px) {
-
-}
-
-/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
-@media only screen and (max-width: 479px) {
-
-
-
-}
 
 
 

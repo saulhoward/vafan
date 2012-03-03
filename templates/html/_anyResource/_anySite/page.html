@@ -17,6 +17,9 @@
 
   <!-- CSS: implied media=all -->
   <!-- CSS concatenated and minified via ant build script-->
+  <link rel="stylesheet" href="/css/bootstrap/bootstrap.css">
+  <link rel="stylesheet" href="/css/bootstrap/bootstrap-responsive.css">
+  <link rel="stylesheet" href="/css/font-awesome/font-awesome.css">
   <link rel="stylesheet" href="/css/style.css">
   <!-- end CSS-->
 
@@ -31,15 +34,44 @@
 <body>
 
   <div id="container">
-    {{/*
+    {{/**
        * See http://www.w3.org/WAI/PF/aria/roles#landmark_roles 
-       */}}
-    {{template "banner.html"}}
-    {{template "navigation.html"}}
-    {{template "search.html"}}
-    {{template "main.html"}}
-    {{template "complementary.html"}}
-    {{template "contentinfo.html"}}
+       **/}}
+    <header role="banner">
+        <div class="content">
+            {{template "banner.html"}}
+            <div role="search">
+                {{template "search.html"}}
+            </div>
+        </div>
+    </header>
+
+    <div id="main" role="main">
+        <div class="content">
+            {{template "main.html"}}
+        </div>
+    </div>
+
+    <div role="complementary">
+        <div class="content">
+            {{template "complementary.html"}}
+        </div>
+    </div>
+
+    <footer>
+        <div id="nav" role="navigation">
+            <div class="content">
+                {{template "navigation.html"}}
+            </div>
+        </div>
+
+        <div id="contentinfo" role="contentinfo">
+            <div class="content">
+                {{template "contentinfo.html"}}
+            </div>
+        </div>
+    </footer>
+
   </div> <!--! end of #container -->
 
   <!-- JavaScript at the bottom for fast page loading -->
@@ -52,8 +84,10 @@
   <!-- scripts concatenated and minified via ant build script-->
   <script type="text/javascript" src="/js/libs/Three.js"></script>
 
+  <!--
   <script defer src="/js/plugins.js"></script>
   <script defer src="/js/script.js"></script>
+  -->
   <!-- end scripts-->
 
 	

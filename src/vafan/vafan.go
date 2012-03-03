@@ -1,4 +1,4 @@
-// Vafan - a web server for Convict Films
+// Vafan - a web server for a film studio
 //
 // @url    http://saulhoward.com/vafan
 // @author saul@saulhoward.com
