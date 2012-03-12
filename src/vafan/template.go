@@ -15,30 +15,32 @@ import (
 )
 
 func getTemplatePath(file string, format string, res *resource, site string) string {
+    //print("\n")
+    //print("\nLooking for template with " + format + " " + res.name + " " + site)
 	//Check for the most specific template first
     checkFormat := format
-    checkRes := res
+    checkResName := res.name
     checkSite := site
-    for i:= 0; templateExists(file, checkFormat, checkRes, checkSite) == false; i++ {
+    for i:= 0; templateExists(file, checkFormat, checkResName, checkSite) == false; i++ {
 		if i == 0 {
 			checkSite = "_anySite"
 		} else if i == 1 {
-			checkRes.name = "_anyResource"
+			checkResName = "_anyResource"
             checkSite = site
 		} else if i == 2 {
-			checkRes.name = "_anyResource"
+            checkResName = res.name
 			checkSite = "_anySite"
 		} else if i == 3 {
+			checkResName = "_anyResource"
+			checkSite = "_anySite"
+		} else if i == 4 {
 			checkFormat = "_anyFormat"
-		} else if i > 2 {
+		} else if i > 4 {
 			// error checking here pls
 			os.Exit(1)
 		}
 	}
-    res = checkRes
-    format = checkFormat
-    site = checkSite
-    return filepath.Join(baseDir, "templates", format, res.name, site, file)
+    return filepath.Join(baseDir, "templates", checkFormat, checkResName, checkSite, file)
 }
 
 func getPageTemplate(format string, res *resource, site string) *template.Template {
@@ -62,15 +64,15 @@ func getPageTemplate(format string, res *resource, site string) *template.Templa
 	return t
 }
 
-func templateExists(file string, format string, res *resource, site string) bool {
-	path := filepath.Join(baseDir, "templates", format, res.name, site, file)
+func templateExists(file string, format string, resName string, site string) bool {
+	path := filepath.Join(baseDir, "templates", format, resName, site, file)
 	_, err := os.Stat(path)
 	if err != nil {
-        print("\nNope:  ")
-        print(path)
+        /* print("\nNope:  ") */
+        /* print(path) */
 		return false
 	}
-    print("\nFound: ")
-    print(path)
+    /* print("\nFound: ") */
+    /* print(path) */
 	return true
 }

@@ -21,6 +21,16 @@ import (
 //var baseDir, _ = conf.String("default", "base-dir")
 var baseDir string = "/srv/vafan"
 
+// Should be in config
+var sites = map[string]string {
+    "brighton-wok": "brighton-wok.com",
+    "convict-films": "convictfilms.com",
+}
+// Can stay as sensible default?
+var envs = [...]string{"dev", "testing", "production"}
+
+var hostRe = `{host:[a-z0-9\.\:]*}`
+
 // set up the router
 var router = new(mux.Router)
 
@@ -33,6 +43,7 @@ func StartServer() {
 
 // Set mux handlers
 func setHandlers() {
+    print("\nSetting Handlers")
 	// Static directories
 	router.PathPrefix("/css").Handler(
 		http.StripPrefix("/css", http.FileServer(http.Dir(
@@ -45,21 +56,58 @@ func setHandlers() {
 			filepath.Join(baseDir, "static", "img")))))
 
 	// Dynamic funcs
-    hostRe := `{host:[a-z]*}`
 	formatRe := `{format:(\.{1}[a-z]+)?}`
 
-	router.Host(hostRe).Path("/").HandlerFunc(indexHandler)
-	router.Host(hostRe).Path("/home" + formatRe).HandlerFunc(indexHandler)
-	router.Host(hostRe).Path("/index" + formatRe).HandlerFunc(indexHandler)
+    // Home resource
+	router.Host(hostRe).Path("/").
+        Name("index").
+        HandlerFunc(indexHandler)
+	router.Host(hostRe).
+        Path("/home" + formatRe).
+        HandlerFunc(indexHandler)
+	router.Host(hostRe).
+        Path("/index" + formatRe).
+        HandlerFunc(indexHandler)
 
-	router.Host(hostRe).Path("/videos/{video}" + formatRe).HandlerFunc(videoHandler)
+    // User resources
+	router.Host(hostRe).
+        Path("/users/auth" + formatRe).
+        Name("usersAuth").
+        HandlerFunc(userAuthHandler)
+	router.Host(hostRe).
+        Path("/users/registrar" + formatRe).
+        Name("usersRegistrar").
+        HandlerFunc(userRegistrarHandler)
+
+    // Video resources
+	router.Host(hostRe).
+        Path("/videos/{video}" + formatRe).
+        Name("videos").
+        HandlerFunc(videoHandler)
 }
 
 func writeResource(w http.ResponseWriter, req *http.Request, res *resource) {
 	site, env := getSite(req)
 	format := getFormat(req)
-	if format == "html" {
+    // should we redirect to a canonical host for this resource?
+    if res.canonicalSite != "" && res.canonicalSite != site {
+        rHost := env + "." + sites[res.canonicalSite] + ":8888"
+        rFormat := "." + format
+        if rFormat == ".html" {
+            rFormat = ""
+        }
+        rUrl, err := router.GetRoute(res.name).Host(hostRe).URL("format", rFormat, "host", rHost)
+        checkError(err)
+        print("\nRedirecting to canonical url... " + rUrl.String())
+        w.Header().Set("Location", rUrl.String())
+        http.Redirect(w, req, rUrl.String(), http.StatusMovedPermanently)
+        return
+    }
+    // write the resource in requested format
+    if format == "html" {
         res.content["environment"] = env;
+        res.content["url"] = res.url;
+        res.content["resource"] = res.name;
 		w.Header().Add("Content-Type", "text/html")
 		t := getPageTemplate(format, res, site)
 		err := t.Execute(w, res.content)
@@ -73,14 +121,8 @@ func writeResource(w http.ResponseWriter, req *http.Request, res *resource) {
 		// error checking here pls
 		os.Exit(1)
 	}
+    return
 }
-
-var sites = map[string]string {
-    "brighton-wok": "brighton-wok.com",
-    "convict-films": "convictfilms.com",
-}
-
-var envs = [...]string{"dev", "testing", "production"}
 
 func getSite(r *http.Request) (site string, env string) {
     // default values

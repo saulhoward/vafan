@@ -1,0 +1,86 @@
+<div class="row">
+    <div class="span8">
+
+        <h1>Register with Vafan</h1>
+
+        <form method="POST" action="{{.url}}" class="form-horizontal">
+            <fieldset>
+                <legend>Register</legend>
+                <div class="control-group">
+                    <label class="control-label" for="Username">Username</label>
+                    <div class="controls">
+                        <input
+                            type="text"
+                            class="input-xlarge"
+                            id="Username"
+                            name="Username"
+                            placeholder="John Smith"
+                            >
+                        <p class="help-block">
+                        Your username - should be letters and no
+                        spaces.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="emailAddress">
+                        Email Address
+                    </label>
+                    <div class="controls">
+                        <input
+                            type="text"
+                            class="input-xlarge"
+                            id="emailAddress"
+                            placeholder="john@example.com"
+                            >
+                        <p class="help-block">
+                        Your email address.
+                        </p>
+                    </div>
+                </div>
+
+                 <div class="control-group">
+                    <label class="control-label" for="password">
+                        Password
+                    </label>
+                    <div class="controls">
+                        <input
+                            type="password"
+                            class="input-xlarge"
+                            id="password"
+                            >
+                        <p class="help-block">
+                        Your password.
+                        </p>
+                    </div>
+                </div>
+ 
+                 <div class="control-group">
+                    <label class="control-label" for="repeatPassword">
+                        Repeat Password
+                    </label>
+                    <div class="controls">
+                        <input
+                            type="password"
+                            class="input-xlarge"
+                            id="repeatPassword"
+                            name="repeatPassword"
+                            >
+                        <p class="help-block">
+                        Your password again.
+                        </p>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit"
+                        class="btn btn-primary"
+                        >Register</button>
+                    <button
+                        class="btn">Cancel</button>
+                </div>
+            </fieldset>
+        </form>
+
+    </div>
+</div>

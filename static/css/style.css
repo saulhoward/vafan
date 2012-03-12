@@ -7,11 +7,11 @@
  */
 
 /* Revenge of the IE box model */
-* {
+/** {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box; 
-}
+}*/
 
 /* =============================================================================
    HTML5 display definitions
@@ -34,7 +34,10 @@ body, html {
     min-height: 100%;
 }
 body {
-    background-color: #000;
+    background-color: white;
+}
+body.index {
+    background-color: black;
 }
 /* 
  * Remove text-shadow in selection highlight: h5bp.com/i
@@ -59,7 +62,9 @@ a:hover, a:active { outline: 0; }
 /* ==========================================================================
  * General Typography, colors etc
    ========================================================================== */
-h1, h2, h3, h4, h5, h6 {
+.index h1, .index h2,
+.index h3, .index h4,
+.index h5, .index h6 {
     color: #FDFFCC;
 }
 
@@ -73,10 +78,18 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0;
     margin: 0;
 }
+#main > .content,
+#complementary > .content {
+    background: white;
+}
+.index #main > .content,
+.index #complementary > .content {
+    background: transparent;
+}
 header {
     width: 100%;
     height: 50px;
-    background: url(/img/brighton-wok/metal-header-bg.png) top left repeat-x;
+    background: black url(/img/brighton-wok/metal-header-bg.png) top left repeat-x;
     border-bottom: 1px solid #222;
     box-shadow: 0 2px 5px 0px rgba(0,0,0,0.4);
     position: relative;
@@ -94,7 +107,7 @@ header h1 {
 /**
  * Movie and Title
  */
-#main {
+.index #main {
     background-color: black;
 }
 #movie {
@@ -353,9 +366,11 @@ header h1 {
 /*Footer
  **/
 footer {
-    background: black;
     color: #666;
     width: 100%;
+}
+.index footer {
+    background: black;
 }
 footer #contentinfo {
     margin: 25px 0;
@@ -378,9 +393,13 @@ footer #contentinfo p {
     header > .content, #main > .content,
     #video-selector, #links > .content,
     #nav > .content, #contentinfo > .content,
+    #complementary > .content,
     .separator > .content {
         width: 960px;
         margin: 0 auto;
+    }
+    .index #complementary > .content  {
+        width: 100%;
     }
     #movie {
         height: 600px;
@@ -537,7 +556,7 @@ footer #contentinfo p {
  */
 
 @media screen and (min-width: 800px) {
-    #main {
+    .index #main {
         background-image: url(/img/brighton-wok/pier-bg/pier-bg-800x600.jpg) ;
         background-color: black;
         background-position: 50% 0;
@@ -545,32 +564,32 @@ footer #contentinfo p {
     }
 }
 @media screen and (min-width: 1920px) {
-    #main {
+    .index #main {
         background-image: url(/img/brighton-wok/pier-bg/pier-bg-1920x600.jpg) ;
     }
 }
 @media screen and (max-width: 1440px) {
-    #main {
+    .index #main {
         background-image: url(/img/brighton-wok/pier-bg/pier-bg-1440x600.jpg) ;
     }
 }
 @media screen and (max-width: 1280px) {
-    #main {
+    .index #main {
         background-image: url(/img/brighton-wok/pier-bg/pier-bg-1280x600.jpg) ;
     }
 }
 @media screen and (max-width: 1152px) {
-    #main {
+    .index #main {
         background-image: url(/img/brighton-wok/pier-bg/pier-bg-1152x600.jpg) ;
     }
 }
 @media screen and (max-width: 1024px) {
-    #main {
+    .index #main {
         background-image: url(/img/brighton-wok/pier-bg/pier-bg-1024x600.jpg) ;
     }
 }
 @media screen and (max-width: 800px) {
-    #main {
+    .index #main {
         background-image: none;
     }
 }
