@@ -14,12 +14,12 @@ import (
 	"html/template"
 )
 
-func getTemplatePath(file string, format string, res *resource, site string) string {
+func getTemplatePath(file string, format string, res Resource, site string) string {
     //print("\n")
     //print("\nLooking for template with " + format + " " + res.name + " " + site)
 	//Check for the most specific template first
     checkFormat := format
-    checkResName := res.name
+    checkResName := res.name()
     checkSite := site
     for i:= 0; templateExists(file, checkFormat, checkResName, checkSite) == false; i++ {
 		if i == 0 {
@@ -28,7 +28,7 @@ func getTemplatePath(file string, format string, res *resource, site string) str
 			checkResName = "_anyResource"
             checkSite = site
 		} else if i == 2 {
-            checkResName = res.name
+            checkResName = res.name()
 			checkSite = "_anySite"
 		} else if i == 3 {
 			checkResName = "_anyResource"
@@ -43,7 +43,7 @@ func getTemplatePath(file string, format string, res *resource, site string) str
     return filepath.Join(baseDir, "templates", checkFormat, checkResName, checkSite, file)
 }
 
-func getPageTemplate(format string, res *resource, site string) *template.Template {
+func getPageTemplate(format string, res Resource, site string) *template.Template {
     // Templates that make up a page
     // See http://www.w3.org/WAI/PF/aria/roles#landmark_roles 
     var tmplFiles = [...]string{
@@ -68,11 +68,11 @@ func templateExists(file string, format string, resName string, site string) boo
 	path := filepath.Join(baseDir, "templates", format, resName, site, file)
 	_, err := os.Stat(path)
 	if err != nil {
-        /* print("\nNope:  ") */
-        /* print(path) */
+        print("\nNope:  ")
+        print(path)
 		return false
 	}
-    /* print("\nFound: ") */
-    /* print(path) */
+    print("\nFound: ")
+    print(path)
 	return true
 }

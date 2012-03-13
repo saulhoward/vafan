@@ -1,12 +1,13 @@
 <div class="row">
     <div class="span8">
 
-        <h1>Register with Vafan</h1>
+        <h1>Sign up with Convict Films</h1>
 
         <form method="POST" action="{{.url}}" class="form-horizontal">
             <fieldset>
                 <legend>Register</legend>
-                <div class="control-group">
+
+                <div class="control-group {{if .errors.Username}}error{{end}}">
                     <label class="control-label" for="Username">Username</label>
                     <div class="controls">
                         <input
@@ -14,49 +15,52 @@
                             class="input-xlarge"
                             id="Username"
                             name="Username"
+                            value="{{.user.Username}}"
                             placeholder="John Smith"
                             >
                         <p class="help-block">
-                        Your username - should be letters and no
-                        spaces.
+                            {{or .errors.Username "Your username - should be letters and no spaces."}}
                         </p>
                     </div>
                 </div>
 
-                <div class="control-group">
-                    <label class="control-label" for="emailAddress">
+                <div class="control-group {{if .errors.EmailAddress}}error{{end}}">
+                    <label class="control-label" for="EmailAddress">
                         Email Address
                     </label>
                     <div class="controls">
                         <input
                             type="text"
                             class="input-xlarge"
-                            id="emailAddress"
+                            id="EmailAddress"
+                            name="EmailAddress"
+                            value="{{.user.EmailAddress}}"
                             placeholder="john@example.com"
                             >
                         <p class="help-block">
-                        Your email address.
+                            {{or .errors.EmailAddress "Your email address."}}
                         </p>
                     </div>
                 </div>
 
-                 <div class="control-group">
-                    <label class="control-label" for="password">
+                <div class="control-group {{if .errors.Password}}error{{end}}">
+                    <label class="control-label" for="Password">
                         Password
                     </label>
                     <div class="controls">
                         <input
                             type="password"
                             class="input-xlarge"
-                            id="password"
+                            id="Password"
+                            name="Password"
                             >
                         <p class="help-block">
-                        Your password.
+                            {{or .errors.Password "Your password."}}
                         </p>
                     </div>
                 </div>
  
-                 <div class="control-group">
+                <div class="control-group {{if .errors.Password}}error{{end}}">
                     <label class="control-label" for="repeatPassword">
                         Repeat Password
                     </label>
@@ -64,14 +68,15 @@
                         <input
                             type="password"
                             class="input-xlarge"
-                            id="repeatPassword"
-                            name="repeatPassword"
+                            id="RepeatPassword"
+                            name="RepeatPassword"
                             >
                         <p class="help-block">
-                        Your password again.
+                            {{or .errors.Password "Your password again."}}
                         </p>
                     </div>
                 </div>
+
                 <div class="form-actions">
                     <button type="submit"
                         class="btn btn-primary"

@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"log"
 	"path/filepath"
+	"net/url"
 	"net/http"
 	"encoding/json"
 	"code.google.com/p/gorilla/mux"
@@ -57,6 +58,14 @@ func setHandlers() {
 
 	// Dynamic funcs
 	formatRe := `{format:(\.{1}[a-z]+)?}`
+    for _, r := range resources {
+        router.Host(hostRe).
+            Path(r.url() + formatRe).
+            Name(r.name()).
+            Handler(r)
+    }
+
+    /*
 
     // Home resource
 	router.Host(hostRe).Path("/").
@@ -77,45 +86,59 @@ func setHandlers() {
 	router.Host(hostRe).
         Path("/users/registrar" + formatRe).
         Name("usersRegistrar").
-        HandlerFunc(userRegistrarHandler)
+        HandlerFunc(usersRegistrarHandler)
 
     // Video resources
 	router.Host(hostRe).
         Path("/videos/{video}" + formatRe).
         Name("videos").
         HandlerFunc(videoHandler)
+        */
 }
 
-func writeResource(w http.ResponseWriter, req *http.Request, res *resource) {
+func getUrl(res Resource, req *http.Request) *url.URL {
+	site, env := getSite(req)
+    /* if res.canonicalSite != "" && res.canonicalSite != site { */
+        /* site = res.canonicalSite */
+    /* } */
+	format := getFormat(req)
+    format = "." + format
+    if format == ".html" {
+        format = ""
+    }
+    host := env + "." + sites[site] + ":8888"
+    url, err := router.GetRoute(res.name()).Host(hostRe).URL("format", format, "host", host)
+    checkError(err)
+    return url
+}
+
+func writeResource(w http.ResponseWriter, req *http.Request, res Resource) {
 	site, env := getSite(req)
 	format := getFormat(req)
     // should we redirect to a canonical host for this resource?
+    /*
     if res.canonicalSite != "" && res.canonicalSite != site {
-        rHost := env + "." + sites[res.canonicalSite] + ":8888"
-        rFormat := "." + format
-        if rFormat == ".html" {
-            rFormat = ""
-        }
-        rUrl, err := router.GetRoute(res.name).Host(hostRe).URL("format", rFormat, "host", rHost)
-        checkError(err)
+        rUrl := getUrl(res, req)
         print("\nRedirecting to canonical url... " + rUrl.String())
-        w.Header().Set("Location", rUrl.String())
+        //w.Header().Set("Location", rUrl.String())
         http.Redirect(w, req, rUrl.String(), http.StatusMovedPermanently)
         return
     }
+    */
     // write the resource in requested format
     if format == "html" {
-        res.content["environment"] = env;
-        res.content["url"] = res.url;
-        res.content["resource"] = res.name;
+        content := res.content()
+        content["environment"] = env;
+        content["url"] = res.url();
+        content["resource"] = res.name();
 		w.Header().Add("Content-Type", "text/html")
 		t := getPageTemplate(format, res, site)
-		err := t.Execute(w, res.content)
+		err := t.Execute(w, content)
 		checkError(err)
 	} else if format == "json" {
 		w.Header().Add("Content-Type", "application/json")
 		enc := json.NewEncoder(w)
-		err := enc.Encode(res.content)
+		err := enc.Encode(res.content())
 		checkError(err)
 	} else {
 		// error checking here pls
