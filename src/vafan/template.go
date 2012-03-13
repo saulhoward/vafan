@@ -10,6 +10,7 @@ package vafan
 import (
 	"os"
 	//"log"
+    "reflect"
 	"path/filepath"
 	"html/template"
 )
@@ -59,7 +60,9 @@ func getPageTemplate(format string, res Resource, site string) *template.Templat
     for _, file := range tmplFiles {
         paths = append(paths, getTemplatePath(file, format, res, site))
     }
-	t, err := template.New("page.html").ParseFiles(paths...)
+	t, err := template.New("page.html").
+        Funcs(template.FuncMap{"eq": reflect.DeepEqual}).
+        ParseFiles(paths...)
     checkError(err)
 	return t
 }
@@ -68,11 +71,11 @@ func templateExists(file string, format string, resName string, site string) boo
 	path := filepath.Join(baseDir, "templates", format, resName, site, file)
 	_, err := os.Stat(path)
 	if err != nil {
-        print("\nNope:  ")
-        print(path)
+        /* print("\nNope:  ") */
+        /* print(path) */
 		return false
 	}
-    print("\nFound: ")
-    print(path)
+    /* print("\nFound: ") */
+    /* print(path) */
 	return true
 }

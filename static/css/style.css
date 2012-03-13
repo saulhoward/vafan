@@ -47,25 +47,14 @@ body.index {
 ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
 ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
 
-/* =============================================================================
-   Links
-   ========================================================================== */
-
-a { color: #00e; }
-a:visited { color: #551a8b; }
-a:hover { color: #06e; }
-a:focus { outline: thin dotted; }
-
-/* Improve readability when focused and hovered in all browsers: h5bp.com/h */
-a:hover, a:active { outline: 0; }
-
-
 /* ==========================================================================
  * CONVICT FILMS PALETTE
  *
  * Source: http://www.colourlovers.com/palette/1098589/coup_de_gr%C3%A2ce
- * Dark Grey-blue
+ * Very dark Grey-blue-black
  *     #2A363B
+ * Light orangey-pink
+ *     #E84A5F
  *
  * Source: http://www.colourlovers.com/palette/15/tech_light
  * Limey (mid green)
@@ -80,6 +69,19 @@ a:hover, a:active { outline: 0; }
  *     #26ADE4
  *
    ========================================================================== */
+/* =============================================================================
+   Links
+   ========================================================================== */
+
+a { color: #E84A5F; }
+a:visited { color: #E84A5F; }
+a:hover { color: #E84A5F; }
+a:focus { outline: thin dotted; }
+
+/* Improve readability when focused and hovered in all browsers: h5bp.com/h */
+a:hover, a:active { outline: 0; }
+
+
 /* ==========================================================================
  * General Typography, colors etc
    ========================================================================== */
@@ -105,7 +107,7 @@ label {
 }
 legend {
     color: #ccc;
-    border-bottom: 1px solid #151515;
+    border-bottom: 1px solid #666;
 }
 .form-actions {
     background-color: #151515;
@@ -150,6 +152,9 @@ header.navbar h1 {
     width: 236px;
     height: 50px;
     background: url(/img/convict-films/convict-films-small.png) top left repeat-x;
+}
+header.navbar h1 a {
+    display: block;
 }
 /* Override bootstrap's navbar */
 .navbar {
@@ -507,16 +512,27 @@ header.navbar h1 {
 footer {
     color: #666;
     width: 100%;
+    background-color: #151515;
+    background-image: url(/img/convict-films/square_bg.png);
+    padding: 25px 0 0 0;
 }
 .index footer {
     background: black;
 }
 footer #contentinfo {
-    margin: 25px 0;
+    padding: 25px 0;
 }
 footer #contentinfo p {
     text-align: right;
 }
+/* Bootstrap overrides */
+.nav-list > li > a, .nav-list .nav-header {
+    text-shadow: none;
+}
+.nav > li > a:hover {
+    background-color: #333;
+}
+
 
 /* ==|== media queries ======================================================
    Media Queries for Responsive Design.
@@ -529,19 +545,6 @@ footer #contentinfo p {
 
 /* Bigger than standard 960 (most laptops, pcs) */
 @media only screen and (min-width: 960px) {
-    /*
-    header > .content, #main > .content,
-    #video-selector, #links > .content,
-    #nav > .content, #contentinfo > .content,
-    #complementary > .content,
-    .separator > .content {
-        width: 960px;
-        margin: 0 auto;
-    }
-    .index #complementary > .content  {
-        width: 100%;
-    }
-    */
     #movie {
         height: 600px;
     }

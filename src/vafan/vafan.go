@@ -34,17 +34,36 @@ var envs = [...]string{"dev", "testing", "production"}
 var hostRe = `{host:[a-z0-9\.\:\-]*}`
 
 // set up the router
-var router = new(mux.Router)
+var router = new(mux.Router)  // gorilla's router
 
 // Start the server up
 func StartServer() {
-	setHandlers()
+	registerHandlers()
 	http.Handle("/", router)
 	http.ListenAndServe(":8888", router)
 }
 
+// Handler wrapper - wraps resource requests
+func makeHandler(res Resource) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        // User cookie 
+        user := new(User)
+        userCookie, err := r.Cookie("vafanUser")
+        if err == http.ErrNoCookie {
+            user = NewUser()
+            userCookie = new(http.Cookie)
+            userCookie.Name = "vafanUser"
+            userCookie.Value = user.Id
+            http.SetCookie(w, userCookie)
+        } else {
+            user = GetUser(userCookie.Value)
+        }
+        res.ServeHTTP(w, r, user)
+    }
+}
+
 // Set mux handlers
-func setHandlers() {
+func registerHandlers() {
     print("\nSetting Handlers")
 	// Static directories
 	router.PathPrefix("/css").Handler(
@@ -60,13 +79,13 @@ func setHandlers() {
 		http.StripPrefix("/fonts", http.FileServer(http.Dir(
 			filepath.Join(baseDir, "static", "fonts")))))
 
-	// Dynamic funcs
+	// Dynamic handlers - the resources
 	formatRe := `{format:(\.{1}[a-z]+)?}`
     for _, r := range resources {
         router.Host(hostRe).
             Path(r.urlSchema() + formatRe).
             Name(r.name()).
-            Handler(r)
+            Handler(makeHandler(r))
     }
 
     /*
@@ -100,11 +119,20 @@ func setHandlers() {
         */
 }
 
+func getCanonicalSite(r Resource) (site string) {
+    if resourceCanonicalSites[r.name()] != ""  {
+        site = resourceCanonicalSites[r.name()]
+    }
+    return
+}
+
 func getUrl(res Resource, req *http.Request) *url.URL {
 	site, env := getSite(req)
-    /* if res.canonicalSite != "" && res.canonicalSite != site { */
-        /* site = res.canonicalSite */
-    /* } */
+    canonicalSite := getCanonicalSite(res)
+    if canonicalSite != "" && canonicalSite != site {
+        site = canonicalSite
+    }
+
 	format := getFormat(req)
     format = "." + format
     if format == ".html" {
@@ -116,22 +144,28 @@ func getUrl(res Resource, req *http.Request) *url.URL {
     return url
 }
 
-func writeResource(w http.ResponseWriter, req *http.Request, res Resource) {
+func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *User) {
+    // get the site and env requested
 	site, env := getSite(req)
 	format := getFormat(req)
     // should we redirect to a canonical host for this resource?
-    /*
-    if res.canonicalSite != "" && res.canonicalSite != site {
-        rUrl := getUrl(res, req)
+    canonicalSite := getCanonicalSite(res)
+    if canonicalSite != "" && canonicalSite != site {
+       rUrl := getUrl(res, req)
         print("\nRedirecting to canonical url... " + rUrl.String())
-        //w.Header().Set("Location", rUrl.String())
         http.Redirect(w, req, rUrl.String(), http.StatusMovedPermanently)
         return
     }
-    */
+
+    // Add defaults to the content, that are in every format
+    content := res.content()
+    links := make(map[string]interface{})
+    links["site"] = getSiteLinks(req)
+    content["links"] = links
+    content["user"] = u
+
     // write the resource in requested format
     if format == "html" {
-        content := res.content()
         content["environment"] = env
         content["url"] = getUrl(res, req)
         content["resource"] = res.name()
@@ -142,13 +176,22 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource) {
 	} else if format == "json" {
 		w.Header().Add("Content-Type", "application/json")
 		enc := json.NewEncoder(w)
-		err := enc.Encode(res.content())
+		err := enc.Encode(content)
 		checkError(err)
 	} else {
 		// error checking here pls
 		os.Exit(1)
 	}
     return
+}
+
+// a map of site urls included in every response
+func getSiteLinks(req *http.Request) map[string]string {
+    l := make(map[string]string)
+    l["usersAuth"] = getUrl(resources["usersAuth"], req).String()
+    l["usersRegistrar"] = getUrl(resources["usersRegistrar"], req).String()
+    l["index"] = getUrl(resources["index"], req).String()
+    return l
 }
 
 func getSite(r *http.Request) (site string, env string) {

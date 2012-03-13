@@ -25,7 +25,7 @@ type Resource interface {
 	name() string
 	urlSchema() string
 	content() resourceData
-    ServeHTTP(w http.ResponseWriter, r *http.Request)
+    ServeHTTP(w http.ResponseWriter, r *http.Request, u *User)
 }
 
 // list of resource instances
@@ -35,6 +35,11 @@ var resources = map[string]Resource{
     "usersAuth": new(usersAuth),
 }
 
+var resourceCanonicalSites = map[string]string{
+    "usersRegistrar": "convict-films",
+    "usersAuth": "convict-films",
+}
+
 // unnecessary helper cruft
 var emptyContent = map[string]interface{}{}
 
@@ -42,20 +47,20 @@ var emptyContent = map[string]interface{}{}
 
 type index struct {}
 
-func (i *index) name() string {
+func (res *index) name() string {
     return "index"
 }
 
-func (i *index) urlSchema() string {
+func (res *index) urlSchema() string {
     return "/"
 }
 
-func (i *index) content() resourceData {
+func (res *index) content() resourceData {
     return emptyContent
 }
 
-func (i *index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	writeResource(w, r, i)
+func (res *index) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User) {
+	writeResource(w, r, res, u)
     return
 }
 
@@ -63,63 +68,59 @@ func (i *index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 type usersRegistrar struct {
     data resourceData
-	canonicalSite string
 }
 
-func (u *usersRegistrar) name() string {
+func (res *usersRegistrar) name() string {
     return "usersRegistrar"
 }
 
-func (u *usersRegistrar) urlSchema() string {
+func (res *usersRegistrar) urlSchema() string {
     return "/users/registrar"
 }
 
-func (u *usersRegistrar) content() resourceData {
-    return u.data
+func (res *usersRegistrar) content() resourceData {
+    return res.data
 }
 
-func (u *usersRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	u.data = map[string]interface{}{}
+func (res *usersRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User) {
+	res.data = map[string]interface{}{}
 	switch r.Method {
 	case "POST":
 		// This is a post to create a new user
 		r.ParseForm()
-        user := NewUser()
-		decoder.Decode(user, r.Form)
+        //user := NewUser()
+		decoder.Decode(u, r.Form)
 
 		// check for errors in post
-        if !user.isLegal() || user.Password != r.Form.Get("RepeatPassword") {
+        if !u.isLegal() || u.Password != r.Form.Get("RepeatPassword") {
             // found errors in post
 			errors := map[string]interface{}{}
-			if !user.isUsernameLegal() {
+			if !u.isUsernameLegal() {
 				errors["Username"] = "Must contain only letters and numbers, with no spaces."
-            } else if !user.isUsernameNew() {
+            } else if !u.isUsernameNew() {
 				errors["Username"] = "Username already taken, sorry."
             }
-			if !user.isEmailAddressLegal() {
+			if !u.isEmailAddressLegal() {
 				errors["EmailAddress"] = "Must be a valid email address."
-            } else if !user.isEmailAddressNew() {
+            } else if !u.isEmailAddressNew() {
 				errors["EmailAddress"] = "This email address is already associated with another user."
             }
-			if !user.isPasswordLegal() {
+			if !u.isPasswordLegal() {
 				errors["Password"] = "Password must be more than 6 characters."
-            } else if user.Password != r.Form.Get("RepeatPassword") {
+            } else if u.Password != r.Form.Get("RepeatPassword") {
 				errors["Password"] = "Password must match repeat password."
 			}
-			u.data["user"] = user
-			u.data["errors"] = errors
-			writeResource(w, r, u)
+			res.data["errors"] = errors
+			writeResource(w, r, res, u)
 			return
 		}
 
-        user.save()
+        u.save()
         url := getUrl(resources["usersAuth"], r)
         http.Redirect(w, r, url.String(), http.StatusSeeOther)
 		return
 	case "GET":
-        user := NewUser()
-		u.data["user"] = user
-		writeResource(w, r, u)
+		writeResource(w, r, res, u)
 		return
 	}
 }
@@ -128,24 +129,23 @@ func (u *usersRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 type usersAuth struct {
     data resourceData
-	canonicalSite string
 }
 
-func (u *usersAuth) name() string {
+func (res *usersAuth) name() string {
     return "usersAuth"
 }
 
-func (u *usersAuth) urlSchema() string {
+func (res *usersAuth) urlSchema() string {
     return "/users/auth"
 }
 
-func (u *usersAuth) content() resourceData {
-    return u.data
+func (res *usersAuth) content() resourceData {
+    return res.data
 }
 
-func (u *usersAuth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	u.data = map[string]interface{}{"title": "Go"}
-	writeResource(w, r, u)
+func (res *usersAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User) {
+	res.data = map[string]interface{}{"title": "Go"}
+	writeResource(w, r, res, u)
 }
 
 

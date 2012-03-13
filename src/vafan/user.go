@@ -31,7 +31,7 @@ func connectDb() *sql.DB {
 // -- User stuff
 
 type User struct {
-    Id           string
+    Id           string // UUID v4 with dashes
     Username     string
     EmailAddress string
     Password     string
@@ -42,6 +42,11 @@ const defaultUserRole = "user"
 
 func NewUser() *User {
     u := User{uuid(), "", "", "", defaultUserRole}
+    return &u
+}
+
+func GetUser(id string) *User {
+    u := User{id, "", "", "", defaultUserRole}
     return &u
 }
 

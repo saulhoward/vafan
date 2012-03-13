@@ -1,1 +1,7 @@
-<h1>Convict Films</h1>
+<h1 class="pull-left"><a href="{{.links.site.index}}">Convict Films</a></h1>
+
+
+{{/* Dev stuff */}}
+{{if eq .environment "dev"}}
+    <p class="pull-right">User: {{.user.Id}}</p>
+{{end}}
