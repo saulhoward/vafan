@@ -60,7 +60,7 @@ func setHandlers() {
 	formatRe := `{format:(\.{1}[a-z]+)?}`
     for _, r := range resources {
         router.Host(hostRe).
-            Path(r.url() + formatRe).
+            Path(r.urlSchema() + formatRe).
             Name(r.name()).
             Handler(r)
     }
@@ -128,9 +128,9 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource) {
     // write the resource in requested format
     if format == "html" {
         content := res.content()
-        content["environment"] = env;
-        content["url"] = res.url();
-        content["resource"] = res.name();
+        content["environment"] = env
+        content["url"] = getUrl(res, req)
+        content["resource"] = res.name()
 		w.Header().Add("Content-Type", "text/html")
 		t := getPageTemplate(format, res, site)
 		err := t.Execute(w, content)

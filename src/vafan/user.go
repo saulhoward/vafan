@@ -21,7 +21,7 @@ import (
 // -- DB
 
 func connectDb() *sql.DB {
-    db, err := sql.Open("mymysql", "vafan/user/pass")
+    db, err := sql.Open("mymysql", "vafan/root/password")
     if err != nil {
         panic("Error connecting to mysql db: " + err.Error())
     }
@@ -89,11 +89,41 @@ func (u *User) isUsernameLegal() bool {
 	return true
 }
 
+func (u *User) isUsernameNew() bool {
+    db := connectDb()
+    defer db.Close()
+    selectUser, err := db.Prepare(`select username from users where username=?`)
+    if err != nil {
+        panic(err)
+    }
+    var username string
+    err = selectUser.QueryRow(u.Username).Scan(&username)
+    if err == sql.ErrNoRows {
+        return true
+    }
+    return false
+}
+
 func (u *User) isEmailAddressLegal() bool {
 	if strings.Contains(u.EmailAddress, "@") {
 		return true
 	}
 	return false
+}
+
+func (u *User) isEmailAddressNew() bool {
+    db := connectDb()
+    defer db.Close()
+    selectUser, err := db.Prepare(`select emailAddress from users where emailAddress=?`)
+    if err != nil {
+        panic(err)
+    }
+    var emailAddress string
+    err = selectUser.QueryRow(u.EmailAddress).Scan(&emailAddress)
+    if err == sql.ErrNoRows {
+        return true
+    }
+    return false
 }
 
 func (u *User) isPasswordLegal() bool {

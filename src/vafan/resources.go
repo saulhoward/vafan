@@ -23,7 +23,7 @@ type resourceData map[string]interface{}
 
 type Resource interface {
 	name() string
-	url() string
+	urlSchema() string
 	content() resourceData
     ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
@@ -32,9 +32,11 @@ type Resource interface {
 var resources = map[string]Resource{
     "index": new(index),
     "usersRegistrar": new(usersRegistrar),
+    "usersAuth": new(usersAuth),
 }
 
-var emptyContent = map[string]interface{}{"title": "Go"}
+// unnecessary helper cruft
+var emptyContent = map[string]interface{}{}
 
 // -- Index resource
 
@@ -44,7 +46,7 @@ func (i *index) name() string {
     return "index"
 }
 
-func (i *index) url() string {
+func (i *index) urlSchema() string {
     return "/"
 }
 
@@ -54,6 +56,7 @@ func (i *index) content() resourceData {
 
 func (i *index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	writeResource(w, r, i)
+    return
 }
 
 // -- Registrar resource
@@ -67,7 +70,7 @@ func (u *usersRegistrar) name() string {
     return "usersRegistrar"
 }
 
-func (u *usersRegistrar) url() string {
+func (u *usersRegistrar) urlSchema() string {
     return "/users/registrar"
 }
 
@@ -90,9 +93,13 @@ func (u *usersRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			errors := map[string]interface{}{}
 			if !user.isUsernameLegal() {
 				errors["Username"] = "Must contain only letters and numbers, with no spaces."
+            } else if !user.isUsernameNew() {
+				errors["Username"] = "Username already taken, sorry."
             }
 			if !user.isEmailAddressLegal() {
 				errors["EmailAddress"] = "Must be a valid email address."
+            } else if !user.isEmailAddressNew() {
+				errors["EmailAddress"] = "This email address is already associated with another user."
             }
 			if !user.isPasswordLegal() {
 				errors["Password"] = "Password must be more than 6 characters."
@@ -106,8 +113,8 @@ func (u *usersRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
         user.save()
-        //rUrl := getUrl("usersAuth", r)
-        //http.Redirect(w, r, rUrl.String(), http.StatusSeeOther)
+        url := getUrl(resources["usersAuth"], r)
+        http.Redirect(w, r, url.String(), http.StatusSeeOther)
 		return
 	case "GET":
         user := NewUser()
@@ -117,15 +124,32 @@ func (u *usersRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-/*
-// Auth resource
-func userAuthHandler(w http.ResponseWriter, r *http.Request) {
-	auth := new(resource)
-	auth.name = "usersAuth"
-	auth.content = map[string]interface{}{"title": "Go"}
-	writeResource(w, r, auth)
+// -- Auth resource
+
+type usersAuth struct {
+    data resourceData
+	canonicalSite string
 }
 
+func (u *usersAuth) name() string {
+    return "usersAuth"
+}
+
+func (u *usersAuth) urlSchema() string {
+    return "/users/auth"
+}
+
+func (u *usersAuth) content() resourceData {
+    return u.data
+}
+
+func (u *usersAuth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	u.data = map[string]interface{}{"title": "Go"}
+	writeResource(w, r, u)
+}
+
+
+/*
 // Video resource
 func videoHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
