@@ -33,40 +33,42 @@
 
 <body class="{{.resource}}">
 
-  <div id="container">
+  <div id="page-container">
     {{/**
        * See http://www.w3.org/WAI/PF/aria/roles#landmark_roles 
        **/}}
-    <header role="banner">
-        <div class="content">
-            {{template "banner.html" .}}
-            <div role="search">
-                {{template "search.html" .}}
+    <header role="banner" class="navbar">
+        <div class="navbar-inner">
+            <div class="container">
+                {{template "banner.html" .}}
+                <div role="search">
+                    {{template "search.html" .}}
+                </div>
             </div>
         </div>
     </header>
 
     <div id="main" role="main">
-        <div class="content">
+        <div class="container">
             {{template "main.html" .}}
         </div>
     </div>
 
     <div id="complementary" role="complementary">
-        <div class="content">
+        <div class="container">
             {{template "complementary.html" .}}
         </div>
     </div>
 
     <footer>
         <div id="nav" role="navigation">
-            <div class="content">
+            <div class="container">
                 {{template "navigation.html" .}}
             </div>
         </div>
 
         <div id="contentinfo" role="contentinfo">
-            <div class="content">
+            <div class="container">
                 {{template "contentinfo.html" .}}
             </div>
         </div>

@@ -59,50 +59,189 @@ a:focus { outline: thin dotted; }
 /* Improve readability when focused and hovered in all browsers: h5bp.com/h */
 a:hover, a:active { outline: 0; }
 
+
+/* ==========================================================================
+ * CONVICT FILMS PALETTE
+ *
+ * Source: http://www.colourlovers.com/palette/1098589/coup_de_gr%C3%A2ce
+ * Dark Grey-blue
+ *     #2A363B
+ *
+ * Source: http://www.colourlovers.com/palette/15/tech_light
+ * Limey (mid green)
+ *     #D1E751
+ * White
+ *     #FFFFFF
+ * Black
+ *     #000000
+ * Electric Blue (mid blue)
+ *     #4DBCE9
+ * Blube (darker blue)
+ *     #26ADE4
+ *
+   ========================================================================== */
 /* ==========================================================================
  * General Typography, colors etc
    ========================================================================== */
+/* Bwok specfic */
 .index h1, .index h2,
 .index h3, .index h4,
 .index h5, .index h6 {
     color: #FDFFCC;
 }
+body, p {
+    font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: white;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: white;
+}
+
+/* ==========================================================================
+ * Forms
+   ========================================================================== */
+label {
+    color: #26ADE4;
+}
+legend {
+    color: #ccc;
+    border-bottom: 1px solid #151515;
+}
+.form-actions {
+    background-color: #151515;
+    border-top: 1px solid #333;
+}
+input, textarea, select, .uneditable-input {
+    background-color: #eee;
+    border: 1px solid #666;
+}
+
 
 /* ==========================================================================
  * Layout, div specifics
    ========================================================================== */
-#container {
+#page-container {
     overflow: hidden;
     min-height: 100%;
     width: 100%;
     padding: 0;
     margin: 0;
+    background-image: url(/img/convict-films/square_bg.png);
+    background-color: #2A363B;
 }
-#main > .content,
-#complementary > .content {
-    background: white;
+#main > .container,
+#complementary > .container {
+    background-color: transparent;
 }
-.index #main > .content,
-.index #complementary > .content {
-    background: transparent;
-}
-header {
+
+header.navbar {
     width: 100%;
     height: 50px;
-    background: black url(/img/brighton-wok/metal-header-bg.png) top left repeat-x;
+    background: black url(/img/convict-films/metal-header-bg.png) top left repeat-x;
     border-bottom: 1px solid #222;
     box-shadow: 0 2px 5px 0px rgba(0,0,0,0.4);
     position: relative;
 }
-header h1 {
+header.navbar h1 {
     margin: 0;
     padding: 0;
     display: block;
     text-indent: -3000px;
     width: 236px;
     height: 50px;
-    background: url(/img/brighton-wok/convict-films-small.png) top left repeat-x;
+    background: url(/img/convict-films/convict-films-small.png) top left repeat-x;
 }
+/* Override bootstrap's navbar */
+.navbar {
+    margin-bottom: 0;
+}
+.navbar-inner {
+    background-color: transparent;
+    background-image: none;
+    box-shadow: none;
+}
+
+/* Jumbotrons
+ * -------------------------------------------------- */
+.jumbotron {
+    position: relative;
+    margin-top: 18px;
+}
+.jumbotron h1 {
+    color: #D1E751;
+    margin-bottom: 9px;
+    font-size: 81px;
+    font-weight: bold;
+    letter-spacing: -1px;
+    line-height: 1;
+}
+.jumbotron p {
+    color: #D1E751;
+    margin-bottom: 18px;
+    font-weight: 300;
+}
+.jumbotron .btn-large {
+    font-size: 20px;
+    font-weight: normal;
+    padding: 14px 24px;
+    margin-right: 10px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+}
+.jumbotron .btn-large small {
+    font-size: 14px;
+}
+
+/* Masthead (docs home) */
+.masthead {
+    padding-top: 36px;
+    margin-bottom: 72px;
+}
+.masthead h1,
+.masthead p {
+    text-align: center;
+}
+.masthead h1 {
+    margin-bottom: 18px;
+}
+.masthead p {
+    margin-left: 5%;
+    margin-right: 5%;
+    font-size: 30px;
+    line-height: 36px;
+}
+
+
+/* Specific
+ * jumbotrons
+ * -------------------------
+ * */
+/* supporting docs pages */
+.subhead {
+    padding-bottom: 0;
+    margin-bottom: 9px;
+}
+.subhead h1 {
+    font-size: 54px;
+}
+
+
+
+/*
+ * ============== BWOK Specific
+ */
+
+/* Brighton wok index specific funky rules */
+.index #complementary > .container {
+    width: 100% !important;
+    padding: 0 !important;
+}
+.index #video > .container {
+    width: 100% !important;
+    padding: 0 !important;
+}
+
 
 /**
  * Movie and Title
@@ -231,7 +370,7 @@ header h1 {
 /*
  * Links Div
  */
-#links .content {
+#links .container {
     background: #5d381e url(/img/brighton-wok/wood-tile.jpg) top left repeat;
     box-shadow:inset 0px 0px 150px #000, 0px 0px 50px #000;
     border-left: 1px solid black;
@@ -390,6 +529,7 @@ footer #contentinfo p {
 
 /* Bigger than standard 960 (most laptops, pcs) */
 @media only screen and (min-width: 960px) {
+    /*
     header > .content, #main > .content,
     #video-selector, #links > .content,
     #nav > .content, #contentinfo > .content,
@@ -401,6 +541,7 @@ footer #contentinfo p {
     .index #complementary > .content  {
         width: 100%;
     }
+    */
     #movie {
         height: 600px;
     }
@@ -444,10 +585,7 @@ footer #contentinfo p {
     }
     #links .about-group,
     #links .share-group {
-        width: 475px;
-        padding: 14px;
-        display: inline-block;
-        vertical-align: top;
+        padding-top: 14px;
     }
 }
 /* Smaller than standard 960 (devices and browsers) */
@@ -501,7 +639,7 @@ footer #contentinfo p {
         max-width: 475px;
         margin: 0 auto;
     }
-    #links .content {
+    #links .container {
         padding-top: 25px;
         padding-bottom: 25px;
     }
@@ -514,7 +652,7 @@ footer #contentinfo p {
 
 /* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
 @media only screen and (max-width: 479px) {
-    #links .content {
+    #links .container {
         padding-left: 10px;
         padding-right: 10px;
     }

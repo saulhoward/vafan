@@ -1,11 +1,16 @@
-<div class="row">
-    <div class="span8">
+<header class="jumbotron subhead" id="overview">
+        <h1>One of us...</h1>
+        <p class="lead">
+        Join the Convict Films crew
+        </p>
+</header>
 
-        <h1>Sign up with Convict Films</h1>
+<div class="row">
+    <div class="span6">
 
         <form method="POST" action="{{.url}}" class="form-horizontal">
             <fieldset>
-                <legend>Register</legend>
+                <legend>Sign up here for a free Convict Films account</legend>
 
                 <div class="control-group {{if .errors.Username}}error{{end}}">
                     <label class="control-label" for="Username">Username</label>
@@ -16,7 +21,7 @@
                             id="Username"
                             name="Username"
                             value="{{.user.Username}}"
-                            placeholder="John Smith"
+                            placeholder="johnsmith"
                             >
                         <p class="help-block">
                             {{or .errors.Username "Your username - should be letters and no spaces."}}

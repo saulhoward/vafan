@@ -30,7 +30,8 @@ var sites = map[string]string {
 // Can stay as sensible default?
 var envs = [...]string{"dev", "testing", "production"}
 
-var hostRe = `{host:[a-z0-9\.\:]*}`
+// this is silly - we should just match any host
+var hostRe = `{host:[a-z0-9\.\:\-]*}`
 
 // set up the router
 var router = new(mux.Router)
@@ -55,6 +56,9 @@ func setHandlers() {
 	router.PathPrefix("/img").Handler(
 		http.StripPrefix("/img", http.FileServer(http.Dir(
 			filepath.Join(baseDir, "static", "img")))))
+	router.PathPrefix("/fonts").Handler(
+		http.StripPrefix("/fonts", http.FileServer(http.Dir(
+			filepath.Join(baseDir, "static", "fonts")))))
 
 	// Dynamic funcs
 	formatRe := `{format:(\.{1}[a-z]+)?}`

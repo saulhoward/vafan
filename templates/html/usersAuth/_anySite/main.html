@@ -1,17 +1,57 @@
+<header class="jumbotron subhead" id="overview">
+    <h1>Log in</h1>
+    <p class="lead">That's the kind of thing an idiot would have on his luggage</p>
+</header>
+
 <div class="row">
-    <div class="span8">
+    <div class="span6">
 
-        <h1>Login to Vafan</h1>
+        <form method="POST" action="{{.url}}" class="form-horizontal">
+            <fieldset>
+                <legend>Log in to your account here</legend>
 
-        <form class="well">
-            <label for="usernameOrEmailAddress">Username/email</label>
-            <input type="text" id="usernameOrEmailAddress" class="span3" placeholder="">
-            <label for="password">Password</label>
-            <input type="text" id="password" class="span3">
-            <span class="help-inline">Associated help text!</span>
-            <button type="submit"
-                class="btn">Submit</button>
+                <div class="control-group {{if .errors.Username}}error{{end}}">
+                    <label class="control-label" for="Username">Username</label>
+                    <div class="controls">
+                        <input
+                            type="text"
+                            id="Username"
+                            name="Username"
+                            value="{{.user.Username}}"
+                            >
+                        <span class="help-inline">
+                            {{or .errors.Username ""}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="control-group {{if .errors.Password}}error{{end}}">
+                    <label class="control-label" for="Password">
+                        Password
+                    </label>
+                    <div class="controls">
+                        <input
+                            type="password"
+                            id="Password"
+                            name="Password"
+                            >
+                        <span class="help-inline">
+                            {{or .errors.Password ""}}
+                        </span>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit"
+                        class="btn btn-primary"
+                        >Log in</button>
+                    <button
+                        class="btn">Cancel</button>
+                </div>
+            </fieldset>
         </form>
+
+
+
 
     </div>
 </div>

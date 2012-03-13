@@ -14,7 +14,8 @@ vafan.fonts = {
             google: { families: [ 
                         'Acme::latin',
                         'Bangers::latin',
-                        'Ultra::latin' 
+                        'Ultra::latin', 
+                        'Ubuntu::latin'
                             ] }
         };
         (function() {
