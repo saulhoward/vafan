@@ -1,0 +1,101 @@
+/* 
+ * Convict Films stylesheet. 
+ * Saul <saul@saulhoward.com>
+ *
+ * Assumes Bootstrap is in place.
+ * Also thanks to: http://h5bp.com/css
+ */
+/* ==========================================================================
+ * CONVICT FILMS PALETTE
+ *
+ * Source: http://www.colourlovers.com/palette/1098589/coup_de_gr%C3%A2ce
+ * Very dark Grey-blue-black
+ *     #2A363B
+ * Light orangey-pink
+ *     #E84A5F
+ *
+ * Source: http://www.colourlovers.com/palette/15/tech_light
+ * Limey (mid green)
+ *     #D1E751
+ * White
+ *     #FFFFFF
+ * Black
+ *     #000000
+ * Electric Blue (mid blue)
+ *     #4DBCE9
+ * Blube (darker blue)
+ *     #26ADE4
+ *
+   ========================================================================== */
+/* =============================================================================
+   Links
+   ========================================================================== */
+
+a { color: #E84A5F; }
+a:visited { color: #E84A5F; }
+a:hover { color: #E84A5F; }
+a:focus { outline: thin dotted; }
+
+/* Improve readability when focused and hovered in all browsers: h5bp.com/h */
+a:hover, a:active { outline: 0; }
+
+
+/* ==========================================================================
+ * General Typography, colors etc
+   ========================================================================== */
+body, p {
+    font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: white;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: white;
+}
+
+/* ==========================================================================
+ * Forms
+   ========================================================================== */
+label {
+    color: #26ADE4;
+}
+legend {
+    color: #ccc;
+    border-bottom: 1px solid #666;
+}
+.form-actions {
+    background-color: #151515;
+    border-top: 1px solid #333;
+}
+input, textarea, select, .uneditable-input {
+    background-color: #eee;
+    border: 1px solid #666;
+}
+
+
+/* ==========================================================================
+ * Layout, div specifics
+   ========================================================================== */
+#page-container {
+    background-image: url(/img/convict-films/square_bg.png);
+    background-color: #2A363B;
+}
+/*Separator Div
+ **/
+.separator {
+    width: 100%;
+    height: 15px;
+    background: url(/img/brighton-wok/sandstone.png) top left repeat-x;
+    border-top: 1px solid #331800;
+    border-bottom: 1px solid #331800;
+}
+.separator.alt {
+    background: url(/img/brighton-wok/small-wood-tile.png) top left repeat-x;
+}
+
+
+
+/* ==|== media queries ======================================================
+   Media Queries for Responsive Design.
+   These override the primary ('mobile first') styles
+   Modify as content requires.
+   ========================================================================== */
+

@@ -12,6 +12,7 @@ import (
 	//"log"
 	//"code.google.com/p/gorilla/mux"
 	"code.google.com/p/gorilla/schema"
+	"net/url"
 	"net/http"
 )
 
@@ -33,11 +34,13 @@ var resources = map[string]Resource{
     "index": new(index),
     "usersRegistrar": new(usersRegistrar),
     "usersAuth": new(usersAuth),
+    "usersSync": new(usersSync),
 }
 
 var resourceCanonicalSites = map[string]string{
     "usersRegistrar": "convict-films",
     "usersAuth": "convict-films",
+    "usersSync": "convict-films",
 }
 
 // unnecessary helper cruft
@@ -146,8 +149,42 @@ func (res *usersAuth) content() resourceData {
 func (res *usersAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User) {
 	res.data = map[string]interface{}{"title": "Go"}
 	writeResource(w, r, res, u)
+    return
 }
 
+// -- Sync resource
+
+type usersSync struct {
+}
+
+func (res *usersSync) name() string {
+    return "usersSync"
+}
+
+func (res *usersSync) urlSchema() string {
+    return "/users/sync"
+}
+
+func (res *usersSync) content() resourceData {
+    return emptyContent
+}
+
+// send people back to the redirect-url param, with a canonical user id
+func (res *usersSync) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User) {
+    ruStr := r.URL.Query().Get("redirect-url")
+    if ruStr == "" {
+        ruStr = "/"
+    }
+    ru, err := url.Parse(ruStr)
+    checkError(err)
+    q := ru.Query()
+    ru.RawQuery = "" // remove the query string
+    q.Set("canonical-user-id", url.QueryEscape(u.Id))
+    fullUrl := ru.String() + "?" + q.Encode() // and add it back
+    print("\nReturning to url... " + fullUrl)
+    http.Redirect(w, r, fullUrl, http.StatusTemporaryRedirect)
+    return
+}
 
 /*
 // Video resource

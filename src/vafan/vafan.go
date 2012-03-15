@@ -7,6 +7,7 @@ package vafan
 
 import (
 	"os"
+	//"fmt"
 	"regexp"
 	"log"
 	"path/filepath"
@@ -27,6 +28,7 @@ var sites = map[string]string {
     "brighton-wok": "brighton-wok.com",
     "convict-films": "convictfilms.com",
 }
+
 // Can stay as sensible default?
 var envs = [...]string{"dev", "testing", "production"}
 
@@ -43,22 +45,87 @@ func StartServer() {
 	http.ListenAndServe(":8888", router)
 }
 
+// Fetch user from cookie, set cookie, sync cookies x-domain
+func userCookie(w http.ResponseWriter, r *http.Request) (u *User) {
+        c, err := r.Cookie("vafanUser")
+        if err != nil {
+            if err == http.ErrNoCookie {
+                // we have no user cookie
+                site, env := getSite(r)
+                canUserId := r.URL.Query().Get("canonical-user-id")
+                userSyncSite := resourceCanonicalSites["usersSync"]
+                if site != userSyncSite && canUserId == "" {
+                    // we're on another site to the sync resource
+                    // redirect to the user sync!
+                    sync := resources["usersSync"]
+                    syncUrl := getUrl(sync, r)
+                    redirectUrl := syncUrl.String() + "?redirect-url=" + url.QueryEscape(getCurrentUrl(r).String())
+                    print("\nRedirecting to sync url... " + redirectUrl)
+                    http.Redirect(w, r, redirectUrl, http.StatusTemporaryRedirect)
+                    return
+                } else {
+                    print("\nSetting a new cookie... ")
+                    // ok set a new cookie then
+                    if canUserId != "" {
+                        u = GetUser(canUserId)
+                    } else {
+                        u = NewUser()
+                    }
+                    c = new(http.Cookie)
+                    c.Name = "vafanUser"
+                    c.Value = u.Id
+                    c.Domain = "." + env + "." +  sites[site]
+                    http.SetCookie(w, c)
+
+                    if canUserId != "" {
+                        // still got that query string? redirect again!
+                        curUrl := getCurrentUrl(r)
+                        q := curUrl.Query()
+                        curUrl.RawQuery = "" // remove the query string
+                        q.Del("canonical-user-id")
+                        var curUrlStr string
+                        if len(q) > 0 {
+                            curUrlStr = curUrl.String() + "?" + q.Encode() // and add it back
+                        } else {
+                            curUrlStr = curUrl.String()
+                        }
+                        http.Redirect(w, r, curUrlStr , http.StatusTemporaryRedirect)
+                    }
+                }
+            } else {
+                checkError(err)
+            }
+        } else {
+            u = GetUser(c.Value)
+        }
+
+        return
+}
+
+// for when we haven't yet got a resource...
+// restores host and scheme to the request's url
+func getCurrentUrl(r *http.Request) *url.URL {
+   url := r.URL
+   if url.Host == "" {
+       site, env := getSite(r)
+       host := env + "." + sites[site] + ":8888"
+       url.Host = host
+   }
+   if url.Scheme == "" {
+       if r.TLS != nil {
+           url.Scheme = "https"
+       } else {
+           url.Scheme = "http"
+       }
+   }
+   return url
+}
+
 // Handler wrapper - wraps resource requests
 func makeHandler(res Resource) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-        // User cookie 
-        user := new(User)
-        userCookie, err := r.Cookie("vafanUser")
-        if err == http.ErrNoCookie {
-            user = NewUser()
-            userCookie = new(http.Cookie)
-            userCookie.Name = "vafanUser"
-            userCookie.Value = user.Id
-            http.SetCookie(w, userCookie)
-        } else {
-            user = GetUser(userCookie.Value)
-        }
-        res.ServeHTTP(w, r, user)
+        u := userCookie(w, r)
+        res.ServeHTTP(w, r, u)
     }
 }
 
@@ -126,11 +193,15 @@ func getCanonicalSite(r Resource) (site string) {
     return
 }
 
-func getUrl(res Resource, req *http.Request) *url.URL {
-	site, env := getSite(req)
+
+func getUrlForSite(res Resource, site string, req *http.Request) *url.URL {
+    curSite, env := getSite(req)
     canonicalSite := getCanonicalSite(res)
     if canonicalSite != "" && canonicalSite != site {
         site = canonicalSite
+    }
+    if site == "" {
+        site = curSite
     }
 
 	format := getFormat(req)
@@ -142,6 +213,10 @@ func getUrl(res Resource, req *http.Request) *url.URL {
     url, err := router.GetRoute(res.name()).Host(hostRe).URL("format", format, "host", host)
     checkError(err)
     return url
+}
+
+func getUrl(res Resource, req *http.Request) *url.URL {
+    return getUrlForSite(res, "", req)
 }
 
 func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *User) {
@@ -166,6 +241,7 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *Us
 
     // write the resource in requested format
     if format == "html" {
+        content["site"] = site
         content["environment"] = env
         content["url"] = getUrl(res, req)
         content["resource"] = res.name()
@@ -188,9 +264,11 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *Us
 // a map of site urls included in every response
 func getSiteLinks(req *http.Request) map[string]string {
     l := make(map[string]string)
+    l["convictFilms"] = getUrlForSite(resources["index"], "convict-films", req).String()
+    l["brightonWok"] = getUrlForSite(resources["index"], "brighton-wok", req).String()
+    l["index"] = getUrl(resources["index"], req).String()
     l["usersAuth"] = getUrl(resources["usersAuth"], req).String()
     l["usersRegistrar"] = getUrl(resources["usersRegistrar"], req).String()
-    l["index"] = getUrl(resources["index"], req).String()
     return l
 }
 

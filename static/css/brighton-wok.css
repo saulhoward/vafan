@@ -1,0 +1,537 @@
+/* 
+ * Brighton Wok stylesheet. 
+ * Saul <saul@saulhoward.com>
+ *
+ * Assumes Bootstrap is in place.
+ * Also thanks to: http://h5bp.com/css
+ */
+
+/* ==========================================================================
+ * TODO: Replace with Brighton Wok Palette
+ * 
+ * CONVICT FILMS PALETTE
+ *
+ * Source: http://www.colourlovers.com/palette/1098589/coup_de_gr%C3%A2ce
+ * Very dark Grey-blue-black
+ *     #2A363B
+ * Light orangey-pink
+ *     #E84A5F
+ *
+ * Source: http://www.colourlovers.com/palette/15/tech_light
+ * Limey (mid green)
+ *     #D1E751
+ * White
+ *     #FFFFFF
+ * Black
+ *     #000000
+ * Electric Blue (mid blue)
+ *     #4DBCE9
+ * Blube (darker blue)
+ *     #26ADE4
+ *
+   ========================================================================== */
+/* =============================================================================
+   Links
+   ========================================================================== */
+
+a { color: #E84A5F; }
+a:visited { color: #E84A5F; }
+a:hover { color: #E84A5F; }
+a:focus { outline: thin dotted; }
+
+/* Improve readability when focused and hovered in all browsers: h5bp.com/h */
+a:hover, a:active { outline: 0; }
+
+
+/* ==========================================================================
+ * General Typography, colors etc
+   ========================================================================== */
+.index h1, .index h2,
+.index h3, .index h4,
+.index h5, .index h6 {
+    color: #FDFFCC;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: white;
+}
+
+
+/* ==========================================================================
+ * Layout, div specifics
+   ========================================================================== */
+/*
+ * ============== BWOK Specific
+ */
+
+/* Brighton wok index specific funky rules */
+.index #complementary > .container {
+    width: 100% !important;
+    padding: 0 !important;
+}
+.index #video > .container {
+    width: 100% !important;
+    padding: 0 !important;
+}
+
+
+/**
+ * Movie and Title
+ */
+.index #main {
+    background-color: black;
+}
+#movie {
+    margin: 0;
+}
+#information {
+    padding: 0;
+}
+#information h1, #information h2, 
+#information h3, #information h4,
+#information h5, #information h6 {
+    color: #333;
+}
+#title {
+    margin: 0 auto;
+    text-align: center;
+}
+#title h1 {
+    margin: 0 auto;
+    padding: 0;
+    display: block;
+    text-indent: -3000px;
+    width: 450px;
+    height: 106px;
+    background: url(/img/brighton-wok/brighton-wok-medium.png) top left no-repeat;
+}
+#title h2 {
+    text-align: center;
+    color: white;
+    text-shadow:0px 0px 10px #000000;
+    margin: -20px 0 0 0;
+    padding: 0;
+    font-size: 24px;
+}
+#buy {
+    width: 350px;
+    margin: 25px auto;
+    padding: 10px 0;
+    text-align: center;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    border: 5px solid #d2ebf9;
+    background: #feffff; /* Old browsers */
+    background: -moz-linear-gradient(top, #feffff 0%, #d2ebf9 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#feffff), color-stop(100%,#d2ebf9)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #feffff 0%,#d2ebf9 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #feffff 0%,#d2ebf9 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #feffff 0%,#d2ebf9 100%); /* IE10+ */
+    background: linear-gradient(top, #feffff 0%,#d2ebf9 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#feffff', endColorstr='#d2ebf9',GradientType=0 ); /* IE6-9 */
+    box-shadow: inset 0px 0px 10px 2px #d2ebf9;
+}
+#buy table.product-details {
+    margin: 20px auto;
+}
+#buy table.product-details th {
+    padding-right: 10px;
+    border-right: 1px solid #666;
+}
+#buy table.product-details td {
+    padding-left: 10px;
+}
+
+#dvd.three-dee img {
+    display: none;
+}
+
+/*Separator Div
+ **/
+.separator {
+    width: 100%;
+    height: 15px;
+    background: url(/img/brighton-wok/sandstone.png) top left repeat-x;
+    border-top: 1px solid #331800;
+    border-bottom: 1px solid #331800;
+}
+.separator.alt {
+    background: url(/img/brighton-wok/small-wood-tile.png) top left repeat-x;
+}
+ 
+/*
+ * Trailer Div
+ */
+#video {
+    width: 100%;
+    position: relative;
+    background: url(/img/brighton-wok/ganja-boxing-pattern.jpg) top left repeat;
+}
+#video #video-selector {
+    position: relative;
+    z-index: 2;
+    background: #151515 url(/img/brighton-wok/micro-carbon.png) top left repeat;
+    box-shadow:inset 0px 6px 150px #000;
+    height: auto;
+    padding: 25px 0 50px 0;
+    text-align: center;
+}
+#video a.video {
+    display: block;
+    background: transparent url(/img/brighton-wok/play-trailer.jpg) top left no-repeat;
+    width: 651px;
+    height: 367px;
+    border-top: 1px solid #151515;
+    border-left: 1px solid #151515;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    box-shadow:0px 0px 50px rgba(75,75,75,0.2);
+    margin: 0 auto;
+    text-indent: -3000px;
+}
+.modal.video {
+    background: black;
+}
+.modal.video iframe {
+    margin: 0 auto;
+    display: block;
+}
+
+
+/*
+ * Links Div
+ */
+#links .container {
+    background: #5d381e url(/img/brighton-wok/wood-tile.jpg) top left repeat;
+    box-shadow:inset 0px 0px 150px #000, 0px 0px 50px #000;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding: 1em 0;
+    color: #FFF47B;
+}
+#links h1.ninja {
+    font-family: 'Bangers', cursive;
+    position: relative;
+    font-size: 48px;
+    line-height: 48px;
+    font-weight: normal;
+    color: rgba(202,7,0,1);
+    text-align: center;
+    -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(202,7,0,1)), to(rgba(202,7,0,0.5)));
+    text-shadow: -1px 0 2px #333;
+    -webkit-transform: rotate(-3deg);
+    -moz-transform: rotate(-3deg);
+    -ms-transform: rotate(-3deg);
+    -o-transform: rotate(-3deg);
+    margin-bottom: 25px;
+}
+#links h1.ninja span {
+    display: inline-block;
+    padding-left: 15px;
+}
+#links h1.ninja span:nth-child(2) {
+    font-size: 50px;
+}
+#links h1.ninja span:nth-child(3) {
+    font-size: 52px;
+}
+#links .reviews blockquote {
+    border: none;
+    font-size: 18px;
+    width: 350px;
+    margin: 25px auto 35px auto;
+    padding: 0;
+    position: relative;
+    z-index: 0;
+    text-shadow: 1px 1px 2px #151515;
+}
+#links .reviews blockquote p {
+    position: relative;
+    z-index: 10;
+    margin-bottom: 10px;
+}
+#links .reviews blockquote em {
+    font-style: normal;
+    font-size: 24px;
+    display: inline;
+}
+#links .reviews blockquote .attribution {
+    text-align: right;
+    font-style: italic;
+    padding: 0 15px;
+    color: #BDB453;
+    margin-top: -10px;
+}
+#links .reviews blockquote:nth-child(odd) {
+    margin-right: 0;
+    -webkit-transform: rotate(1deg);
+    -moz-transform: rotate(1deg);
+    -ms-transform: rotate(1deg);
+    -o-transform: rotate(1deg);
+}
+#links .reviews blockquote:nth-child(even) {
+    -webkit-transform: rotate(-1deg);
+    -moz-transform: rotate(-1deg);
+    -ms-transform: rotate(-1deg);
+    -o-transform: rotate(-1deg);
+}
+#links .reviews blockquote:nth-child(3) {
+    -webkit-transform: rotate(-2deg);
+    -moz-transform: rotate(-2deg);
+    -ms-transform: rotate(-2deg);
+    -o-transform: rotate(-2deg);
+}
+#links .reviews blockquote:before {
+    position: absolute;
+    width: 350px;
+    content: "“";
+    margin-left: -45px;
+    margin-top: -25px;
+    font: 600%/1 "Ultra",Georgia,"Times New Roman",serif;
+    color: #663111;
+    text-shadow: none;
+}
+#links .about {
+    color: #fcfbef;
+    font-size: 18px;
+    width: 100%;
+    max-width: 400px;
+    margin: 45px auto;
+}
+#links .about h1 {
+    color: #fdffcc;
+}
+#links .about em {
+    font-style: normal;
+    font-weight: bold;
+}
+
+/* Twitter Tweets
+ */
+#links .twitter {
+    margin-top: 50px;
+}
+#links .tweets-wrapper {
+    width: 350px;
+    color: #333;
+    margin: 0 auto;
+    padding: 10px;
+    background: #fcfbef; /* Old browsers */
+    background: -moz-linear-gradient(top, #fcfbef 0%, #fdffcc 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfbef), color-stop(100%,#fdffcc)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #fcfbef 0%,#fdffcc 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #fcfbef 0%,#fdffcc 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #fcfbef 0%,#fdffcc 100%); /* IE10+ */
+    background: linear-gradient(top, #fcfbef 0%,#fdffcc 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfbef', endColorstr='#fdffcc',GradientType=0 ); /* IE6-9 */
+    border: 1px solid #fff;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+#links .tweets {
+    background: transparent right bottom no-repeat url(/img/icons/twitter-128x128.png);
+}
+
+/* ==|== media queries ======================================================
+   Media Queries for Responsive Design.
+   These override the primary ('mobile first') styles
+   Modify as content requires.
+   ========================================================================== */
+/*
+ * Device Specific Styles
+ */
+
+/* Bigger than standard 960 (most laptops, pcs) */
+@media only screen and (min-width: 960px) {
+    #movie {
+        height: 600px;
+    }
+    #information {
+        width: 500px;
+        float: right;
+        margin-top: 100px;
+    }
+    #dvd {
+        margin-top: 0;
+        margin-left: 0;
+        /* width: 450px; */
+        width: 40%;
+        float: left;
+    }
+    #dvd img {
+        margin-top: 50px;
+        margin-left: 100px;
+        float: right;
+    }
+    #video:before,
+    #video:after {
+        content: " ";
+        position: absolute;
+        height: 100%;
+        width: 50%;
+        top: 0;
+        z-index: 1;
+        box-shadow:inset 0px 0px 150px #000;
+    }
+    #video:before {
+        left: 0;
+        background: url(/img/brighton-wok/ganja-boxing-pattern.jpg) top left repeat;
+    }
+    #video:after {
+        right: 0;
+        background: url(/img/brighton-wok/ganja-boxing-pattern-2.jpg) top left repeat;
+    }
+    #links {
+        background: #151515 url(/img/brighton-wok/ganja-tile.jpg) top left repeat;
+        box-shadow:inset 0px 0px 150px #000;
+    }
+    #links .about-group,
+    #links .share-group {
+        padding-top: 14px;
+    }
+}
+/* Smaller than standard 960 (devices and browsers) */
+@media only screen and (max-width: 959px) {
+
+
+}
+
+/* Tablet Portrait size to standard 960 (devices and browsers) */
+@media only screen and (min-width: 768px) and (max-width: 959px) {
+    #movie {
+        height: 600px;
+    }
+    #information {
+        width: 55%;
+        float: right;
+        margin-top: 100px;
+    }
+    #dvd {
+        margin-top: 0;
+        margin-left: 0;
+        width: 45%;
+        float: left;
+    }
+    #dvd img {
+        margin-top: 50px;
+        margin-left: auto;
+        margin-right: auto;
+        float: right;
+    }
+    #links .about-group,
+    #links .share-group {
+        width: 48%;
+        padding: 14px;
+        display: inline-block;
+        vertical-align: top;
+        margin: 0 auto;
+    }
+}
+
+/* All Mobile Sizes (devices and browser) */
+@media only screen and (max-width: 767px) {
+    #dvd {
+        text-align: center;
+    }
+    #dvd img {
+        margin: 0 auto;
+    }
+    #links .reviews {
+        width: 100%;
+        max-width: 475px;
+        margin: 0 auto;
+    }
+    #links .container {
+        padding-top: 25px;
+        padding-bottom: 25px;
+    }
+}
+
+/* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+
+}
+
+/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
+@media only screen and (max-width: 479px) {
+    #links .container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+/* Specfic style requirements */
+@media only screen and (max-width: 651px) {
+    #video #video-selector {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    #video a.video {
+        width: 100%;
+        height: auto;
+        min-height: 225px;
+        background-size: 100%;
+    }
+}
+@media only screen and (max-width: 450px) {
+    #title h1 {
+        width: 100%;
+        background-size: 100%;
+    }
+}
+@media only screen and (max-width: 350px) {
+    #dvd img {
+        width: 100%;
+        height: 100%;
+    }
+#buy {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+}
+
+/*
+ * Pier Background image specific
+ */
+
+@media screen and (min-width: 800px) {
+    .index #main {
+        background-image: url(/img/brighton-wok/pier-bg/pier-bg-800x600.jpg) ;
+        background-color: black;
+        background-position: 50% 0;
+        background-repeat: no-repeat;
+    }
+}
+@media screen and (min-width: 1920px) {
+    .index #main {
+        background-image: url(/img/brighton-wok/pier-bg/pier-bg-1920x600.jpg) ;
+    }
+}
+@media screen and (max-width: 1440px) {
+    .index #main {
+        background-image: url(/img/brighton-wok/pier-bg/pier-bg-1440x600.jpg) ;
+    }
+}
+@media screen and (max-width: 1280px) {
+    .index #main {
+        background-image: url(/img/brighton-wok/pier-bg/pier-bg-1280x600.jpg) ;
+    }
+}
+@media screen and (max-width: 1152px) {
+    .index #main {
+        background-image: url(/img/brighton-wok/pier-bg/pier-bg-1152x600.jpg) ;
+    }
+}
+@media screen and (max-width: 1024px) {
+    .index #main {
+        background-image: url(/img/brighton-wok/pier-bg/pier-bg-1024x600.jpg) ;
+    }
+}
+@media screen and (max-width: 800px) {
+    .index #main {
+        background-image: none;
+    }
+}
+
