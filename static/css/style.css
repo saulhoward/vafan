@@ -34,10 +34,8 @@ body, html {
     min-height: 100%;
 }
 body {
-    background-color: white;
-}
-body.index {
-    background-color: black;
+    background-color: #151515;
+    background-image: url(/img/convict-films/square_bg.png);
 }
 /* 
  * Remove text-shadow in selection highlight: h5bp.com/i
@@ -81,7 +79,7 @@ legend {
     border-bottom: 1px solid #666;
 }
 .form-actions {
-    background-color: #151515;
+    background-color: rgba(0,0,0,0.5);
     border-top: 1px solid #333;
 }
 input, textarea, select, .uneditable-input {
@@ -210,9 +208,6 @@ footer {
     background-color: #151515;
     background-image: url(/img/convict-films/square_bg.png);
     padding: 25px 0 0 0;
-}
-.index footer {
-    background: black;
 }
 footer #contentinfo {
     padding: 25px 0;

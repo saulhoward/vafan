@@ -52,26 +52,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
- * Forms
-   ========================================================================== */
-label {
-    color: #26ADE4;
-}
-legend {
-    color: #ccc;
-    border-bottom: 1px solid #666;
-}
-.form-actions {
-    background-color: #151515;
-    border-top: 1px solid #333;
-}
-input, textarea, select, .uneditable-input {
-    background-color: #eee;
-    border: 1px solid #666;
-}
-
-
-/* ==========================================================================
  * Layout, div specifics
    ========================================================================== */
 #page-container {
