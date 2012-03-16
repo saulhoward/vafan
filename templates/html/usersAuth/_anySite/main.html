@@ -9,17 +9,18 @@
             <fieldset>
                 <legend>Log in to your account here</legend>
 
-                <div class="control-group {{if .errors.Username}}error{{end}}">
-                    <label class="control-label" for="Username">Username</label>
+                <div class="control-group {{if .errors.UsernameOrEmailAddress}}error{{end}}">
+                    <label class="control-label"
+                        for="UsernameOrEmailAddress">Username/Email</label>
                     <div class="controls">
                         <input
                             type="text"
-                            id="Username"
-                            name="Username"
+                            id="UsernameOrEmailAddress"
+                            name="UsernameOrEmailAddress"
                             value="{{.user.Username}}"
-                            >
+                        >
                         <span class="help-inline">
-                            {{or .errors.Username ""}}
+                            {{or .errors.UsernameOrEmailAddress ""}}
                         </span>
                     </div>
                 </div>
@@ -46,11 +47,8 @@
                     <button
                         class="btn">Cancel</button>
                 </div>
+                <input type="hidden" name="login" value="true" />
             </fieldset>
         </form>
-
-
-
-
     </div>
 </div>

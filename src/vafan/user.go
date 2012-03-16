@@ -62,7 +62,7 @@ func uuid() string {
     return fmt.Sprintf("%x-%x-%x-%x-%x", b[:4], b[4:6], b[6:8], b[8:10], b[10:])
 }
 
-func (u *User) save() {
+func (u *User) save() error {
     db := connectDb()
     defer db.Close()
     query := `insert into users values (?, ?, ?, ?, ?)`
@@ -72,9 +72,9 @@ func (u *User) save() {
     }
     _, err = stmt.Exec(u.Id, u.Username, u.EmailAddress, u.Password, u.Role)
     if err != nil {
-        panic(err)
+        return err
     }
-    return
+    return nil
 }
 
 func (u *User) isLegal() bool {
@@ -92,6 +92,21 @@ func (u *User) isUsernameLegal() bool {
 		return false
 	}
 	return true
+}
+
+func (u *User) isRegistered() bool {
+    db := connectDb()
+    defer db.Close()
+    selectUser, err := db.Prepare(`select id from users where id=?`)
+    if err != nil {
+        panic(err)
+    }
+    var id int
+    err = selectUser.QueryRow(u.Id).Scan(&id)
+    if err == sql.ErrNoRows {
+        return false
+    }
+    return true
 }
 
 func (u *User) isUsernameNew() bool {
@@ -133,6 +148,13 @@ func (u *User) isEmailAddressNew() bool {
 
 func (u *User) isPasswordLegal() bool {
 	if len(u.Password) < 6 {
+		return false
+	}
+	return true
+}
+
+func (u *User) isNew() bool {
+    if u.isRegistered() || !u.isUsernameNew() || !u.isEmailAddressNew() {
 		return false
 	}
 	return true

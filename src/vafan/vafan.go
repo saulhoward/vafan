@@ -245,9 +245,31 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *Us
         content["environment"] = env
         content["url"] = getUrl(res, req)
         content["resource"] = res.name()
+
+        // add any session flashes (4 kinds)
+        session, err := sessionStore.Get(req, "vafanFlashes")
+        checkError(err)
+        flashes := make(map[string]interface{})
+        if f := session.Flashes("error"); len(f) > 0 {
+            flashes["error"] = f
+        }
+        if f := session.Flashes("success"); len(f) > 0 {
+            flashes["success"] = f
+        }
+        if f := session.Flashes("warning"); len(f) > 0 {
+            flashes["warning"] = f
+        }
+        if f := session.Flashes("information"); len(f) > 0 {
+            flashes["information"] = f
+        }
+        if len(flashes) > 0 {
+            content["flashes"] = flashes
+        }
+        session.Save(req, w)
+
 		w.Header().Add("Content-Type", "text/html")
 		t := getPageTemplate(format, res, site)
-		err := t.Execute(w, content)
+		err = t.Execute(w, content)
 		checkError(err)
 	} else if format == "json" {
 		w.Header().Add("Content-Type", "application/json")

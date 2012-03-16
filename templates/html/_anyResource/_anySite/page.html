@@ -49,6 +49,39 @@
         </div>
     </header>
 
+    {{if .flashes }}
+        <div class="flash container">
+            {{if .flashes.success }}
+                {{range .flashes.success }}
+                    <div class="alert alert-block alert-success">
+                        <a class="close" data-dismiss="alert">×</a>
+                        <h4 class="alert-heading">Success</h4>
+                        {{.}}
+                    </div>
+                {{end}}
+            {{end}}
+            {{if .flashes.error }}
+                {{range .flashes.error }}
+                    <div class="alert alert-block alert-error">
+                        <a class="close" data-dismiss="alert">×</a>
+                        <h4 class="alert-heading">There was an error</h4>
+                        {{.}}
+                        </div>
+                {{end}}
+            {{end}}
+            {{if .flashes.warning }}
+                {{range .flashes.warning }}
+                    <div class="alert alert-block">
+                    <a class="close" data-dismiss="alert">×</a>
+                        <h4 class="alert-heading">Warning</h4>
+                        {{.}}
+                    </div>
+                {{end}}
+            {{end}}
+ 
+        </div>
+    {{end}}
+
     <div id="main" role="main">
         <div class="container">
             {{template "main.html" .}}
