@@ -14,14 +14,7 @@ import (
 	"net/url"
 	"net/http"
 	"code.google.com/p/gorilla/schema"
-    "code.google.com/p/gorilla/sessions"
 )
-
-var sessionStore = sessions.NewCookieStore([]byte("something-very-secret"))
-
-func MyHandler(w http.ResponseWriter, r *http.Request) {
-
-}
 
 // decodes form values
 var decoder = schema.NewDecoder()
@@ -101,7 +94,7 @@ func (res *usersRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, u *
 		decoder.Decode(u, r.Form)
 
 		// check for errors in post
-        if !u.isLegal() || u.Password != r.Form.Get("RepeatPassword") || !u.isNew() {
+        if !u.isLegal(r.Form.Get("Password")) || r.Form.Get("Password") != r.Form.Get("RepeatPassword") || !u.isNew() {
             // found errors in post
 			errors := map[string]interface{}{}
 			if !u.isUsernameLegal() {
@@ -114,9 +107,9 @@ func (res *usersRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, u *
             } else if !u.isEmailAddressNew() {
 				errors["EmailAddress"] = "This email address is already associated with another user."
             }
-			if !u.isPasswordLegal() {
+			if !u.isPasswordLegal(r.Form.Get("Password")) {
 				errors["Password"] = "Password must be more than 6 characters."
-            } else if u.Password != r.Form.Get("RepeatPassword") {
+            } else if r.Form.Get("Password") != r.Form.Get("RepeatPassword") {
 				errors["Password"] = "Password must match repeat password."
 			}
 			res.data["errors"] = errors
@@ -125,20 +118,14 @@ func (res *usersRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, u *
 		}
 
         // legal user, try to save
-        err := u.save()
+        err := u.save(r.Form.Get("Password"))
         var url *url.URL
         if err != nil {
             url = getUrl(resources["usersRegistrar"], r)
-            // add flash to session
-            session, _ := sessionStore.Get(r, "vafanFlashes")
-            session.AddFlash("Failed to save new user", "error")
-            session.Save(r, w)
+            addFlash(w, r, "Failed to save new user", "error")
         } else {
             url = getUrl(resources["usersAuth"], r)
-            // add flash to session
-            session, _ := sessionStore.Get(r, "vafanFlashes")
-            session.AddFlash("Registered a new user, please log in.", "success")
-            session.Save(r, w)
+            addFlash(w, r, "Registered a new user, please log in.", "success")
         }
 
         http.Redirect(w, r, url.String(), http.StatusSeeOther)
@@ -148,9 +135,7 @@ func (res *usersRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, u *
             writeResource(w, r, res, u)
         } else {
             url := getUrl(resources["usersAuth"], r)
-            session, _ := sessionStore.Get(r, "vafanFlashes")
-            session.AddFlash("Your user ID already has an account, please log in.", "warning")
-            session.Save(r, w)
+            addFlash(w, r, "Your user ID already has an account, please log in.", "warning")
             http.Redirect(w, r, url.String(), http.StatusSeeOther)
         }
 		return
@@ -182,22 +167,27 @@ func (res *usersAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User)
 	case "POST":
 		// This is a post to login or logout
 		r.ParseForm()
-		decoder.Decode(u, r.Form)
+        // try to login
         if r.Form.Get("login") != "" {
-            // login user
-            sessionId, err := u.Login()
-            if err != nil {
-                // set the session
-                // Get a session. We're ignoring the error resulted from decoding an
-                // existing session: Get() always returns a session, even if empty.
-                session, _ := store.Get(r, "vafanLogin")
-                // Set some session values.
-                session.Values["id"] = sessionId
-                // Save it.
-                session.Save(r, w)
-            }
-        }
+            // TODO: THE CURRENT USER MUST BE LOGGED OUT
 
+            var url *url.URL
+            // login user
+            loginUser, err := login(r.Form.Get("UsernameOrEmailAddress"), r.Form.Get("Password"))
+            if err != nil {
+                url = getUrl(resources["usersAuth"], r)
+                addFlash(w, r, "Failed to login", "error")
+            } else {
+                // set the login session
+                _, err := newLoginSession(w, r, loginUser)
+                if err != nil {
+                    checkError(err)
+                }
+                url = getUrl(resources["index"], r)
+                addFlash(w, r, "Login!", "success")
+            }
+            http.Redirect(w, r, url.String(), http.StatusSeeOther)
+       }
 	case "GET":
         writeResource(w, r, res, u)
     }

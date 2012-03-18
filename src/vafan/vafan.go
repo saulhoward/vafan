@@ -45,63 +45,6 @@ func StartServer() {
 	http.ListenAndServe(":8888", router)
 }
 
-// Fetch user from cookie, set cookie, sync cookies x-domain
-func userCookie(w http.ResponseWriter, r *http.Request) (u *User) {
-        c, err := r.Cookie("vafanUser")
-        if err != nil {
-            if err == http.ErrNoCookie {
-                // we have no user cookie
-                site, env := getSite(r)
-                canUserId := r.URL.Query().Get("canonical-user-id")
-                userSyncSite := resourceCanonicalSites["usersSync"]
-                if site != userSyncSite && canUserId == "" {
-                    // we're on another site to the sync resource
-                    // redirect to the user sync!
-                    sync := resources["usersSync"]
-                    syncUrl := getUrl(sync, r)
-                    redirectUrl := syncUrl.String() + "?redirect-url=" + url.QueryEscape(getCurrentUrl(r).String())
-                    print("\nRedirecting to sync url... " + redirectUrl)
-                    http.Redirect(w, r, redirectUrl, http.StatusTemporaryRedirect)
-                    return
-                } else {
-                    print("\nSetting a new cookie... ")
-                    // ok set a new cookie then
-                    if canUserId != "" {
-                        u = GetUser(canUserId)
-                    } else {
-                        u = NewUser()
-                    }
-                    c = new(http.Cookie)
-                    c.Name = "vafanUser"
-                    c.Value = u.Id
-                    c.Domain = "." + env + "." +  sites[site]
-                    http.SetCookie(w, c)
-
-                    if canUserId != "" {
-                        // still got that query string? redirect again!
-                        curUrl := getCurrentUrl(r)
-                        q := curUrl.Query()
-                        curUrl.RawQuery = "" // remove the query string
-                        q.Del("canonical-user-id")
-                        var curUrlStr string
-                        if len(q) > 0 {
-                            curUrlStr = curUrl.String() + "?" + q.Encode() // and add it back
-                        } else {
-                            curUrlStr = curUrl.String()
-                        }
-                        http.Redirect(w, r, curUrlStr , http.StatusTemporaryRedirect)
-                    }
-                }
-            } else {
-                checkError(err)
-            }
-        } else {
-            u = GetUser(c.Value)
-        }
-
-        return
-}
-
 // for when we haven't yet got a resource...
 // restores host and scheme to the request's url
 func getCurrentUrl(r *http.Request) *url.URL {
@@ -124,6 +67,9 @@ func getCurrentUrl(r *http.Request) *url.URL {
 // Handler wrapper - wraps resource requests
 func makeHandler(res Resource) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
+        // is there a login cookie?
+
+        // if not, use the normal user cookie
         u := userCookie(w, r)
         res.ServeHTTP(w, r, u)
     }
@@ -245,31 +191,15 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *Us
         content["environment"] = env
         content["url"] = getUrl(res, req)
         content["resource"] = res.name()
-
-        // add any session flashes (4 kinds)
-        session, err := sessionStore.Get(req, "vafanFlashes")
-        checkError(err)
-        flashes := make(map[string]interface{})
-        if f := session.Flashes("error"); len(f) > 0 {
-            flashes["error"] = f
-        }
-        if f := session.Flashes("success"); len(f) > 0 {
-            flashes["success"] = f
-        }
-        if f := session.Flashes("warning"); len(f) > 0 {
-            flashes["warning"] = f
-        }
-        if f := session.Flashes("information"); len(f) > 0 {
-            flashes["information"] = f
-        }
-        if len(flashes) > 0 {
+        if flashes := getFlashContent(w, req); len(flashes) > 0 {
             content["flashes"] = flashes
+        } else {
+            content["flashes"] = ""
         }
-        session.Save(req, w)
 
 		w.Header().Add("Content-Type", "text/html")
 		t := getPageTemplate(format, res, site)
-		err = t.Execute(w, content)
+        err := t.Execute(w, content)
 		checkError(err)
 	} else if format == "json" {
 		w.Header().Add("Content-Type", "application/json")

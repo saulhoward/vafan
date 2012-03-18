@@ -8,15 +8,21 @@
 package vafan
 
 import (
-    "crypto/rand"
     "fmt"
     "io"
     "log"
+	"errors"
 	"regexp"
 	"strings"
+    "hash"
+    "crypto/hmac"
+    "crypto/sha1"
+    "crypto/rand"
     "database/sql"
     _ "github.com/ziutek/mymysql/godrv"
 )
+
+var ErrWrongPassword = errors.New("user: password fail")
 
 // -- DB
 
@@ -28,30 +34,76 @@ func connectDb() *sql.DB {
     return db
 }
 
+func createSalt() string {
+    b := make([]byte, 16)
+    _, err := io.ReadFull(rand.Reader, b)
+    if err != nil {
+        log.Fatal(err)
+    }
+    return string(b)
+}
+
+func hashPassword(password string, salt string) string {
+    var h hash.Hash = hmac.New(sha1.New, []byte(salt))
+    h.Write([]byte(password))
+    return string(h.Sum(nil))
+}
+
 // -- User stuff
+
+func getUserByUsername(username string) *User {
+    db := connectDb()
+    defer db.Close()
+    selectUser, err := db.Prepare(`select id, username, emailAddress, passwordHash, salt from users where username=?`)
+    if err != nil {
+        panic(err)
+    }
+    u := NewUser()
+    err = selectUser.QueryRow(username).Scan(&u.Id, &u.Username, &u.EmailAddress, &u.PasswordHash, &u.Salt)
+    if err != nil {
+        panic(err)
+    }
+    return u
+}
+
+func getUserByEmailAddress(emailAddress string) *User {
+    db := connectDb()
+    defer db.Close()
+    selectUser, err := db.Prepare(`select id, username, emailAddress, passwordHash, salt from users where emailAddress=?`)
+    if err != nil {
+        panic(err)
+    }
+    u := NewUser()
+    err = selectUser.QueryRow(emailAddress).Scan(&u.Id, &u.Username, &u.EmailAddress, &u.PasswordHash, &u.Salt)
+    if err != nil {
+        panic(err)
+    }
+    return u
+}
 
 type User struct {
     Id           string // UUID v4 with dashes
     Username     string
     EmailAddress string
-    Password     string
+    PasswordHash string
+    Salt         string
     Role         string
 }
 
 const defaultUserRole = "user"
 
 func NewUser() *User {
-    u := User{uuid(), "", "", "", defaultUserRole}
+    u := User{newUUID(), "", "", "", "", defaultUserRole}
     return &u
 }
 
 func GetUser(id string) *User {
-    u := User{id, "", "", "", defaultUserRole}
+    u := User{id, "", "", "", "", defaultUserRole}
     return &u
 }
 
 // Use UUID v4 as user IDs
-func uuid() string {
+func newUUID() string {
     b := make([]byte, 16)
     _, err := io.ReadFull(rand.Reader, b)
     if err != nil {
@@ -62,25 +114,27 @@ func uuid() string {
     return fmt.Sprintf("%x-%x-%x-%x-%x", b[:4], b[4:6], b[6:8], b[8:10], b[10:])
 }
 
-func (u *User) save() error {
+func (u *User) save(password string) error {
+    u.Salt = createSalt()
+    u.PasswordHash = hashPassword(password, u.Salt)
     db := connectDb()
     defer db.Close()
-    query := `insert into users values (?, ?, ?, ?, ?)`
+    query := `insert into users values (?, ?, ?, ?, ?, ?)`
     stmt, err := db.Prepare(query)
     if err != nil {
         panic(err)
     }
-    _, err = stmt.Exec(u.Id, u.Username, u.EmailAddress, u.Password, u.Role)
+    _, err = stmt.Exec(u.Id, u.Username, u.EmailAddress, u.PasswordHash, u.Salt, u.Role)
     if err != nil {
         return err
     }
     return nil
 }
 
-func (u *User) isLegal() bool {
+func (u *User) isLegal(password string) bool {
     if !u.isUsernameLegal() ||
     !u.isEmailAddressLegal() ||
-    !u.isPasswordLegal() {
+    !u.isPasswordLegal(password) {
         return false
     }
     return true
@@ -146,8 +200,8 @@ func (u *User) isEmailAddressNew() bool {
     return false
 }
 
-func (u *User) isPasswordLegal() bool {
-	if len(u.Password) < 6 {
+func (u *User) isPasswordLegal(password string) bool {
+	if len(password) < 6 {
 		return false
 	}
 	return true
@@ -159,3 +213,26 @@ func (u *User) isNew() bool {
 	}
 	return true
 }
+
+// Login
+func login(usernameOrEmailAddress string, password string) (u *User, err error) {
+    // confirm username and or email exists, get user
+    u = NewUser()
+    err = nil
+    u.Username = usernameOrEmailAddress
+    if !u.isUsernameNew() {
+        u = getUserByUsername(usernameOrEmailAddress)
+    } else {
+        u.EmailAddress = usernameOrEmailAddress
+        if !u.isEmailAddressNew() {
+            u = getUserByEmailAddress(usernameOrEmailAddress)
+        }
+    }
+    // confirm that the user's password is correct
+    if hashPassword(password, u.Salt) == u.PasswordHash {
+        return
+    }
+    err = ErrWrongPassword
+    return
+}
+
