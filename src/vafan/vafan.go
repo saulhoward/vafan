@@ -7,7 +7,7 @@ package vafan
 
 import (
 	"os"
-	//"fmt"
+	"errors"
 	"regexp"
 	"log"
 	"path/filepath"
@@ -23,14 +23,36 @@ import (
 //var baseDir, _ = conf.String("default", "base-dir")
 var baseDir string = "/srv/vafan"
 
+var author string = "Saul Howard - saul@convictfilms.com"
+
+/*
 // Should be in config
 var sites = map[string]string {
     "brighton-wok": "brighton-wok.com",
     "convict-films": "convictfilms.com",
 }
+*/
+
+// Represents a site served by this server
+type site struct {
+    Name string
+    Host string
+    Title string
+    FullTitle string
+    Tagline string
+}
+// Should be in config
+var sites = [...]site {
+    site{"convict-films", "convictfilms.com", "Convict Films", "Convict Films", "We make movies"},
+    site{"brighton-wok", "brighton-wok.com", "Brighton Wok", "Brighton Wok: The Legend of Ganja Boxing", "Ninjas! Ganja! Kung Fu!"},
+}
+var defaultSite *site = &sites[0]
+var convictFilms *site = &sites[0]
+var brightonWok *site = &sites[1]
 
 // Can stay as sensible default?
 var envs = [...]string{"dev", "testing", "production"}
+var defaultEnv string = "production"
 
 // this is silly - we should just match any host
 var hostRe = `{host:[a-z0-9\.\:\-]*}`
@@ -51,7 +73,7 @@ func getCurrentUrl(r *http.Request) *url.URL {
    url := r.URL
    if url.Host == "" {
        site, env := getSite(r)
-       host := env + "." + sites[site] + ":8888"
+       host := env + "." + site.Host + ":8888"
        url.Host = host
    }
    if url.Scheme == "" {
@@ -101,6 +123,10 @@ func registerHandlers() {
             Handler(makeHandler(r))
     }
 
+    // 404
+    //router.NotFoundHandler = makeHandler(new(notFound))
+    router.NotFoundHandler = makeHandler(resources["notFound"])
+
     /*
 
     // Home resource
@@ -132,47 +158,49 @@ func registerHandlers() {
         */
 }
 
-func getCanonicalSite(r Resource) (site string) {
-    if resourceCanonicalSites[r.name()] != ""  {
-        site = resourceCanonicalSites[r.name()]
+func getCanonicalSite(r Resource) (s *site, err error) {
+    err = nil
+    if resourceCanonicalSites[r.name()] != nil  {
+        s = resourceCanonicalSites[r.name()]
+        return
     }
+    err = errors.New("No canonical site set.")
+    s = defaultSite
     return
 }
 
-
-func getUrlForSite(res Resource, site string, req *http.Request) *url.URL {
+func getUrlForSite(res Resource, s *site, req *http.Request) *url.URL {
     curSite, env := getSite(req)
-    canonicalSite := getCanonicalSite(res)
-    if canonicalSite != "" && canonicalSite != site {
-        site = canonicalSite
+    canonicalSite, err := getCanonicalSite(res)
+    if s == nil {
+        s = curSite
     }
-    if site == "" {
-        site = curSite
+    if err == nil && canonicalSite.Name != s.Name {
+        s = canonicalSite
     }
-
 	format := getFormat(req)
     format = "." + format
     if format == ".html" {
         format = ""
     }
-    host := env + "." + sites[site] + ":8888"
+    host := env + "." + s.Host + ":8888"
     url, err := router.GetRoute(res.name()).Host(hostRe).URL("format", format, "host", host)
     checkError(err)
     return url
 }
 
 func getUrl(res Resource, req *http.Request) *url.URL {
-    return getUrlForSite(res, "", req)
+    return getUrlForSite(res, nil, req)
 }
 
 func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *User) {
     // get the site and env requested
-	site, env := getSite(req)
+	s, env := getSite(req)
 	format := getFormat(req)
     // should we redirect to a canonical host for this resource?
-    canonicalSite := getCanonicalSite(res)
-    if canonicalSite != "" && canonicalSite != site {
-       rUrl := getUrl(res, req)
+    canonicalSite, err := getCanonicalSite(res)
+    if err == nil && canonicalSite.Name != s.Name {
+        rUrl := getUrl(res, req)
         print("\nRedirecting to canonical url... " + rUrl.String())
         http.Redirect(w, req, rUrl.String(), http.StatusMovedPermanently)
         return
@@ -187,7 +215,10 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *Us
 
     // write the resource in requested format
     if format == "html" {
-        content["site"] = site
+        content["author"] = author
+        content["title"] = res.title(s)
+        content["description"] = res.description()
+        content["site"] = s
         content["environment"] = env
         content["url"] = getUrl(res, req)
         content["resource"] = res.name()
@@ -198,7 +229,7 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *Us
         }
 
 		w.Header().Add("Content-Type", "text/html")
-		t := getPageTemplate(format, res, site)
+		t := getPageTemplate(format, res, s)
         err := t.Execute(w, content)
 		checkError(err)
 	} else if format == "json" {
@@ -216,18 +247,18 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *Us
 // a map of site urls included in every response
 func getSiteLinks(req *http.Request) map[string]string {
     l := make(map[string]string)
-    l["convictFilms"] = getUrlForSite(resources["index"], "convict-films", req).String()
-    l["brightonWok"] = getUrlForSite(resources["index"], "brighton-wok", req).String()
+    l["convictFilms"] = getUrlForSite(resources["index"], convictFilms, req).String()
+    l["brightonWok"] = getUrlForSite(resources["index"], brightonWok, req).String()
     l["index"] = getUrl(resources["index"], req).String()
     l["usersAuth"] = getUrl(resources["usersAuth"], req).String()
     l["usersRegistrar"] = getUrl(resources["usersRegistrar"], req).String()
     return l
 }
 
-func getSite(r *http.Request) (site string, env string) {
+func getSite(r *http.Request) (s *site, env string) {
     // default values
-    env = "production"
-    site = "convict-films"
+    env = defaultEnv
+    s = defaultSite
     // get the host (from mux or in the Host: field)
     host := r.Host
 	vars := mux.Vars(r)
@@ -243,10 +274,10 @@ func getSite(r *http.Request) (site string, env string) {
             envRe += env
         }
     */
-    for possSite, possHost := range sites {
-        var hostRe = regexp.MustCompile(possHost)
+    for _, possSite := range sites {
+        var hostRe = regexp.MustCompile(possSite.Host)
         if hostRe.MatchString(host) {
-            site = possSite
+            s = &possSite
             break
         }
     }

@@ -25,22 +25,26 @@ type resourceData map[string]interface{}
 type Resource interface {
 	name() string
 	urlSchema() string
+	title(s *site) string
+	description() string
 	content() resourceData
     ServeHTTP(w http.ResponseWriter, r *http.Request, u *User)
 }
 
 // list of resource instances
 var resources = map[string]Resource{
-    "index": new(index),
+    "index":          new(index),
     "usersRegistrar": new(usersRegistrar),
-    "usersAuth": new(usersAuth),
-    "usersSync": new(usersSync),
+    "usersAuth":      new(usersAuth),
+    "usersSync":      new(usersSync),
+    "notFound":       new(notFound),
 }
 
-var resourceCanonicalSites = map[string]string{
-    "usersRegistrar": "convict-films",
-    "usersAuth": "convict-films",
-    "usersSync": "convict-films",
+// from config, eventually
+var resourceCanonicalSites = map[string]*site{
+    "usersRegistrar": defaultSite,
+    "usersAuth":      defaultSite,
+    "usersSync":      defaultSite,
 }
 
 // unnecessary helper cruft
@@ -53,7 +57,12 @@ type index struct {}
 func (res *index) name() string {
     return "index"
 }
-
+func (res *index) title(s *site) string {
+    return s.Tagline
+}
+func (res *index) description() string {
+    return "Home page"
+}
 func (res *index) urlSchema() string {
     return "/"
 }
@@ -75,6 +84,14 @@ type usersRegistrar struct {
 
 func (res *usersRegistrar) name() string {
     return "usersRegistrar"
+}
+
+func (res *usersRegistrar) title(s *site) string {
+    return "Register"
+}
+
+func (res *usersRegistrar) description() string {
+    return "Register here to access Convict Films"
 }
 
 func (res *usersRegistrar) urlSchema() string {
@@ -152,6 +169,14 @@ func (res *usersAuth) name() string {
     return "usersAuth"
 }
 
+func (res *usersAuth) title(s *site) string {
+    return "Login"
+}
+
+func (res *usersAuth) description() string {
+    return "Login here to access Convict Films"
+}
+
 func (res *usersAuth) urlSchema() string {
     return "/users/auth"
 }
@@ -203,6 +228,14 @@ func (res *usersSync) name() string {
     return "usersSync"
 }
 
+func (res *usersSync) title(s *site) string {
+    return "User Sync"
+}
+
+func (res *usersSync) description() string {
+    return "Performs a user sync redirect"
+}
+
 func (res *usersSync) urlSchema() string {
     return "/users/sync"
 }
@@ -237,9 +270,38 @@ func videoHandler(w http.ResponseWriter, r *http.Request) {
 	video.content = map[string]interface{}{"video": vars["video"]}
 	writeResource(w, r, video)
 }
-
-// 404 resource
-func notFoundHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Does not compute")
-}
 */
+
+// -- 404 resource
+type notFound struct {
+}
+
+func (res *notFound) name() string {
+    return "notFound"
+}
+
+func (res *notFound) title(s *site) string {
+    return "404 - Not Found"
+}
+
+func (res *notFound) description() string {
+    return "The requested resource does not exist."
+}
+
+func (res *notFound) urlSchema() string {
+    return "/404"
+}
+
+func (res *notFound) content() resourceData {
+    var content = map[string]interface{}{}
+    content["message"] = "404 Not Found"
+    content["body"] = "Sorry, this resource could not be found"
+    return content
+}
+
+func (res *notFound) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User) {
+    w.WriteHeader(http.StatusNotFound)
+    writeResource(w, r, res, u)
+    return
+}
+

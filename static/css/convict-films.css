@@ -63,15 +63,15 @@ h1, h2, h3, h4, h5, h6 {
 .separator {
     width: 100%;
     height: 15px;
-    background: url(/img/brighton-wok/sandstone.png) top left repeat-x;
-    border-top: 1px solid #331800;
-    border-bottom: 1px solid #331800;
+    background: black url(/img/convict-films/metal-header-bg.png) top left repeat-x;
+    border-top: 1px solid #444;
+    border-bottom: 1px solid #222;
+    box-shadow: 0 2px 5px 0px rgba(0,0,0,0.4);
+    position: relative;
 }
-.separator.alt {
-    background: url(/img/brighton-wok/small-wood-tile.png) top left repeat-x;
+.separator.footer {
+    background: black url(/img/convict-films/metal-header-bg.png) bottom left repeat-x;
 }
-
-
 
 /* ==|== media queries ======================================================
    Media Queries for Responsive Design.

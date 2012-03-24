@@ -49,10 +49,10 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *User) {
         if err == http.ErrNoCookie {
             err = nil
             // we have no user cookie
-            site, env := getSite(r)
+            s, env := getSite(r)
             canUserId := r.URL.Query().Get("canonical-user-id")
             userSyncSite := resourceCanonicalSites["usersSync"]
-            if site != userSyncSite && canUserId == "" {
+            if s != userSyncSite && canUserId == "" {
                 // we're on another site to the sync resource
                 // redirect to the user sync!
                 sync := resources["usersSync"]
@@ -72,7 +72,7 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *User) {
                 c = new(http.Cookie)
                 c.Name = "vafanUser"
                 c.Value = u.Id
-                c.Domain = "." + env + "." +  sites[site]
+                c.Domain = "." + env + "." +  s.Host
                 c.Path = "/"
                 http.SetCookie(w, c)
 
@@ -127,12 +127,12 @@ func newLoginSession(w http.ResponseWriter, r *http.Request, u *User) (s *sessio
             //no cookie, set one
             err = nil
             print("\nAttempting to set login cookie...")
-            site, env := getSite(r)
+            si, env := getSite(r)
             c := new(http.Cookie)
             c.Name = "vafanLogin"
             c.Value = s.id
             c.Path = "/"
-            c.Domain = "." + env + "." +  sites[site]
+            c.Domain = "." + env + "." +  si.Host
             http.SetCookie(w, c)
         } else {
             checkError(err)

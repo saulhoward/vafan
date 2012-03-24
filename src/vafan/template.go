@@ -15,19 +15,19 @@ import (
 	"html/template"
 )
 
-func getTemplatePath(file string, format string, res Resource, site string) string {
+func getTemplatePath(file string, format string, res Resource, s *site) string {
     //print("\n")
     //print("\nLooking for template with " + format + " " + res.name + " " + site)
 	//Check for the most specific template first
     checkFormat := format
     checkResName := res.name()
-    checkSite := site
+    checkSite := s.Name
     for i:= 0; templateExists(file, checkFormat, checkResName, checkSite) == false; i++ {
 		if i == 0 {
 			checkSite = "_anySite"
 		} else if i == 1 {
 			checkResName = "_anyResource"
-            checkSite = site
+            checkSite = s.Name
 		} else if i == 2 {
             checkResName = res.name()
 			checkSite = "_anySite"
@@ -44,7 +44,7 @@ func getTemplatePath(file string, format string, res Resource, site string) stri
     return filepath.Join(baseDir, "templates", checkFormat, checkResName, checkSite, file)
 }
 
-func getPageTemplate(format string, res Resource, site string) *template.Template {
+func getPageTemplate(format string, res Resource, s *site) *template.Template {
     // Templates that make up a page
     // See http://www.w3.org/WAI/PF/aria/roles#landmark_roles 
     var tmplFiles = [...]string{
@@ -58,7 +58,7 @@ func getPageTemplate(format string, res Resource, site string) *template.Templat
     }
     var paths = make([]string, 0)
     for _, file := range tmplFiles {
-        paths = append(paths, getTemplatePath(file, format, res, site))
+        paths = append(paths, getTemplatePath(file, format, res, s))
     }
 	t, err := template.New("page.html").
         Funcs(template.FuncMap{"eq": reflect.DeepEqual}).
@@ -67,8 +67,8 @@ func getPageTemplate(format string, res Resource, site string) *template.Templat
 	return t
 }
 
-func templateExists(file string, format string, resName string, site string) bool {
-	path := filepath.Join(baseDir, "templates", format, resName, site, file)
+func templateExists(file string, format string, resName string, siteName string) bool {
+	path := filepath.Join(baseDir, "templates", format, resName, siteName, file)
 	_, err := os.Stat(path)
 	if err != nil {
         /* print("\nNope:  ") */

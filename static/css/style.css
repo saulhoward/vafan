@@ -98,11 +98,13 @@ input, textarea, select, .uneditable-input {
     padding: 0;
     margin: 0;
 }
+#main > .container {
+    padding-bottom: 100px;
+}
 #main > .container,
 #complementary > .container {
     background-color: transparent;
 }
-
 header.navbar {
     width: 100%;
     height: 50px;
@@ -121,10 +123,6 @@ header.navbar h1 a{
     width: 236px;
     height: 50px;
     background: url(/img/convict-films/convict-films-small-header.png) top left repeat-x;
-}
-header.navbar h1 a.brighton-wok {
-    width: 263px;
-    background-image: url(/img/brighton-wok/brighton-wok-small-header.png);
 }
 /* Override bootstrap's navbar */
 .navbar {
@@ -195,6 +193,19 @@ header.navbar h1 a.brighton-wok {
 }
 .jumbotron .btn-large small {
     font-size: 14px;
+}
+/* black background for overlaying on graphics */
+.jumbotron.overlay {
+    background-color: rgba(0,0,0,0.8);
+    max-width: 750px;
+    padding: 15px 0 5px 15px;
+}
+.jumbotron.overlay h1 {
+    color: #E84A5F;
+    text-shadow: 1px 1px 0px rgba(0,0,0,1);
+}
+.jumbotron.overlay p {
+    color: #E84A5F;
 }
 
 /* Masthead (docs home) */

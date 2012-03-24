@@ -7,28 +7,14 @@
  */
 
 /* ==========================================================================
- * TODO: Replace with Brighton Wok Palette
- * 
- * CONVICT FILMS PALETTE
+ * BRIGHTON WOK PALETTE
  *
- * Source: http://www.colourlovers.com/palette/1098589/coup_de_gr%C3%A2ce
- * Very dark Grey-blue-black
- *     #2A363B
+ * (Also used in Convict Films)
  * Light orangey-pink
  *     #E84A5F
  *
- * Source: http://www.colourlovers.com/palette/15/tech_light
- * Limey (mid green)
- *     #D1E751
- * White
- *     #FFFFFF
- * Black
- *     #000000
- * Electric Blue (mid blue)
- *     #4DBCE9
- * Blube (darker blue)
- *     #26ADE4
- *
+ * Pale Yellow (for on wood)
+ *     #FFF47B;
    ========================================================================== */
 /* =============================================================================
    Links
@@ -45,6 +31,13 @@ a:hover, a:active { outline: 0; }
 /* ==========================================================================
  * General Typography, colors etc
    ========================================================================== */
+body {
+    color: #FDFFCC;
+    font-size: 14px;
+}
+p {
+    font-size: 14px;
+}
 .index h1, .index h2,
 .index h3, .index h4,
 .index h5, .index h6 {
@@ -53,7 +46,13 @@ a:hover, a:active { outline: 0; }
 h1, h2, h3, h4, h5, h6 {
     color: white;
 }
-
+.jumbotron.overlay h1 {
+    color: #E84A5F;
+    text-shadow: 1px 1px 0px rgba(0,0,0,1);
+}
+.jumbotron.overlay p {
+    color: #E84A5F;
+}
 
 /* ==========================================================================
  * Layout, div specifics
@@ -61,6 +60,60 @@ h1, h2, h3, h4, h5, h6 {
 /*
  * ============== BWOK Specific
  */
+#page-container {
+    background: #151515 url(/img/brighton-wok/ganja-tile.jpg) top left repeat;
+    box-shadow:inset 0px 0px 150px #000;
+}
+#main > .container {
+    background: #5d381e url(/img/brighton-wok/wood-tile.jpg) top left repeat;
+    box-shadow:inset 0px 0px 100px rgba(0,0,0,0.6);
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding-left: 15px;
+    padding-right: 15px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box; 
+}
+.index #main > .container {
+    background: none;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+}
+
+/*
+ * Style which uses ganja boxing tiles as the main background 
+ * */
+/*
+#main:before,
+#main:after {
+    content: " ";
+    position: absolute;
+    height: 100%;
+    width: 50%;
+    top: 0;
+    z-index: 1;
+    box-shadow:inset 0px 0px 150px #000;
+}
+#main:before {
+    left: 0;
+    background: url(/img/brighton-wok/ganja-boxing-pattern.jpg) top left repeat;
+}
+#main:after {
+    right: 0;
+    background: url(/img/brighton-wok/ganja-boxing-pattern-2.jpg) top left repeat;
+}
+#main > .container,
+#main{
+    z-index: 2;
+    position: relative;
+}
+#main > .container {
+    background: #151515 url(/img/brighton-wok/micro-carbon.png) top left repeat;
+    box-shadow:inset 0px 6px 150px #000;
+}
+ **/
 
 /* Brighton wok index specific funky rules */
 .index #complementary > .container {
@@ -71,7 +124,13 @@ h1, h2, h3, h4, h5, h6 {
     width: 100% !important;
     padding: 0 !important;
 }
-
+/*
+ * Header logo
+ */
+header.navbar h1 a.brighton-wok {
+    width: 263px;
+    background-image: url(/img/brighton-wok/brighton-wok-small-header.png);
+}
 
 /**
  * Movie and Title
@@ -129,6 +188,7 @@ h1, h2, h3, h4, h5, h6 {
     background: linear-gradient(top, #feffff 0%,#d2ebf9 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#feffff', endColorstr='#d2ebf9',GradientType=0 ); /* IE6-9 */
     box-shadow: inset 0px 0px 10px 2px #d2ebf9;
+    color: black;
 }
 #buy table.product-details {
     margin: 20px auto;
@@ -154,7 +214,7 @@ h1, h2, h3, h4, h5, h6 {
     border-top: 1px solid #331800;
     border-bottom: 1px solid #331800;
 }
-.separator.alt {
+.separator.footer {
     background: url(/img/brighton-wok/small-wood-tile.png) top left repeat-x;
 }
  
@@ -202,7 +262,7 @@ h1, h2, h3, h4, h5, h6 {
  */
 #links .container {
     background: #5d381e url(/img/brighton-wok/wood-tile.jpg) top left repeat;
-    box-shadow:inset 0px 0px 150px #000, 0px 0px 50px #000;
+    box-shadow:inset 0px 0px 100px rgba(0,0,0,0.6), 0px 0px 50px #000;
     border-left: 1px solid black;
     border-right: 1px solid black;
     padding: 1em 0;
