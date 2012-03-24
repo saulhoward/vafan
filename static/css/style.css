@@ -269,6 +269,21 @@ footer i.icon-facebook-sign {
 }
 
 
+/* ==|== media queries ======================================================
+   Media Queries for Responsive Design.
+   These override the primary ('mobile first') styles
+   Modify as content requires.
+   ========================================================================== */
+
+/* All Mobile Sizes (devices and browser) */
+@media only screen and (max-width: 767px) {
+    header.navbar h1 a{
+        width: 141px;
+        background-image: url(/img/convict-films/convict-small-header.png);
+    }
+}
+
+
 /* ==|== non-semantic helper classes ========================================
    Please define your styles before this section.
    ========================================================================== */

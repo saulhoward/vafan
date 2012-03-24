@@ -13,8 +13,18 @@
  * Light orangey-pink
  *     #E84A5F
  *
- * Pale Yellow (for on wood)
+ * Pale Yellow (for on dark wood)
  *     #FFF47B;
+ *
+ *
+ * COLORS FROM HENRY'S TILE
+ *
+ * very pale green
+ *     #DCEBC2
+ *
+ * stronger green/yellow
+ *     #D4D973
+ *
    ========================================================================== */
 /* =============================================================================
    Links
@@ -32,7 +42,7 @@ a:hover, a:active { outline: 0; }
  * General Typography, colors etc
    ========================================================================== */
 body {
-    color: #FDFFCC;
+    color: black;
     font-size: 14px;
 }
 p {
@@ -41,17 +51,13 @@ p {
 .index h1, .index h2,
 .index h3, .index h4,
 .index h5, .index h6 {
-    color: #FDFFCC;
+    color: black;
 }
 h1, h2, h3, h4, h5, h6 {
     color: white;
 }
-.jumbotron.overlay h1 {
-    color: #E84A5F;
-    text-shadow: 1px 1px 0px rgba(0,0,0,1);
-}
-.jumbotron.overlay p {
-    color: #E84A5F;
+.jumbotron h1, .jumbotron p {
+    color: #333;
 }
 
 /* ==========================================================================
@@ -61,14 +67,14 @@ h1, h2, h3, h4, h5, h6 {
  * ============== BWOK Specific
  */
 #page-container {
-    background: #151515 url(/img/brighton-wok/ganja-tile.jpg) top left repeat;
+    background: #151515 url(/img/brighton-wok/smoke-tile.jpg) top left repeat;
     box-shadow:inset 0px 0px 150px #000;
 }
 #main > .container {
-    background: #5d381e url(/img/brighton-wok/wood-tile.jpg) top left repeat;
-    box-shadow:inset 0px 0px 100px rgba(0,0,0,0.6);
-    border-left: 1px solid black;
-    border-right: 1px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    background-color: #DCEBC2;
+    box-shadow:inset 0px 0px 100px rgba(212,217,115,0.5);
     padding-left: 15px;
     padding-right: 15px;
     -moz-box-sizing: border-box;
@@ -507,6 +513,10 @@ header.navbar h1 a.brighton-wok {
     #links .container {
         padding-top: 25px;
         padding-bottom: 25px;
+    }
+    header.navbar h1 a.brighton-wok {
+        width: 54px;
+        background-image: url(/img/brighton-wok/leaf-small-header.png);
     }
 }
 
