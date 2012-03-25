@@ -10,7 +10,8 @@ package vafan
 import (
 	//"fmt"
 	//"log"
-	//"code.google.com/p/gorilla/mux"
+    "reflect"
+    "regexp"
 	"net/url"
 	"net/http"
 	"code.google.com/p/gorilla/mux"
@@ -20,116 +21,121 @@ import (
 // decodes form values
 var decoder = schema.NewDecoder()
 
-// data map returned by a resource
+// Our resources must return URL & Content, and they must
+// serveHTTP
+type Resource interface {
+	URL(req *http.Request, s *site) *url.URL
+	Content(req *http.Request, s *site) resourceContent
+    ServeHTTP(w http.ResponseWriter, r *http.Request, u *User)
+}
+
+// generic data map for resource content
 type resourceData map[string]interface{}
 
-type Resource interface {
-	name() string
-	urlSchema() string
-	title(s *site) string
-	description() string
-	content(r *http.Request) resourceData
-    urlData(r *http.Request) []string
-    ServeHTTP(w http.ResponseWriter, r *http.Request, u *User)
-    URL(r *http.Request, urlData []string) *url.URL
+type resourceContent struct {
+    title       string
+    description string
+    content     resourceData
 }
 
-// list of resource instances
-// order is important, where schemas may conflict
-var resources = map[string]Resource{
-    "index":          new(index),
-    "usersRegistrar": new(usersRegistrar),
-    "usersAuth":      new(usersAuth),
-    "usersSync":      new(usersSync),
-    "users":          new(users),
-    "notFound":       new(notFound),
-}
-
-// from config, eventually
-var resourceCanonicalSites = map[string]*site{
-    "usersRegistrar": defaultSite,
-    "usersAuth":      defaultSite,
-    "usersSync":      defaultSite,
-}
-
-// unnecessary helper cruft
+// somewhat crufty helper map
 var emptyContent = map[string]interface{}{}
+
+// crufty...
+var resourceCanonicalSites = map[string]*site{
+    "usersRegistrarResource": defaultSite,
+    "usersAuthResource":      defaultSite,
+    "usersSyncResource":      defaultSite,
+}
+
+// Gets a URL for a resource.
+// used as a helper by someResource.URL(r, s) function
+func getUrl(res Resource, req *http.Request, s *site, urlData []string) *url.URL {
+    curSite, env := getSite(req)
+    canonicalSite, err := getCanonicalSite(res)
+    if s == nil {
+        s = curSite
+    }
+    if err == nil && canonicalSite.Name != s.Name {
+        s = canonicalSite
+    }
+	format := getFormat(req)
+    format = "." + format
+    if format == ".html" {
+        format = ""
+    }
+    host := env + "." + s.Host + ":8888"
+    urlPairs := []string{"format", format, "host", host}
+    if urlData != nil {
+        for _, p := range urlData {
+            urlPairs = append(urlPairs, p)
+        }
+    }
+    url, err := router.GetRoute(resourceName(res)).Host(hostRe).URL(urlPairs...)
+    checkError(err)
+    return url
+}
+
+// get the resource's type name by reflection
+func resourceName(r Resource) string {
+    n := reflect.TypeOf(r).String()
+    re := regexp.MustCompile(`\.([a-zA-Z]+)$`)
+    m := re.FindStringSubmatch(n)
+    return m[1]
+}
+
+// --
+
+// Now the actual resources, these will go in separate files, I think
 
 // -- Index resource
 
-type index struct {}
-
-func (res *index) name() string {
-    return "index"
-}
-func (res *index) title(s *site) string {
-    return s.Tagline
-}
-func (res *index) description() string {
-    return "Home page"
+type indexResource struct {
 }
 
-func (res *index) URL(req *http.Request, urlData []string) *url.URL {
-    return getUrlForSite(res, nil, req, nil)
+func (res indexResource) URL(req *http.Request, s *site) *url.URL {
+    return getUrl(res, req, s, nil)
 }
 
-func (res *index) urlSchema() string {
-    return "/"
-}
-
-func (res *index) content(r *http.Request) resourceData {
-    return emptyContent
-}
-
-func (res *index) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User) {
-	writeResource(w, r, res, u)
+func (res indexResource) Content(req *http.Request, s *site) (c resourceContent) {
+    c.title = s.Tagline
+    c.description = "Home page"
+    c.content = emptyContent
     return
 }
 
-func (res *index) urlData(r *http.Request) []string {
-    return []string{}
+func (res indexResource) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *User) {
+    writeResource(w, r, res, reqU)
+    return
 }
 
 // -- Registrar resource
 
-type usersRegistrar struct {
+type usersRegistrarResource struct {
     data resourceData
 }
 
-func (res *usersRegistrar) name() string {
-    return "usersRegistrar"
+func (res usersRegistrarResource) URL(req *http.Request, s *site) *url.URL {
+    // limit registration to default site
+    return getUrl(res, req, defaultSite, nil)
 }
 
-func (res *usersRegistrar) title(s *site) string {
-    return "Register"
+func (res usersRegistrarResource) Content(req *http.Request, s *site) (c resourceContent) {
+    c.title = "Register"
+    c.description = "Register here to access Convict Films"
+    if res.data == nil {
+        res.data = emptyContent
+    }
+    c.content = res.data
+    return
 }
 
-func (res *usersRegistrar) description() string {
-    return "Register here to access Convict Films"
-}
-
-func (res *usersRegistrar) URL(req *http.Request, urlData []string) *url.URL {
-    return getUrlForSite(res, nil, req, nil)
-}
-
-func (res *usersRegistrar) urlSchema() string {
-    return "/users/registrar"
-}
-
-func (res *usersRegistrar) content(r *http.Request) resourceData {
-    return res.data
-}
-
-func (res *usersRegistrar) urlData(r *http.Request) []string {
-    return []string{}
-}
-
-func (res *usersRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User) {
-	res.data = map[string]interface{}{}
+func (res usersRegistrarResource) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *User) {
 	switch r.Method {
 	case "POST":
 		// This is a post to create a new user
 		r.ParseForm()
+        u := new(User)
 		decoder.Decode(u, r.Form)
 
 		// check for errors in post
@@ -160,20 +166,20 @@ func (res *usersRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, u *
         err := u.save(r.Form.Get("Password"))
         var url *url.URL
         if err != nil {
-            url = getUrl(resources["usersRegistrar"], r)
+            url = usersRegistrarResource{}.URL(r, nil)
             addFlash(w, r, "Failed to save new user", "error")
         } else {
-            url = getUrl(resources["usersAuth"], r)
+            url = usersAuthResource{}.URL(r, nil)
             addFlash(w, r, "Registered a new user, please log in.", "success")
         }
 
         http.Redirect(w, r, url.String(), http.StatusSeeOther)
 		return
 	case "GET":
-        if u.isNew() {
-            writeResource(w, r, res, u)
+        if reqU.isNew() {
+            writeResource(w, r, res, reqU)
         } else {
-            url := getUrl(resources["usersAuth"], r)
+            url := usersAuthResource{}.URL(r, nil)
             addFlash(w, r, "Your user ID already has an account, please log in.", "warning")
             http.Redirect(w, r, url.String(), http.StatusSeeOther)
         }
@@ -183,41 +189,26 @@ func (res *usersRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, u *
 
 // -- Auth resource
 
-type usersAuth struct {
+type usersAuthResource struct {
     data resourceData
 }
 
-func (res *usersAuth) name() string {
-    return "usersAuth"
+func (res usersAuthResource) URL(req *http.Request, s *site) *url.URL {
+    // limit authentication to default site
+    return getUrl(res, req, defaultSite, nil)
 }
 
-func (res *usersAuth) title(s *site) string {
-    return "Login"
+func (res usersAuthResource) Content(req *http.Request, s *site) (c resourceContent) {
+    c.title = "Login"
+    c.description = "Login here to access Convict Films"
+    if res.data == nil {
+        res.data = emptyContent
+    }
+    c.content = res.data
+    return
 }
 
-func (res *usersAuth) description() string {
-    return "Login here to access Convict Films"
-}
-
-func (res *usersAuth) URL(req *http.Request, urlData []string) *url.URL {
-    return getUrlForSite(res, nil, req, nil)
-}
-
-func (res *usersAuth) urlSchema() string {
-    return "/users/auth"
-}
-
-func (res *usersAuth) urlData(r *http.Request) []string {
-    return []string{}
-}
-
-func (res *usersAuth) content(r *http.Request) resourceData {
-    return res.data
-}
-
-func (res *usersAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User) {
-	res.data = emptyContent
-
+func (res usersAuthResource) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *User) {
 	switch r.Method {
 	case "POST":
 		// This is a post to login or logout
@@ -231,7 +222,7 @@ func (res *usersAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User)
             // login user
             loginUser, err := login(r.Form.Get("UsernameOrEmailAddress"), r.Form.Get("Password"))
             if err != nil {
-                url = getUrl(resources["usersAuth"], r)
+                url = usersAuthResource{}.URL(r, nil)
                 addFlash(w, r, "Failed to login", "error")
             } else {
                 // set the login session
@@ -239,58 +230,42 @@ func (res *usersAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User)
                 if err != nil {
                     checkError(err)
                 }
-                url = getUrl(resources["index"], r)
+                url = indexResource{}.URL(r, nil)
                 addFlash(w, r, "Login!", "success")
             }
             http.Redirect(w, r, url.String(), http.StatusSeeOther)
         case r.Form.Get("logout") != "":
             // try to logout
-            logout(w, r, u)
+            logout(w, r, reqU)
             addFlash(w, r, "Logged out.", "success")
-            url = getUrl(resources["index"], r)
+            url = indexResource{}.URL(r, nil)
             http.Redirect(w, r, url.String(), http.StatusSeeOther)
         }
 	case "GET":
-        writeResource(w, r, res, u)
+        writeResource(w, r, res, reqU)
     }
     return
 }
 
 // -- Sync resource
 
-type usersSync struct {
+type usersSyncResource struct {
 }
 
-func (res *usersSync) name() string {
-    return "usersSync"
+func (res usersSyncResource) URL(req *http.Request, s *site) *url.URL {
+    // limit sync to default site
+    return getUrl(res, req, defaultSite, nil)
 }
 
-func (res *usersSync) title(s *site) string {
-    return "User Sync"
-}
-
-func (res *usersSync) description() string {
-    return "Performs a user sync redirect"
-}
-
-func (res *usersSync) URL(req *http.Request, urlData []string) *url.URL {
-    return getUrlForSite(res, nil, req, nil)
-}
-
-func (res *usersSync) urlSchema() string {
-    return "/users/sync"
-}
-
-func (res *usersSync) content(r *http.Request) resourceData {
-    return emptyContent
-}
-
-func (res *usersSync) urlData(r *http.Request) []string {
-    return []string{}
+func (res usersSyncResource) Content(req *http.Request, s *site) (c resourceContent) {
+    c.title = "User Sync"
+    c.description = "Performs a user sync redirect"
+    c.content = emptyContent
+    return
 }
 
 // send people back to the redirect-url param, with a canonical user id
-func (res *usersSync) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User) {
+func (res usersSyncResource) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *User) {
     ruStr := r.URL.Query().Get("redirect-url")
     if ruStr == "" {
         ruStr = "/"
@@ -299,7 +274,7 @@ func (res *usersSync) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User)
     checkError(err)
     q := ru.Query()
     ru.RawQuery = "" // remove the query string
-    q.Set("canonical-user-id", url.QueryEscape(u.Id))
+    q.Set("canonical-user-id", url.QueryEscape(reqU.Id))
     fullUrl := ru.String() + "?" + q.Encode() // and add it back
     print("\nReturning to url... " + fullUrl)
     http.Redirect(w, r, fullUrl, http.StatusTemporaryRedirect)
@@ -308,97 +283,111 @@ func (res *usersSync) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User)
 
 // -- User resource
 
-type users struct {
+type usersResource struct {
+    user *User
 }
 
-func (res *users) URL(req *http.Request, urlData []string) *url.URL {
-    return getUrlForSite(res, nil, req, urlData)
+func (res usersResource) URL(req *http.Request, s *site) *url.URL {
+    return getUrl(res, req, s, []string{"id", res.user.Id})
 }
 
-func (res *users) name() string {
-    return "users"
+func (res usersResource) Content(req *http.Request, s *site) (c resourceContent) {
+    c.title = "User"
+    c.description = "User page"
+    c.content = map[string]interface{}{"user": res.user}
+    return
 }
 
-func (res *users) title(s *site) string {
-    return "User"
-}
-
-func (res *users) description() string {
-    return "User page"
-}
-
-func (res *users) urlSchema() string {
-    return `/users/{id:[a-f0-9\-]+}`
-}
-
-func (res *users) urlData(r *http.Request) []string {
-    vars := mux.Vars(r)
-    return []string{"id", vars["id"]}
-}
-
-func (res *users) content(r *http.Request) resourceData {
-	vars := mux.Vars(r)
-    user := getUserById(vars["id"])
-    content := map[string]interface{}{"user": user}
-    return content
-}
-
-func (res *users) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *User) {
+func (res usersResource) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *User) {
     // check if user has permission? whose user page is this?
+	vars := mux.Vars(r)
+    res.user = getUserById(vars["id"])
+    if userIsSame(reqU, res.user) || reqU.Role == "admin" {
+        writeResource(w, r, res, reqU)
+        return
+    }
+    forbiddenResource{}.ServeHTTP(w, r, reqU)
+    return
+}
+
+// -- 404 resource
+
+type notFoundResource struct {
+}
+
+func (res notFoundResource) URL(req *http.Request, s *site) *url.URL {
+    return getUrl(res, req, s, nil)
+}
+
+func (res notFoundResource) Content(req *http.Request, s *site) (c resourceContent) {
+    c.title = "404 - Not Found"
+    c.description = "The requested resource does not exist."
+    content := map[string]interface{}{}
+    content["message"] = "404 Not found"
+    content["body"] = "Sorry, this resource could not be found."
+    c.content = content
+    return
+}
+
+func (res notFoundResource) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User) {
+    w.WriteHeader(http.StatusNotFound)
+    writeResource(w, r, res, u)
+    return
+}
+
+// -- Forbidden resource (403)
+
+type forbiddenResource struct {
+}
+
+func (res forbiddenResource) URL(req *http.Request, s *site) *url.URL {
+    return getUrl(res, req, s, nil)
+}
+
+func (res forbiddenResource) Content(req *http.Request, s *site) (c resourceContent) {
+    c.title = "403 - Forbidden"
+    c.description = "You are forbidden to access this resource"
+    content := map[string]interface{}{}
+    content["message"] = "403 Forbidden"
+    content["body"] = "Sorry, you may not access this resource."
+    c.content = content
+    return
+}
+
+func (res forbiddenResource) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *User) {
+    w.WriteHeader(http.StatusForbidden)
     writeResource(w, r, res, reqU)
     return
 }
 
+// --  Video resource
 
-/*
-// Video resource
-func videoHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	video := new(resource)
-	video.name = "videos"
-	video.content = map[string]interface{}{"video": vars["video"]}
-	writeResource(w, r, video)
-}
-*/
-
-// -- 404 resource
-type notFound struct {
+// a video...
+type video struct {
+    Id    string
+    Title string
 }
 
-func (res *notFound) name() string {
-    return "notFound"
+type videosResource struct {
+    v video
 }
 
-func (res *notFound) title(s *site) string {
-    return "404 - Not Found"
+func (res videosResource) URL(req *http.Request, s *site) *url.URL {
+    return getUrl(res, req, s, []string{"id", res.v.Id})
 }
 
-func (res *notFound) description() string {
-    return "The requested resource does not exist."
+func (res videosResource) Content(req *http.Request, s *site) (c resourceContent) {
+    c.title = "Video"
+    c.description = "Video page"
+	//vars := mux.Vars(req)
+    //video := getVideoById(vars["id"])
+    //c.content := map[string]interface{}{"video": video}
+    c.content = emptyContent
+    return
 }
 
-func (res *notFound) URL(req *http.Request, urlData []string) *url.URL {
-    return getUrlForSite(res, nil, req, nil)
-}
-
-func (res *notFound) urlSchema() string {
-    return "/404"
-}
-
-func (res *notFound) urlData(r *http.Request) []string {
-    return []string{}
-}
-
-func (res *notFound) content(r *http.Request) resourceData {
-    var content = map[string]interface{}{}
-    content["message"] = "404 Not Found"
-    content["body"] = "Sorry, this resource could not be found"
-    return content
-}
-
-func (res *notFound) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User) {
-    w.WriteHeader(http.StatusNotFound)
-    writeResource(w, r, res, u)
+func (res videosResource) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *User) {
+    writeResource(w, r, res, reqU)
     return
 }
 

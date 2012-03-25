@@ -25,14 +25,6 @@ var baseDir string = "/srv/vafan"
 
 var author string = "Saul Howard - saul@convictfilms.com"
 
-/*
-// Should be in config
-var sites = map[string]string {
-    "brighton-wok": "brighton-wok.com",
-    "convict-films": "convictfilms.com",
-}
-*/
-
 // Represents a site served by this server
 type site struct {
     Name string
@@ -87,19 +79,25 @@ func getCurrentUrl(r *http.Request) *url.URL {
 }
 
 // Handler wrapper - wraps resource requests
-func makeHandler(res Resource) http.HandlerFunc {
+func callHandler(res Resource) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-        // is there a login cookie?
-
-        // if not, use the normal user cookie
-        u := userCookie(w, r)
+        u, err := userCookie(w, r)
+        if err != nil {
+            if err == ErrResourceRedirected {
+                return
+            } else {
+                checkError(err)
+            }
+        }
         res.ServeHTTP(w, r, u)
+        return
     }
 }
 
 // Set mux handlers
 func registerHandlers() {
     print("\nSetting Handlers")
+
 	// Static directories
 	router.PathPrefix("/css").Handler(
 		http.StripPrefix("/css", http.FileServer(http.Dir(
@@ -114,53 +112,44 @@ func registerHandlers() {
 		http.StripPrefix("/fonts", http.FileServer(http.Dir(
 			filepath.Join(baseDir, "static", "fonts")))))
 
-	// Dynamic handlers - the resources
-	formatRe := `{format:(\.{1}[a-z]+)?}`
-    for _, r := range resources {
-        router.Host(hostRe).
-            Path(r.urlSchema() + formatRe).
-            Name(r.name()).
-            Handler(makeHandler(r))
-    }
+    // web standard static files
+	router.Path("/favicon.ico").Handler(
+        http.FileServer(http.Dir(
+            filepath.Join(baseDir, "static"))))
+
+    // Regex strings used in url schemas
+	formatRe := `{format:(\.{1}[a-z]+)?}` // matches '.json' etc.
+    uuidRe := `{id:[a-f0-9\-]+}`          // matches UUIDs
+
+    // -- Resources
+
+    router.Host(hostRe).Path(`/` + formatRe).
+        Name("indexResource").Handler(callHandler(indexResource{}))
+
+    // user resources
+    router.Host(hostRe).Path(`/users/auth` + formatRe).
+        Name("usersAuthResource").Handler(callHandler(usersAuthResource{}))
+    router.Host(hostRe).Path(`/users/sync` + formatRe).
+        Name("usersSyncResource").Handler(callHandler(usersSyncResource{}))
+    router.Host(hostRe).Path(`/users/registrar` + formatRe).
+        Name("usersRegistrarResource").Handler(callHandler(usersRegistrarResource{}))
+    router.Host(hostRe).Path(`/users/` + uuidRe + formatRe).
+        Name("usersResource").Handler(callHandler(usersResource{}))
+
+    // http status codes
+    router.Host(hostRe).Path(`/403` + formatRe).
+        Name("forbiddenResource").Handler(callHandler(forbiddenResource{}))
+    router.Host(hostRe).Path(`/404` + formatRe).
+        Name("notFoundResource").Handler(callHandler(notFoundResource{}))
 
     // 404
-    router.NotFoundHandler = makeHandler(resources["notFound"])
-
-    /*
-
-    // Home resource
-	router.Host(hostRe).Path("/").
-        Name("index").
-        HandlerFunc(indexHandler)
-	router.Host(hostRe).
-        Path("/home" + formatRe).
-        HandlerFunc(indexHandler)
-	router.Host(hostRe).
-        Path("/index" + formatRe).
-        HandlerFunc(indexHandler)
-
-    // User resources
-	router.Host(hostRe).
-        Path("/users/auth" + formatRe).
-        Name("usersAuth").
-        HandlerFunc(userAuthHandler)
-	router.Host(hostRe).
-        Path("/users/registrar" + formatRe).
-        Name("usersRegistrar").
-        HandlerFunc(usersRegistrarHandler)
-
-    // Video resources
-	router.Host(hostRe).
-        Path("/videos/{video}" + formatRe).
-        Name("videos").
-        HandlerFunc(videoHandler)
-        */
+    router.NotFoundHandler = callHandler(notFoundResource{})
 }
 
 func getCanonicalSite(r Resource) (s *site, err error) {
     err = nil
-    if resourceCanonicalSites[r.name()] != nil  {
-        s = resourceCanonicalSites[r.name()]
+    if resourceCanonicalSites[resourceName(r)] != nil  {
+        s = resourceCanonicalSites[resourceName(r)]
         return
     }
     err = errors.New("No canonical site set.")
@@ -168,55 +157,23 @@ func getCanonicalSite(r Resource) (s *site, err error) {
     return
 }
 
-func getUrlForSite(res Resource, s *site, req *http.Request, urlData []string) *url.URL {
-    curSite, env := getSite(req)
-    canonicalSite, err := getCanonicalSite(res)
-    if s == nil {
-        s = curSite
-    }
-    if err == nil && canonicalSite.Name != s.Name {
-        s = canonicalSite
-    }
-	format := getFormat(req)
-    format = "." + format
-    if format == ".html" {
-        format = ""
-    }
-    host := env + "." + s.Host + ":8888"
-    urlPairs := []string{"format", format, "host", host}
-    if urlData != nil {
-        for _, p := range urlData {
-            urlPairs = append(urlPairs, p)
-        }
-    } else {
-        for _, p := range res.urlData(req) {
-            urlPairs = append(urlPairs, p)
-        }
-    }
-    url, err := router.GetRoute(res.name()).Host(hostRe).URL(urlPairs...)
-    checkError(err)
-    return url
-}
-
-func getUrl(res Resource, req *http.Request) *url.URL {
-    return getUrlForSite(res, nil, req, nil)
-}
-
 func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *User) {
+    print("\nWriting resource " + resourceName(res) + " for request " + req.URL.String())
     // get the site and env requested
 	s, env := getSite(req)
 	format := getFormat(req)
     // should we redirect to a canonical host for this resource?
     canonicalSite, err := getCanonicalSite(res)
     if err == nil && canonicalSite.Name != s.Name {
-        rUrl := getUrl(res, req)
+        rUrl := res.URL(req, nil)
         print("\nRedirecting to canonical url... " + rUrl.String())
         http.Redirect(w, req, rUrl.String(), http.StatusMovedPermanently)
         return
     }
 
     // Add defaults to the content, that are in every format
-    content := res.content(req)
+    resContent := res.Content(req, s)
+    content := resContent.content
     links := make(map[string]interface{})
     links["site"] = getSiteLinks(req)
     content["links"] = links
@@ -226,12 +183,12 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *Us
     // write the resource in requested format
     if format == "html" {
         content["author"] = author
-        content["title"] = res.title(s)
-        content["description"] = res.description()
+        content["title"] = resContent.title
+        content["description"] = resContent.description
         content["site"] = s
         content["environment"] = env
-        content["url"] = getUrl(res, req)
-        content["resource"] = res.name()
+        content["url"] = res.URL(req, nil)
+        content["resource"] = resourceDirName(res)
         if flashes := getFlashContent(w, req); len(flashes) > 0 {
             content["flashes"] = flashes
         } else {
@@ -258,11 +215,11 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *Us
 // config?
 func getSiteLinks(req *http.Request) map[string]string {
     l := make(map[string]string)
-    l["convictFilms"] = getUrlForSite(resources["index"], convictFilms, req, nil).String()
-    l["brightonWok"] = getUrlForSite(resources["index"], brightonWok, req, nil).String()
-    l["index"] = getUrl(resources["index"], req).String()
-    l["usersAuth"] = getUrl(resources["usersAuth"], req).String()
-    l["usersRegistrar"] = getUrl(resources["usersRegistrar"], req).String()
+    l["convictFilms"] = indexResource{}.URL(req, convictFilms).String()
+    l["brightonWok"] = indexResource{}.URL(req, brightonWok).String()
+    l["index"] = indexResource{}.URL(req, nil).String()
+    l["usersAuth"] = usersAuthResource{}.URL(req, nil).String()
+    l["usersRegistrar"] = usersRegistrarResource{}.URL(req, nil).String()
     return l
 }
 

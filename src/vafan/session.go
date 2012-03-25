@@ -18,6 +18,7 @@ import (
 )
 
 var ErrUserNotLoggedIn = errors.New("session: user not logged in")
+var ErrResourceRedirected = errors.New("session: resource was redirected")
 
 // used for flashes
 var sessionStore = sessions.NewCookieStore([]byte("something-very-secret"))
@@ -29,7 +30,7 @@ type session struct {
 
 // Fetch user from cookie, set cookie, sync cookies x-domain
 // main cookie flexer, called before every resource handler
-func userCookie(w http.ResponseWriter, r *http.Request) (u *User) {
+func userCookie(w http.ResponseWriter, r *http.Request) (u *User, err error) {
 
     // login cookie
     c, err := r.Cookie("vafanLogin")
@@ -54,15 +55,15 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *User) {
             // we have no user cookie
             s, env := getSite(r)
             canUserId := r.URL.Query().Get("canonical-user-id")
-            userSyncSite := resourceCanonicalSites["usersSync"]
+            userSyncSite := resourceCanonicalSites["usersSyncResource"]
             if s.Name != userSyncSite.Name && canUserId == "" {
                 // we're on another site to the sync resource
                 // redirect to the user sync!
-                sync := resources["usersSync"]
-                syncUrl := getUrl(sync, r)
+                syncUrl := usersSyncResource{}.URL(r, nil)
                 redirectUrl := syncUrl.String() + "?redirect-url=" + url.QueryEscape(getCurrentUrl(r).String())
                 print("\nRedirecting to sync url... " + redirectUrl)
                 http.Redirect(w, r, redirectUrl, http.StatusTemporaryRedirect)
+                err = ErrResourceRedirected
                 return
             } else {
                 print("\nSetting a new cookie... ")

@@ -109,7 +109,8 @@ type User struct {
 }
 
 func (u *User) getURL(r *http.Request) string {
-    return resources["users"].URL(r, []string{"id", u.Id}).String()
+    userRes := usersResource{u}
+    return userRes.URL(r, nil).String()
 }
 
 const defaultUserRole = "user"
@@ -272,5 +273,12 @@ func login(usernameOrEmailAddress string, password string) (u *User, err error) 
     }
     err = ErrWrongPassword
     return
+}
+
+func userIsSame(u1 *User, u2 *User) bool {
+    if u1.Id == u2.Id {
+        return true
+    }
+    return false
 }
 

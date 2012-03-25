@@ -10,17 +10,22 @@ package vafan
 import (
 	"os"
 	//"log"
+    "strings"
     "reflect"
 	"path/filepath"
 	"html/template"
 )
 
+// Strip the 'Resource' from the name
+func resourceDirName(res Resource) string {
+    return strings.Replace(resourceName(res), "Resource", "", 1)
+}
+
 func getTemplatePath(file string, format string, res Resource, s *site) string {
-    //print("\n")
-    //print("\nLooking for template with " + format + " " + res.name + " " + site)
+    //print("\nLooking for template with " + format + " " + resourceDirName(res))
 	//Check for the most specific template first
     checkFormat := format
-    checkResName := res.name()
+    checkResName := resourceDirName(res)
     checkSite := s.Name
     for i:= 0; templateExists(file, checkFormat, checkResName, checkSite) == false; i++ {
 		if i == 0 {
@@ -29,7 +34,7 @@ func getTemplatePath(file string, format string, res Resource, s *site) string {
 			checkResName = "_anyResource"
             checkSite = s.Name
 		} else if i == 2 {
-            checkResName = res.name()
+            checkResName = resourceDirName(res)
 			checkSite = "_anySite"
 		} else if i == 3 {
 			checkResName = "_anyResource"
@@ -71,11 +76,7 @@ func templateExists(file string, format string, resName string, siteName string)
 	path := filepath.Join(baseDir, "templates", format, resName, siteName, file)
 	_, err := os.Stat(path)
 	if err != nil {
-        /* print("\nNope:  ") */
-        /* print(path) */
 		return false
 	}
-    /* print("\nFound: ") */
-    /* print(path) */
 	return true
 }
