@@ -124,6 +124,13 @@ header.navbar h1 a{
     height: 50px;
     background: url(/img/convict-films/convict-films-small-header.png) top left repeat-x;
 }
+header.navbar .navbar-text {
+    line-height: 50px;
+}
+header.navbar .navbar-search {
+    margin-top: 11px;
+}
+
 /* Override bootstrap's navbar */
 .navbar {
     margin-bottom: 0;
@@ -233,6 +240,15 @@ header.navbar h1 a{
 .subhead h1 {
     font-size: 54px;
 }
+
+
+/*
+ * Tables
+ */
+.table-striped tbody tr:nth-child(odd) td, .table-striped tbody tr:nth-child(odd) th {
+    background-color: transparent;
+}
+
 
 /*Footer
  **/

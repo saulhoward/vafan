@@ -13,6 +13,7 @@ import (
 	//"code.google.com/p/gorilla/mux"
 	"net/url"
 	"net/http"
+	"code.google.com/p/gorilla/mux"
 	"code.google.com/p/gorilla/schema"
 )
 
@@ -27,16 +28,20 @@ type Resource interface {
 	urlSchema() string
 	title(s *site) string
 	description() string
-	content() resourceData
+	content(r *http.Request) resourceData
+    urlData(r *http.Request) []string
     ServeHTTP(w http.ResponseWriter, r *http.Request, u *User)
+    URL(r *http.Request, urlData []string) *url.URL
 }
 
 // list of resource instances
+// order is important, where schemas may conflict
 var resources = map[string]Resource{
     "index":          new(index),
     "usersRegistrar": new(usersRegistrar),
     "usersAuth":      new(usersAuth),
     "usersSync":      new(usersSync),
+    "users":          new(users),
     "notFound":       new(notFound),
 }
 
@@ -63,17 +68,26 @@ func (res *index) title(s *site) string {
 func (res *index) description() string {
     return "Home page"
 }
+
+func (res *index) URL(req *http.Request, urlData []string) *url.URL {
+    return getUrlForSite(res, nil, req, nil)
+}
+
 func (res *index) urlSchema() string {
     return "/"
 }
 
-func (res *index) content() resourceData {
+func (res *index) content(r *http.Request) resourceData {
     return emptyContent
 }
 
 func (res *index) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User) {
 	writeResource(w, r, res, u)
     return
+}
+
+func (res *index) urlData(r *http.Request) []string {
+    return []string{}
 }
 
 // -- Registrar resource
@@ -94,12 +108,20 @@ func (res *usersRegistrar) description() string {
     return "Register here to access Convict Films"
 }
 
+func (res *usersRegistrar) URL(req *http.Request, urlData []string) *url.URL {
+    return getUrlForSite(res, nil, req, nil)
+}
+
 func (res *usersRegistrar) urlSchema() string {
     return "/users/registrar"
 }
 
-func (res *usersRegistrar) content() resourceData {
+func (res *usersRegistrar) content(r *http.Request) resourceData {
     return res.data
+}
+
+func (res *usersRegistrar) urlData(r *http.Request) []string {
+    return []string{}
 }
 
 func (res *usersRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User) {
@@ -177,11 +199,19 @@ func (res *usersAuth) description() string {
     return "Login here to access Convict Films"
 }
 
+func (res *usersAuth) URL(req *http.Request, urlData []string) *url.URL {
+    return getUrlForSite(res, nil, req, nil)
+}
+
 func (res *usersAuth) urlSchema() string {
     return "/users/auth"
 }
 
-func (res *usersAuth) content() resourceData {
+func (res *usersAuth) urlData(r *http.Request) []string {
+    return []string{}
+}
+
+func (res *usersAuth) content(r *http.Request) resourceData {
     return res.data
 }
 
@@ -236,12 +266,20 @@ func (res *usersSync) description() string {
     return "Performs a user sync redirect"
 }
 
+func (res *usersSync) URL(req *http.Request, urlData []string) *url.URL {
+    return getUrlForSite(res, nil, req, nil)
+}
+
 func (res *usersSync) urlSchema() string {
     return "/users/sync"
 }
 
-func (res *usersSync) content() resourceData {
+func (res *usersSync) content(r *http.Request) resourceData {
     return emptyContent
+}
+
+func (res *usersSync) urlData(r *http.Request) []string {
+    return []string{}
 }
 
 // send people back to the redirect-url param, with a canonical user id
@@ -260,6 +298,51 @@ func (res *usersSync) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User)
     http.Redirect(w, r, fullUrl, http.StatusTemporaryRedirect)
     return
 }
+
+// -- User resource
+
+type users struct {
+}
+
+func (res *users) URL(req *http.Request, urlData []string) *url.URL {
+    return getUrlForSite(res, nil, req, urlData)
+}
+
+func (res *users) name() string {
+    return "users"
+}
+
+func (res *users) title(s *site) string {
+    return "User"
+}
+
+func (res *users) description() string {
+    return "User page"
+}
+
+func (res *users) urlSchema() string {
+    return `/users/{id:[a-f0-9\-]+}`
+    /* return `/users/{id}` */
+}
+
+func (res *users) urlData(r *http.Request) []string {
+    vars := mux.Vars(r)
+    return []string{"id", vars["id"]}
+}
+
+func (res *users) content(r *http.Request) resourceData {
+	vars := mux.Vars(r)
+    user := GetUser(vars["id"])
+    content := map[string]interface{}{"user": user}
+    return content
+}
+
+func (res *users) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *User) {
+    // check if user has permission? whose user page is this?
+    writeResource(w, r, res, reqU)
+    return
+}
+
 
 /*
 // Video resource
@@ -288,11 +371,19 @@ func (res *notFound) description() string {
     return "The requested resource does not exist."
 }
 
+func (res *notFound) URL(req *http.Request, urlData []string) *url.URL {
+    return getUrlForSite(res, nil, req, nil)
+}
+
 func (res *notFound) urlSchema() string {
     return "/404"
 }
 
-func (res *notFound) content() resourceData {
+func (res *notFound) urlData(r *http.Request) []string {
+    return []string{}
+}
+
+func (res *notFound) content(r *http.Request) resourceData {
     var content = map[string]interface{}{}
     content["message"] = "404 Not Found"
     content["body"] = "Sorry, this resource could not be found"

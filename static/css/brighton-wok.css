@@ -51,10 +51,10 @@ p {
 .index h1, .index h2,
 .index h3, .index h4,
 .index h5, .index h6 {
-    color: black;
+    color: white;
 }
 h1, h2, h3, h4, h5, h6 {
-    color: white;
+    color: black;
 }
 .jumbotron h1, .jumbotron p {
     color: #333;

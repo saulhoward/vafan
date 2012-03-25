@@ -1,6 +1,21 @@
 <h1 class="pull-left"><a href="{{.links.site.convictFilms}}">Convict Films</a></h1>
 
+{{/* Search form
+<form class="navbar-search pull-right">
+    <input type="text" class="search-query" placeholder="Search">
+</form>
+*/}}
+
+{{if eq .requestingUser.IsLoggedIn true}}
+    <p class="navbar-text pull-right">
+        Logged in as <a href="{{.requestingUser.URL}}">{{.requestingUser.Username}}</a>
+    </p>
+{{end}}
+
 {{/* Dev stuff */}}
 {{if eq .environment "dev"}}
-    <p class="pull-right">User: {{.user.Id}}</p>
+    {{if .requestingUser}}
+    <p class="navbar-text pull-right">User: {{.requestingUser.Id}} <b>//</b>&nbsp;</p>
+    {{end}}
 {{end}}
+

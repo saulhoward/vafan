@@ -4,3 +4,8 @@
     <a class="brighton-wok pull-left" href="{{.links.site.brightonWok}}">Brighton Wok</a>
 </h1>
 
+{{if eq .requestingUser.IsLoggedIn true}}
+    <p class="navbar-text pull-right">
+        Logged in as <a href="{{.requestingUser.URL}}">{{.requestingUser.Username}}</a>
+    </p>
+{{end}}

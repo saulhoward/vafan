@@ -15,6 +15,7 @@ import (
 	"regexp"
 	"strings"
     "hash"
+    "net/http"
     "crypto/hmac"
     "crypto/sha1"
     "crypto/rand"
@@ -54,12 +55,12 @@ func hashPassword(password string, salt string) string {
 func getUserByUsername(username string) *User {
     db := connectDb()
     defer db.Close()
-    selectUser, err := db.Prepare(`select id, username, emailAddress, passwordHash, salt from users where username=?`)
+    selectUser, err := db.Prepare(`select id, username, emailAddress, role, passwordHash, salt from users where username=?`)
     if err != nil {
         panic(err)
     }
     u := NewUser()
-    err = selectUser.QueryRow(username).Scan(&u.Id, &u.Username, &u.EmailAddress, &u.PasswordHash, &u.Salt)
+    err = selectUser.QueryRow(username).Scan(&u.Id, &u.Username, &u.EmailAddress, &u.Role, &u.passwordHash, &u.salt)
     if err != nil {
         panic(err)
     }
@@ -69,12 +70,12 @@ func getUserByUsername(username string) *User {
 func getUserByEmailAddress(emailAddress string) *User {
     db := connectDb()
     defer db.Close()
-    selectUser, err := db.Prepare(`select id, username, emailAddress, passwordHash, salt from users where emailAddress=?`)
+    selectUser, err := db.Prepare(`select id, username, emailAddress, role, passwordHash, salt from users where emailAddress=?`)
     if err != nil {
         panic(err)
     }
     u := NewUser()
-    err = selectUser.QueryRow(emailAddress).Scan(&u.Id, &u.Username, &u.EmailAddress, &u.PasswordHash, &u.Salt)
+    err = selectUser.QueryRow(emailAddress).Scan(&u.Id, &u.Username, &u.EmailAddress, &u.Role, &u.passwordHash, &u.salt)
     if err != nil {
         panic(err)
     }
@@ -85,21 +86,39 @@ type User struct {
     Id           string // UUID v4 with dashes
     Username     string
     EmailAddress string
-    PasswordHash string
-    Salt         string
     Role         string
+    URL          string
+    passwordHash string
+    salt         string
+    IsLoggedIn   bool
+}
+
+func (u *User) getURL(r *http.Request) string {
+    return resources["users"].URL(r, []string{"id", u.Id}).String()
 }
 
 const defaultUserRole = "user"
 
+// brand new user, freshly minted id
 func NewUser() *User {
-    u := User{newUUID(), "", "", "", "", defaultUserRole}
+    u := User{newUUID(), "", "", defaultUserRole, "", "", "", false }
     return &u
 }
 
+// just wants an id, the simplest form of user
 func GetUser(id string) *User {
-    u := User{id, "", "", "", "", defaultUserRole}
+    u := User{id, "", "", defaultUserRole, "", "", "", false}
     return &u
+}
+
+// needs a map of user properties, id must be set
+func getUserForUserInfo(userInfo map[string]string) (u *User, err error) {
+    if userInfo["Id"] == "" {
+        err = errors.New("Id must be set")
+        return
+    }
+    newU := User{userInfo["Id"], userInfo["Username"], userInfo["EmailAddress"], userInfo["Role"], "", "", "",  false}
+    return &newU, err
 }
 
 // Use UUID v4 as user IDs
@@ -115,8 +134,8 @@ func newUUID() string {
 }
 
 func (u *User) save(password string) error {
-    u.Salt = createSalt()
-    u.PasswordHash = hashPassword(password, u.Salt)
+    u.salt = createSalt()
+    u.passwordHash = hashPassword(password, u.salt)
     db := connectDb()
     defer db.Close()
     query := `insert into users values (?, ?, ?, ?, ?, ?)`
@@ -124,7 +143,7 @@ func (u *User) save(password string) error {
     if err != nil {
         panic(err)
     }
-    _, err = stmt.Exec(u.Id, u.Username, u.EmailAddress, u.PasswordHash, u.Salt, u.Role)
+    _, err = stmt.Exec(u.Id, u.Username, u.EmailAddress, u.passwordHash, u.salt, u.Role)
     if err != nil {
         return err
     }
@@ -214,6 +233,10 @@ func (u *User) isNew() bool {
 	return true
 }
 
+func (u *User) setLoggedIn() {
+    u.IsLoggedIn = true
+}
+
 // Login
 func login(usernameOrEmailAddress string, password string) (u *User, err error) {
     // confirm username and or email exists, get user
@@ -229,7 +252,7 @@ func login(usernameOrEmailAddress string, password string) (u *User, err error) 
         }
     }
     // confirm that the user's password is correct
-    if hashPassword(password, u.Salt) == u.PasswordHash {
+    if hashPassword(password, u.salt) == u.passwordHash {
         return
     }
     err = ErrWrongPassword

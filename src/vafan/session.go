@@ -8,6 +8,7 @@
 package vafan
 
 import (
+    //"fmt"
     "errors"
     "net/http"
 	"net/url"
@@ -40,6 +41,7 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *User) {
     } else {
         print("\nLogin cookie found.")
         u, err = getLoginUser(c.Value)
+        checkError(err)
         return
     }
 
@@ -52,7 +54,7 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *User) {
             s, env := getSite(r)
             canUserId := r.URL.Query().Get("canonical-user-id")
             userSyncSite := resourceCanonicalSites["usersSync"]
-            if s != userSyncSite && canUserId == "" {
+            if s.Name != userSyncSite.Name && canUserId == "" {
                 // we're on another site to the sync resource
                 // redirect to the user sync!
                 sync := resources["usersSync"]
@@ -108,13 +110,19 @@ func newLoginSession(w http.ResponseWriter, r *http.Request, u *User) (s *sessio
     s = &sess
     err = nil
     sessionKey := "sessions:" + s.id
+    userInfo := map[string]string{
+        "Id":           u.Id,
+        "Username":     u.Username,
+        "EmailAddress": u.EmailAddress,
+        "Role":         u.Role,
+    }
     db := radix.NewClient(radix.Configuration{
         Database: 0, // (default: 0)
         Timeout: 10, // (default: 10)
         Address: "127.0.0.1:6379",
     })
     defer db.Close()
-    reply := db.Command("set", sessionKey, u.Id)
+    reply := db.Command("hmset", sessionKey, userInfo)
     if reply.Error() != nil {
         err = errors.New("set failed")
         //reply.Error()
@@ -154,13 +162,21 @@ func getLoginUser(sId string) (u *User, err error) {
         Address: "127.0.0.1:6379",
     })
     defer db.Close()
-    reply := db.Command("get", sessionKey)
-    if reply.Type() != radix.ReplyString {
+    reply := db.Command("hgetall", sessionKey)
+    if reply.Error() != nil {
         err = errors.New("get failed")
-        //fmt.Printf("get failed: %s\n", reply.Error())
         return
     }
-    u = GetUser(reply.Str())
+    userInfo, err := reply.StringMap()
+    if err != nil {
+        err = errors.New("stringmap failed")
+        return
+    }
+    u, err = getUserForUserInfo(userInfo)
+    if err != nil {
+        return
+    }
+    u.setLoggedIn()
     print("\nUser is logged in as user " + u.Id)
     return
 }

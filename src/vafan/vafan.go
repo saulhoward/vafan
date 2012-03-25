@@ -124,7 +124,6 @@ func registerHandlers() {
     }
 
     // 404
-    //router.NotFoundHandler = makeHandler(new(notFound))
     router.NotFoundHandler = makeHandler(resources["notFound"])
 
     /*
@@ -169,7 +168,7 @@ func getCanonicalSite(r Resource) (s *site, err error) {
     return
 }
 
-func getUrlForSite(res Resource, s *site, req *http.Request) *url.URL {
+func getUrlForSite(res Resource, s *site, req *http.Request, urlData []string) *url.URL {
     curSite, env := getSite(req)
     canonicalSite, err := getCanonicalSite(res)
     if s == nil {
@@ -184,13 +183,23 @@ func getUrlForSite(res Resource, s *site, req *http.Request) *url.URL {
         format = ""
     }
     host := env + "." + s.Host + ":8888"
-    url, err := router.GetRoute(res.name()).Host(hostRe).URL("format", format, "host", host)
+    urlPairs := []string{"format", format, "host", host}
+    if urlData != nil {
+        for _, p := range urlData {
+            urlPairs = append(urlPairs, p)
+        }
+    } else {
+        for _, p := range res.urlData(req) {
+            urlPairs = append(urlPairs, p)
+        }
+    }
+    url, err := router.GetRoute(res.name()).Host(hostRe).URL(urlPairs...)
     checkError(err)
     return url
 }
 
 func getUrl(res Resource, req *http.Request) *url.URL {
-    return getUrlForSite(res, nil, req)
+    return getUrlForSite(res, nil, req, nil)
 }
 
 func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *User) {
@@ -207,11 +216,12 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *Us
     }
 
     // Add defaults to the content, that are in every format
-    content := res.content()
+    content := res.content(req)
     links := make(map[string]interface{})
     links["site"] = getSiteLinks(req)
     content["links"] = links
-    content["user"] = u
+    u.URL = u.getURL(req)
+    content["requestingUser"] = u
 
     // write the resource in requested format
     if format == "html" {
@@ -245,10 +255,11 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *Us
 }
 
 // a map of site urls included in every response
+// config?
 func getSiteLinks(req *http.Request) map[string]string {
     l := make(map[string]string)
-    l["convictFilms"] = getUrlForSite(resources["index"], convictFilms, req).String()
-    l["brightonWok"] = getUrlForSite(resources["index"], brightonWok, req).String()
+    l["convictFilms"] = getUrlForSite(resources["index"], convictFilms, req, nil).String()
+    l["brightonWok"] = getUrlForSite(resources["index"], brightonWok, req, nil).String()
     l["index"] = getUrl(resources["index"], req).String()
     l["usersAuth"] = getUrl(resources["usersAuth"], req).String()
     l["usersRegistrar"] = getUrl(resources["usersRegistrar"], req).String()
