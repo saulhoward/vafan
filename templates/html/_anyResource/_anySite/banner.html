@@ -9,13 +9,9 @@
 {{if eq .requestingUser.IsLoggedIn true}}
     <p class="navbar-text pull-right">
         Logged in as <a href="{{.requestingUser.URL}}">{{.requestingUser.Username}}</a>
+        {{if eq .requestingUser.Role "admin"}}
+            <span class="label label-info">{{.requestingUser.Role}}</span>
+        {{end}}
     </p>
-{{end}}
-
-{{/* Dev stuff */}}
-{{if eq .environment "dev"}}
-    {{if .requestingUser}}
-    <p class="navbar-text pull-right">User: {{.requestingUser.Id}} <b>//</b>&nbsp;</p>
-    {{end}}
 {{end}}
 

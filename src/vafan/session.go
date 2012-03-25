@@ -10,6 +10,7 @@ package vafan
 import (
     //"fmt"
     "errors"
+    "time"
     "net/http"
 	"net/url"
     "github.com/fzzbt/radix"
@@ -147,6 +148,33 @@ func newLoginSession(w http.ResponseWriter, r *http.Request, u *User) (s *sessio
         }
     } else {
         print("\nLogin cookie already set!")
+    }
+    return
+}
+
+func logout(w http.ResponseWriter, r *http.Request, u *User) {
+    // delete login cookie
+    c, err := r.Cookie("vafanLogin")
+    if err != nil {
+        if err == http.ErrNoCookie {
+            //no cookie, no problems
+            err = nil
+            return
+        } else {
+            checkError(err)
+        }
+    } else {
+        print("\nAttempting to delete login cookie...")
+        si, env := getSite(r)
+        c = new(http.Cookie)
+        c.Name = "vafanLogin"
+        c.Value = ""
+        c.Path = "/"
+        c.Domain = "." + env + "." +  si.Host
+        c.MaxAge = -1
+        t := time.Time{}
+        c.Expires = t
+        http.SetCookie(w, c)
     }
     return
 }

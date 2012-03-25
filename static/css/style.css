@@ -66,6 +66,12 @@ body {
  * Blube (darker blue)
  *     #26ADE4
  *
+ *
+ * Much paler blue 
+      #A2D4E8;
+   white to match
+      #f5f5f5
+ *
    ========================================================================== */
 
 /* ==========================================================================
@@ -241,14 +247,24 @@ header.navbar .navbar-search {
     font-size: 54px;
 }
 
-
-/*
+/**
  * Tables
  */
-.table-striped tbody tr:nth-child(odd) td, .table-striped tbody tr:nth-child(odd) th {
-    background-color: transparent;
-}
+.table {
+    color: black;
+    background-color: #f5f5f5;
 
+}
+.table-striped tbody tr:nth-child(odd) td, .table-striped tbody tr:nth-child(odd) th {
+    background-color: #A2D4E8;
+}
+.table tbody tr:hover td, .table tbody tr:hover th {
+    background-color: #A2D4E8;
+}
+.table th, .table td, .table-bordered,
+.table-bordered th + th, .table-bordered td + td, .table-bordered th + td, .table-bordered td + th {
+    border-color: #4DBCE9;
+}
 
 /*Footer
  **/

@@ -221,12 +221,13 @@ func (res *usersAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User)
 	switch r.Method {
 	case "POST":
 		// This is a post to login or logout
+        var url *url.URL
 		r.ParseForm()
-        // try to login
-        if r.Form.Get("login") != "" {
+        switch {
+        case r.Form.Get("login") != "":
+            // try to login
             // TODO: THE CURRENT USER MUST BE LOGGED OUT
 
-            var url *url.URL
             // login user
             loginUser, err := login(r.Form.Get("UsernameOrEmailAddress"), r.Form.Get("Password"))
             if err != nil {
@@ -242,7 +243,13 @@ func (res *usersAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, u *User)
                 addFlash(w, r, "Login!", "success")
             }
             http.Redirect(w, r, url.String(), http.StatusSeeOther)
-       }
+        case r.Form.Get("logout") != "":
+            // try to logout
+            logout(w, r, u)
+            addFlash(w, r, "Logged out.", "success")
+            url = getUrl(resources["index"], r)
+            http.Redirect(w, r, url.String(), http.StatusSeeOther)
+        }
 	case "GET":
         writeResource(w, r, res, u)
     }
@@ -322,7 +329,6 @@ func (res *users) description() string {
 
 func (res *users) urlSchema() string {
     return `/users/{id:[a-f0-9\-]+}`
-    /* return `/users/{id}` */
 }
 
 func (res *users) urlData(r *http.Request) []string {
@@ -332,7 +338,7 @@ func (res *users) urlData(r *http.Request) []string {
 
 func (res *users) content(r *http.Request) resourceData {
 	vars := mux.Vars(r)
-    user := GetUser(vars["id"])
+    user := getUserById(vars["id"])
     content := map[string]interface{}{"user": user}
     return content
 }

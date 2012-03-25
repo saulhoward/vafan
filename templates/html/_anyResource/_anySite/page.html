@@ -118,8 +118,17 @@
         <div id="contentinfo" role="contentinfo">
             <div class="container">
                 {{template "contentinfo.html" .}}
+
+                {{/* Dev stuff */}}
+                {{if eq .environment "dev"}}
+                    {{if .requestingUser}}
+                    <p class="pull-right">User: {{.requestingUser.Id}}</p>
+                    {{end}}
+                {{end}}
+
             </div>
         </div>
+
     </footer>
 
   </div> <!--! end of #container -->

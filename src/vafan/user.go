@@ -82,6 +82,21 @@ func getUserByEmailAddress(emailAddress string) *User {
     return u
 }
 
+func getUserById(id string) *User {
+    db := connectDb()
+    defer db.Close()
+    selectUser, err := db.Prepare(`select id, username, emailAddress, role, passwordHash, salt from users where id=?`)
+    if err != nil {
+        panic(err)
+    }
+    u := NewUser()
+    err = selectUser.QueryRow(id).Scan(&u.Id, &u.Username, &u.EmailAddress, &u.Role, &u.passwordHash, &u.salt)
+    if err != nil {
+        panic(err)
+    }
+    return u
+}
+
 type User struct {
     Id           string // UUID v4 with dashes
     Username     string
