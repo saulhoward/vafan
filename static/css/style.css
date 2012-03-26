@@ -74,25 +74,6 @@ body {
  *
    ========================================================================== */
 
-/* ==========================================================================
- * Forms
-   ========================================================================== */
-label {
-    color: #26ADE4;
-}
-legend {
-    color: #ccc;
-    border-bottom: 1px solid #666;
-}
-.form-actions {
-    background-color: rgba(0,0,0,0.5);
-    border-top: 1px solid #333;
-}
-input, textarea, select, .uneditable-input {
-    background-color: #eee;
-    border: 1px solid #666;
-}
-
 
 /* ==========================================================================
  * Layout, div specifics

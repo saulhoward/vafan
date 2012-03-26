@@ -73,6 +73,35 @@ h1, h2, h3, h4, h5, h6 {
     background: black url(/img/convict-films/metal-header-bg.png) bottom left repeat-x;
 }
 
+/* ==========================================================================
+ * Forms
+   ========================================================================== */
+label {
+    color: #26ADE4;
+}
+legend {
+    color: #ccc;
+    border-bottom: 1px solid #666;
+}
+.form-actions {
+    background-color: rgba(0,0,0,0.5);
+    border-top: 1px solid #333;
+}
+input, textarea, select, .uneditable-input {
+    background-color: #eee;
+    border: 1px solid #666;
+}
+.input-prepend .add-on,
+.input-append .add-on {
+    color: #666;
+    text-shadow: 0 1px 0 #EEE;
+    background-color: #ccc;
+    border-color: #666;
+}
+.help-block, .help-inline {
+    color: #777;
+}
+
 /* ==|== media queries ======================================================
    Media Queries for Responsive Design.
    These override the primary ('mobile first') styles

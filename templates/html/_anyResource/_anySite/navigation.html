@@ -4,32 +4,65 @@
        <nav>
             <ul class="nav nav-list">
                 <li class="nav-header">
-                    Convict Films
+                    {{.site.Title}}
                 </li>
                 <li>
-                    <a href="{{.links.site.convictFilms}}">Home</a>
+                    <a href="{{.links.site.index}}">Home</a>
                 </li>
                 <li>
-                    <a href="{{.links.site.usersRegistrar}}">Register with us</a>
+                    <a href="{{.links.site.videos}}">Video Library</a>
                 </li>
-                <li>
-                    <a href="{{.links.site.usersAuth}}">Login to Convict Films</a>
-                </li>
+                {{if eq .site.Name "convict-films"}}
+                    <li>
+                        <a href="{{.links.convictFilms.usersAuth}}">Login to Convict Films</a>
+                    </li>
+                    <li>
+                        <a href="{{.links.convictFilms.usersRegistrar}}">Register with Convict Films</a>
+                    </li>
+                {{end}}
             </ul>
         </nav>
     </section>
-    <section class="span3">
-       <nav>
-            <ul class="nav nav-list">
-                <li class="nav-header">
-                    Brighton Wok
-                </li>
-                <li>
-                    <a href="{{.links.site.brightonWok}}">Home</a>
-                </li>
-            </ul>
-        </nav>
-    </section>
+    {{if eq .site.Name "brighton-wok"}}
+        <section class="span3">
+        <nav>
+                <ul class="nav nav-list">
+                    <li class="nav-header">
+                        Convict Films
+                    </li>
+                    <li>
+                        <a href="{{.links.convictFilms.index}}">Home</a>
+                    </li>
+                    <li>
+                        <a href="{{.links.convictFilms.videos}}">Video Library</a>
+                    </li>
+                    <li>
+                        <a href="{{.links.convictFilms.usersAuth}}">Login to Convict Films</a>
+                    </li>
+                    <li>
+                        <a href="{{.links.convictFilms.usersRegistrar}}">Register with Convict Films</a>
+                    </li>
+                </ul>
+            </nav>
+        </section>
+    {{end}}
+    {{if eq .site.Name "convict-films"}}
+        <section class="span3">
+        <nav>
+                <ul class="nav nav-list">
+                    <li class="nav-header">
+                        Brighton Wok
+                    </li>
+                    <li>
+                        <a href="{{.links.brightonWok.index}}">Home</a>
+                    </li>
+                    <li>
+                    <a href="{{.links.brightonWok.videos}}">Video Library</a>
+                    </li>
+                </ul>
+            </nav>
+        </section>
+    {{end}}
     <section class="span3">
        <nav>
             <ul class="nav nav-list">

@@ -1,1 +1,152 @@
-<h1>A Video</h1>
+<header class="jumbotron subhead" id="overview">
+        <h1>Video Library</h1>
+        <p class="lead">
+        Browse the archives
+        </p>
+</header>
+
+
+<div class="row">
+    <div class="span6">
+
+        <h2>Add a video</h2>
+
+        <form method="POST" action="{{.url}}" class="form-horizontal">
+            <fieldset>
+                <legend>Video details</legend>
+
+                <div class="control-group {{if .errors.name}}error{{end}}">
+                    <label class="control-label" for="Name">Name</label>
+                    <div class="controls">
+                        <input
+                            type="text"
+                            class="input-xlarge"
+                            id="Name"
+                            name="Name"
+                            value="{{.video.Name}}"
+                            placeholder="brighton-wok-trailer"
+                            >
+                        <p class="help-block">
+                            {{or .errors.Title "'URL name' - should be letters and no spaces."}}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="control-group {{if .errors.Title}}error{{end}}">
+                    <label class="control-label" for="Title">
+                        Title
+                    </label>
+                    <div class="controls">
+                        <input
+                            type="text"
+                            class="input-xlarge"
+                            id="Title"
+                            name="Title"
+                            value="{{.video.Title}}"
+                            placeholder="Brighton Wok Trailer 2008"
+                            >
+                        <p class="help-block">
+                            {{or .errors.Title "Full title of the video."}}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="control-group {{if .errors.Description}}error{{end}}">
+                    <label class="control-label" for="Description">
+                        Description
+                    </label>
+                    <div class="controls">
+                        <textarea
+                            class="input-xlarge"
+                            id="Description"
+                            name="Description"
+                            rows="5"
+                            ></textarea>
+                        <p class="help-block">
+                            {{or .errors.Description "Video description - uses Markdown"}}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="optionsSite">Sites</label>
+                    <div class="controls">
+
+                        <label class="checkbox">
+                            <input type="checkbox" name="optionsSite1"
+                            value="convict-films" checked="checked">
+                            Convict Films
+                        </label>
+
+                        <label class="checkbox">
+                            <input type="checkbox" name="optionsSite1" value="brighton-wok">
+                            Brighton Wok
+                        </label>
+
+                        <p class="help-block">
+                        <strong>Note:</strong> The video will be displayed on the sites that you select here
+                        </p>
+                    </div>
+                </div>
+
+            </fieldset>
+            <fieldset>
+                <legend>Vimeo video</legend>
+
+                <div class="control-group {{if .errors.name}}error{{end}}">
+                    <label class="control-label" for="VimeoId">Vimeo ID</label>
+                    <div class="controls">
+                        <div class="input-prepend">
+                            <span class="add-on">vimeo.com/</span>
+                            <input
+                                type="text"
+                                class="input"
+                                id="VimeoId prependedInput"
+                                name="VimeoId"
+                                value="{{.video.VimeoId}}"
+                                placeholder="35687624"
+                                >
+                            <p class="help-block">
+                                {{or .errors.VimeoId "Vimeo ID, from the Vimeo page URL"}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+
+            <fieldset>
+                <legend>Youtube video</legend>
+
+                <div class="control-group {{if .errors.name}}error{{end}}">
+                    <label class="control-label" for="YoutubeId">Youtube ID</label>
+                    <div class="controls">
+                        <div class="input-prepend">
+                            <span class="add-on">&hellip;/watch?v=</span>
+                            <input
+                                type="text"
+                                class="input"
+                                id="YoutubeId prependedInput"
+                                name="YoutubeId"
+                                value="{{.video.YoutubeId}}"
+                                placeholder="yqmJCRux1F8"
+                                >
+                            <p class="help-block">
+                                {{or .errors.YoutubeId "Youtube ID, from the Youtube page URL"}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="form-actions">
+                <button type="submit"
+                    class="btn btn-primary"
+                    >Add Video</button>
+                <button
+                    class="btn">Cancel</button>
+            </div>
+        </form>
+
+    </div>
+</div>

@@ -118,8 +118,9 @@ func registerHandlers() {
             filepath.Join(baseDir, "static"))))
 
     // Regex strings used in url schemas
-	formatRe := `{format:(\.{1}[a-z]+)?}` // matches '.json' etc.
-    uuidRe := `{id:[a-f0-9\-]+}`          // matches UUIDs
+	formatRe := `{format:(\.{1}[a-z]+)?}`   // matches '.json' etc.
+    uuidRe := `{id:[a-f0-9\-]+}`            // matches UUIDs
+    nameRe := `{name:[\p{L}\p{M}\p{N}\-]+}` // matches unicode alphanumerics
 
     // -- Resources
 
@@ -135,6 +136,15 @@ func registerHandlers() {
         Name("usersRegistrarResource").Handler(callHandler(usersRegistrarResource{}))
     router.Host(hostRe).Path(`/users/` + uuidRe + formatRe).
         Name("usersResource").Handler(callHandler(usersResource{}))
+
+    // media resources
+    router.Host(hostRe).Path(`/videos` + formatRe).
+        Name("videosResource").Handler(callHandler(videosResource{}))
+    router.Host(hostRe).Path(`/videos/` + nameRe + formatRe).
+        Name("videoResource").Handler(callHandler(videoResource{}))
+
+    /* router.Host(hostRe).Path(`/movies/` + nameRe + formatRe). */
+        /* Name("moviesResource").Handler(callHandler(moviesResource{})) */
 
     // http status codes
     router.Host(hostRe).Path(`/403` + formatRe).
@@ -174,9 +184,7 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *Us
     // Add defaults to the content, that are in every format
     resContent := res.Content(req, s)
     content := resContent.content
-    links := make(map[string]interface{})
-    links["site"] = getSiteLinks(req)
-    content["links"] = links
+    content["links"] = getLinks(req)
     u.URL = u.getURL(req)
     content["requestingUser"] = u
 
@@ -201,8 +209,8 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *Us
 		checkError(err)
 	} else if format == "json" {
 		w.Header().Add("Content-Type", "application/json")
-		enc := json.NewEncoder(w)
-		err := enc.Encode(content)
+        enc := json.NewEncoder(w)
+        err := enc.Encode(content)
 		checkError(err)
 	} else {
 		// error checking here pls
@@ -213,13 +221,30 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *Us
 
 // a map of site urls included in every response
 // config?
-func getSiteLinks(req *http.Request) map[string]string {
-    l := make(map[string]string)
-    l["convictFilms"] = indexResource{}.URL(req, convictFilms).String()
-    l["brightonWok"] = indexResource{}.URL(req, brightonWok).String()
-    l["index"] = indexResource{}.URL(req, nil).String()
-    l["usersAuth"] = usersAuthResource{}.URL(req, nil).String()
-    l["usersRegistrar"] = usersRegistrarResource{}.URL(req, nil).String()
+func getLinks(req *http.Request) map[string]interface{} {
+    l := make(map[string]interface{})
+
+    bwLinks := make(map[string]string)
+    cfLinks := make(map[string]string)
+    siteLinks := make(map[string]string)
+
+    cfLinks["index"] = indexResource{}.URL(req, convictFilms).String()
+    cfLinks["videos"] = videosResource{}.URL(req, convictFilms).String()
+    cfLinks["usersAuth"] = usersAuthResource{}.URL(req, nil).String()
+    cfLinks["usersRegistrar"] = usersRegistrarResource{}.URL(req, nil).String()
+
+    bwLinks["index"] = indexResource{}.URL(req, brightonWok).String()
+    bwLinks["videos"] = videosResource{}.URL(req, brightonWok).String()
+
+    siteLinks["index"] = indexResource{}.URL(req, nil).String()
+    siteLinks["videos"] = videosResource{}.URL(req, nil).String()
+    siteLinks["usersAuth"] = usersAuthResource{}.URL(req, nil).String()
+    siteLinks["usersRegistrar"] = usersRegistrarResource{}.URL(req, nil).String()
+
+    l["site"] = siteLinks
+    l["brightonWok"] = bwLinks
+    l["convictFilms"] = cfLinks
+
     return l
 }
 

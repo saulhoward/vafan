@@ -360,34 +360,66 @@ func (res forbiddenResource) ServeHTTP(w http.ResponseWriter, r *http.Request, r
     return
 }
 
-// --  Video resource
+// --  Video resource -- a particular video
 
-// a video...
-type video struct {
-    Id    string
-    Title string
+type videoResource struct {
+    video *video
 }
 
+func (res videoResource) URL(req *http.Request, s *site) *url.URL {
+    return getUrl(res, req, s, []string{"name", res.video.Name})
+}
+
+func (res videoResource) Content(req *http.Request, s *site) (c resourceContent) {
+    c.title = "Video"
+    c.description = "Video page"
+    c.content = map[string]interface{}{"video": res.video}
+    return
+}
+
+func (res videoResource) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *User) {
+    switch r.Method {
+    case "GET":
+        vars := mux.Vars(r)
+        var err error
+        res.video, err = getVideoByName(vars["name"])
+        if err != nil {
+            if err == ErrVideoNotFound {
+                notFoundResource{}.ServeHTTP(w, r, reqU)
+                return
+            }
+            checkError(err)
+        }
+        writeResource(w, r, res, reqU)
+        return
+    }
+}
+
+// -- Videos resource -- all videos
+
 type videosResource struct {
-    v video
+    video *video
 }
 
 func (res videosResource) URL(req *http.Request, s *site) *url.URL {
-    return getUrl(res, req, s, []string{"id", res.v.Id})
+    return getUrl(res, req, s, nil)
 }
 
 func (res videosResource) Content(req *http.Request, s *site) (c resourceContent) {
     c.title = "Video"
     c.description = "Video page"
-	//vars := mux.Vars(req)
-    //video := getVideoById(vars["id"])
-    //c.content := map[string]interface{}{"video": video}
     c.content = emptyContent
     return
 }
 
 func (res videosResource) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *User) {
-    writeResource(w, r, res, reqU)
+    switch r.Method {
+    case "GET":
+        writeResource(w, r, res, reqU)
+        return
+    case "POST":
+
+    }
     return
 }
 
