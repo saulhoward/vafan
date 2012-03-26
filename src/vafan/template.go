@@ -14,6 +14,7 @@ import (
     "reflect"
 	"path/filepath"
 	"html/template"
+    "github.com/russross/blackfriday"
 )
 
 // Strip the 'Resource' from the name
@@ -66,10 +67,18 @@ func getPageTemplate(format string, res Resource, s *site) *template.Template {
         paths = append(paths, getTemplatePath(file, format, res, s))
     }
 	t, err := template.New("page.html").
-        Funcs(template.FuncMap{"eq": reflect.DeepEqual}).
+        Funcs(template.FuncMap{"eq": reflect.DeepEqual, "markdown": markdownToHtml }).
         ParseFiles(paths...)
     checkError(err)
 	return t
+}
+
+// Uses black friday library to convert markdown to html, this is
+// assumed safe
+func markdownToHtml(md markdown) template.HTML {
+    bmd := []byte(md)
+    bhtml := blackfriday.MarkdownCommon(bmd)
+    return template.HTML(bhtml)
 }
 
 func templateExists(file string, format string, resName string, siteName string) bool {

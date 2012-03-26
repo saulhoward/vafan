@@ -1,0 +1,29 @@
+<header class="jumbotron subhead" id="overview">
+        <h1>{{.video.Title}}</h1>
+        <p class="lead">
+        A subtitle would go here
+        </p>
+</header>
+
+<div class="row">
+    <div class="span6">
+
+        {{if .video.Youtube.Id}}
+            <iframe class="youtube-player" type="text/html" 
+                    width="100%" height="385"
+                    src="http://www.youtube.com/embed/{{.video.Youtube.Id}}"
+                    frameborder="0"
+                    >
+            </iframe>
+        {{end}}
+
+        {{if .video.Vimeo.Id}}
+            <p>Vimeo, biatches</p>
+        {{end}}
+    </div>
+    <div class="span6">
+        <div class="well">
+            {{markdown .video.Description}}
+        </div>
+    </div>
+</div>

@@ -149,6 +149,12 @@ func newUUID() string {
     return fmt.Sprintf("%x-%x-%x-%x-%x", b[:4], b[4:6], b[6:8], b[8:10], b[10:])
 }
 
+func MakeUserAdmin(name string) (err error) {
+    u := getUserByUsername(name)
+    err = u.changeRole("superadmin")
+    return
+}
+
 func (u *User) save(password string) error {
     u.salt = createSalt()
     u.passwordHash = hashPassword(password, u.salt)
@@ -160,6 +166,21 @@ func (u *User) save(password string) error {
         panic(err)
     }
     _, err = stmt.Exec(u.Id, u.Username, u.EmailAddress, u.passwordHash, u.salt, u.Role)
+    if err != nil {
+        return err
+    }
+    return nil
+}
+
+func (u *User) changeRole(role string) error {
+    db := connectDb()
+    defer db.Close()
+    query := `update users set role=? where id=?`
+    stmt, err := db.Prepare(query)
+    if err != nil {
+        panic(err)
+    }
+    _, err = stmt.Exec(role, u.Id)
     if err != nil {
         return err
     }
