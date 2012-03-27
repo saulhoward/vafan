@@ -382,7 +382,7 @@ func (res videoResource) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU 
     case "GET":
         vars := mux.Vars(r)
         var err error
-        res.video, err = getVideoByName(vars["name"])
+        res.video, err = GetVideoByName(vars["name"])
         if err != nil {
             if err == ErrVideoNotFound {
                 notFoundResource{}.ServeHTTP(w, r, reqU)

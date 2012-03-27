@@ -41,15 +41,18 @@ func (m markdown) MarshalJSON() ([]byte, error) {
 
 // -- 
 
-type youtubeVideo struct {
-    Id string
+// External video types, youtube, vimeo
+type externalVideo interface {
+    FetchDetails() (err error)
 }
 
 type vimeoVideo struct {
     Id string
 }
 
-func getVideoByName(name string) (v *video, err error) {
+// --
+
+func GetVideoByName(name string) (v *video, err error) {
     session, err := mgo.Dial("127.0.0.1")
     if err != nil {
         panic(err)

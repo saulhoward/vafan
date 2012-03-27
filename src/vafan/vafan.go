@@ -15,11 +15,13 @@ import (
 	"net/http"
 	"encoding/json"
 	"code.google.com/p/gorilla/mux"
-	//"github.com/kless/goconfig/config"
+	"github.com/kless/goconfig/config"
 )
 
 // get the config
-//var conf, _ = config.ReadDefault("/home/saul/code/vafan/config/config.ini")
+//var conf, _ = config.ReadDefault("/srv/vafan/config/config.ini")
+var conf, _ = config.ReadDefault("/home/saul/vafan-config.ini")
+
 //var baseDir, _ = conf.String("default", "base-dir")
 var baseDir string = "/srv/vafan"
 
