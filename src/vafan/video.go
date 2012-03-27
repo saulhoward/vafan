@@ -8,22 +8,23 @@
 package vafan
 
 import (
-    "regexp"
-    "errors"
-    "launchpad.net/mgo/bson"
-    "launchpad.net/mgo"
+    "fmt"
+	"errors"
+	"launchpad.net/mgo"
+	"launchpad.net/mgo/bson"
+	"regexp"
 )
 
 var ErrVideoNotFound = errors.New("video: doesn't exist")
 
 type video struct {
-    Id          string
-    Name        string
-    Title       string
-    Description markdown
-    Sites       []*site // the sites that display this vid
-    Youtube     youtubeVideo
-    Vimeo       vimeoVideo
+	Id          string
+	Name        string
+	Title       string
+	Description markdown
+	Sites       []*site // the sites that display this vid
+	Youtube     youtubeVideo
+	Vimeo       vimeoVideo
 }
 
 // -- markdown type 
@@ -43,53 +44,57 @@ func (m markdown) MarshalJSON() ([]byte, error) {
 
 // External video types, youtube, vimeo
 type externalVideo interface {
-    FetchDetails() (err error)
+	FetchDetails() (err error)
 }
 
 type vimeoVideo struct {
-    Id string
+	Id string
 }
 
 // --
 
 func GetVideoByName(name string) (v *video, err error) {
-    session, err := mgo.Dial("127.0.0.1")
-    if err != nil {
-        panic(err)
-    }
-    defer session.Close()
-    c := session.DB("vafan").C("videos")
-    v = new(video)
-    err = c.Find(bson.M{"name": name}).One(v)
-    if err != nil {
-        if err == mgo.NotFound {
-            err = ErrVideoNotFound
-            return
-        }
-        checkError(err)
-    }
-    return
+	v = new(video)
+	session, err := mgo.Dial("127.0.0.1")
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
+		return
+	}
+	defer session.Close()
+	c := session.DB("vafan").C("videos")
+	err = c.Find(bson.M{"name": name}).One(v)
+	if err != nil {
+		if err == mgo.NotFound {
+			err = ErrVideoNotFound
+			return
+		}
+		_ = logger.Err(fmt.Sprintf("Failed to get video (Mongo): %v", err))
+		return
+	}
+	return
 }
 
 func (v *video) save() (err error) {
-    session, err := mgo.Dial("127.0.0.1")
-    if err != nil {
-        panic(err)
-    }
-    defer session.Close()
-    c := session.DB("vafan").C("videos")
-    err = c.Insert(v)
-    if err != nil {
-        panic(err)
-    }
-    return
+	session, err := mgo.Dial("127.0.0.1")
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
+		return
+	}
+	defer session.Close()
+	c := session.DB("vafan").C("videos")
+	err = c.Insert(v)
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed to insert video (Mongo): %v", err))
+		return
+	}
+	return
 }
 
 // name must be unicode alphanumericals and dashes only
 func (v *video) isNameLegal() bool {
-    var illegalCharsRe = regexp.MustCompile(`[^\-\p{L}\p{M}\p{N}]+`)
-    if illegalCharsRe.MatchString(v.Name) {
-        return false
-    }
-    return true
+	var illegalCharsRe = regexp.MustCompile(`[^\-\p{L}\p{M}\p{N}]+`)
+	if illegalCharsRe.MatchString(v.Name) {
+		return false
+	}
+	return true
 }

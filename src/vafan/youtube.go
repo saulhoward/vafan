@@ -13,11 +13,12 @@
 package vafan
 
 import (
-    "net/http"
-    "encoding/xml"
-    "errors"
-    "strings"
-    "io/ioutil"
+	"encoding/xml"
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strings"
 )
 
 const singleYoutubeVideoURL = "https://gdata.youtube.com/feeds/api/videos/{id}?&v=2&key={key}"
@@ -25,53 +26,57 @@ const singleYoutubeVideoURL = "https://gdata.youtube.com/feeds/api/videos/{id}?&
 var ErrYoutubeNotFound = errors.New("youtube: id doesn't exist")
 
 type youtubeVideo struct {
-    Id    string
-    youtubeXML
+	Id string
+	youtubeXML
 }
 
 type youtubeXML struct {
-    XMLName       xml.Name           `xml:"entry"`
-    Title         string             `xml:"title"`
-    Statistics    youtubeStats       `xml:"statistics"`
-    PublishedDate string             `xml:"published"`
-    Thumbnails    []youtubeThumbnail `xml:"group>thumbnail"`
+	XMLName       xml.Name           `xml:"entry"`
+	Title         string             `xml:"title"`
+	Statistics    youtubeStats       `xml:"statistics"`
+	PublishedDate string             `xml:"published"`
+	Thumbnails    []youtubeThumbnail `xml:"group>thumbnail"`
 }
 type youtubeStats struct {
-    Views      int `xml:"viewCount,attr"`
-    Favourites int `xml:"favoriteCount,attr"`
+	Views      int `xml:"viewCount,attr"`
+	Favourites int `xml:"favoriteCount,attr"`
 }
 type youtubeThumbnail struct {
-    URL    string `xml:"url,attr"`
-    Height string `xml:"height,attr"`
-    Width  string `xml:"width,attr"`
-    Time   string `xml:"time,attr"`
-    Name   string `xml:"name,attr"`
+	URL    string `xml:"url,attr"`
+	Height string `xml:"height,attr"`
+	Width  string `xml:"width,attr"`
+	Time   string `xml:"time,attr"`
+	Name   string `xml:"name,attr"`
 }
 
 func (y *youtubeVideo) FetchDetails() (err error) {
-    var youtubeDevKey, confErr = conf.String("default", "youtube-dev-key")
-    if confErr != nil {
-        checkError(confErr)
-    }
-    r := strings.NewReplacer("{id}", y.Id, "{key}", youtubeDevKey)
-    res, err := http.Get(r.Replace(singleYoutubeVideoURL))
-    if err != nil {
-        checkError(err)
-    }
-    data, err := ioutil.ReadAll(res.Body)
-    if err != nil {
-        checkError(err)
-    }
-    err = xml.Unmarshal([]byte(data), &y.youtubeXML)
-    if err != nil {
-        checkError(err)
-    }
+    youtubeDevKey, err := conf.String("default", "youtube-dev-key")
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed to fetch youtube dev key from config: %v", err))
+		return
+	}
+	r := strings.NewReplacer("{id}", y.Id, "{key}", youtubeDevKey)
+	res, err := http.Get(r.Replace(singleYoutubeVideoURL))
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed to GET youtube URL: %v", err))
+		return
+	}
+	data, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed reading youtube response body: %v", err))
+		return
+	}
+	err = xml.Unmarshal([]byte(data), &y.youtubeXML)
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed unmarshalling youtube XML: %v", err))
+		return
+	}
 
-    // save this stuff to mongo
-    //...
-    print(y.Thumbnails[0].URL)
+	// save this stuff to mongo
+	//...
+	print(y.Thumbnails[0].URL)
 
-    return
+	return
 }
 
 /*

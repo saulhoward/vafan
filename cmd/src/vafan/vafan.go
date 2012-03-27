@@ -1,6 +1,8 @@
 package main
 
 import (
+    "os"
+    "fmt"
     "flag"
     "vafan"
 )
@@ -13,19 +15,19 @@ func main() {
     flag.Parse()
     switch {
     case *start:
-        print("Starting vafan...\n")
+        fmt.Fprintln(os.Stdout, "Starting vafan...")
         vafan.StartServer()
-        return
+        os.Exit(0)
     case *makeUserAdmin != "":
-        print("Making user admin...\n")
+        fmt.Fprintln(os.Stdout, "Making user admin...")
         vafan.MakeUserAdmin(*makeUserAdmin)
-        return
+        os.Exit(0)
     case *getVideoDetails != "":
-        print("Getting video details...\n")
+        fmt.Fprintln(os.Stdout, "Getting video details...")
         v, _ := vafan.GetVideoByName(*getVideoDetails)
         v.Youtube.FetchDetails()
-        return
+        os.Exit(0)
     }
-    print("No command. Quitting...\n")
-    return
+    fmt.Fprintln(os.Stdout, "No command. Quitting...")
+    os.Exit(1)
 }
