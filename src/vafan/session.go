@@ -25,12 +25,12 @@ var sessionStore = sessions.NewCookieStore([]byte("something-very-secret"))
 
 type session struct {
 	id   string
-	user *User
+	user *user
 }
 
 // Fetch user from cookie, set cookie, sync cookies x-domain
 // main cookie flexer, called before every resource handler
-func userCookie(w http.ResponseWriter, r *http.Request) (u *User, err error) {
+func userCookie(w http.ResponseWriter, r *http.Request) (u *user, err error) {
 
 	// login cookie
 	c, err := r.Cookie("vafanLogin")
@@ -60,9 +60,9 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *User, err error) {
 			canUserId := r.URL.Query().Get("canonical-user-id")
 			userSyncSite := resourceCanonicalSites["usersSyncResource"]
 			if s.Name != userSyncSite.Name && canUserId == "" {
-				// we're on another site to the sync resource
+				// We're on another site to the sync resource -
 				// redirect to the user sync!
-				syncUrl := usersSyncResource{}.URL(r, nil)
+				syncUrl := userSync{}.URL(r, nil)
 				redirectUrl := syncUrl.String() + "?redirect-url=" + url.QueryEscape(getCurrentUrl(r).String())
 				_ = logger.Info(fmt.Sprintf("Redirecting to sync url: %v", redirectUrl))
 				http.Redirect(w, r, redirectUrl, http.StatusTemporaryRedirect)
@@ -110,7 +110,7 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *User, err error) {
 	return
 }
 
-func newLoginSession(w http.ResponseWriter, r *http.Request, u *User) (s *session, err error) {
+func newLoginSession(w http.ResponseWriter, r *http.Request, u *user) (s *session, err error) {
 	sess := session{newUUID(), u}
 	s = &sess
 	err = nil
@@ -159,7 +159,7 @@ func newLoginSession(w http.ResponseWriter, r *http.Request, u *User) (s *sessio
 	return
 }
 
-func logout(w http.ResponseWriter, r *http.Request, u *User) {
+func logout(w http.ResponseWriter, r *http.Request, u *user) {
 	// delete login cookie
 	c, err := r.Cookie("vafanLogin")
 	if err != nil {
@@ -187,7 +187,7 @@ func logout(w http.ResponseWriter, r *http.Request, u *User) {
 	return
 }
 
-func getLoginUser(sId string) (u *User, err error) {
+func getLoginUser(sId string) (u *user, err error) {
 	err = nil
 	u = NewUser()
 	sessionKey := "sessions:" + sId

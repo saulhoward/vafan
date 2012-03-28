@@ -24,7 +24,7 @@ vafan.video = {
     start: function()
     {
         var modalHtml = $('#modal-template').html();
-        $('#video .content').append(modalHtml);
+        $('#video .container').append(modalHtml);
 
         var videoHtml = $('#video-template').html();
 

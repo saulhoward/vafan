@@ -4,11 +4,11 @@
  */
 $(function () {
     vafan.fonts.load();
-    // vafan.threeDeeDvd.start();
+    vafan.threeDeeDvd.start();
     vafan.video.start();
 });
 
-// -- GLOBALS
+// -- GLOBAL FUNCTIONS
 
 // Console Log
 // usage: log('inside coolFunc', this, arguments);

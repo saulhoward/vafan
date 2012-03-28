@@ -1,25 +1,29 @@
-// Vafan - a web server for Convict Films
-//
-// Videos
-//
-// @url    http://saulhoward.com/vafan
-// @author saul@saulhoward.com
-//
+// Copyright 2012 Saul Howard. All rights reserved.
+
+// A video.
+
 package vafan
 
 import (
-    "fmt"
+	"code.google.com/p/gorilla/mux"
 	"errors"
+	"fmt"
 	"launchpad.net/mgo"
 	"launchpad.net/mgo/bson"
+	"net/http"
+	"net/url"
 	"regexp"
 )
 
+// ErrVideoNotFound is returned by video when the named video does not
+// exist in the database.
 var ErrVideoNotFound = errors.New("video: doesn't exist")
 
+// A video represents data describing a video, hosted on an external
+// site such as Youtube or Vimeo
 type video struct {
 	Id          string
-	Name        string
+	Name        string // names are unique
 	Title       string
 	Description markdown
 	Sites       []*site // the sites that display this vid
@@ -27,32 +31,44 @@ type video struct {
 	Vimeo       vimeoVideo
 }
 
-// -- markdown type 
-
-type markdown string
-
-// - renders as HTML when read as JSON
-/* NOT WORKING???
-func (m markdown) MarshalJSON() ([]byte, error) {
-    b := []byte(m)
-    html := blackfriday.MarkdownCommon(b)
-    return html, nil
-}
-*/
-
-// -- 
-
-// External video types, youtube, vimeo
+// External video types, eg, youtube, vimeo
 type externalVideo interface {
 	FetchDetails() (err error)
 }
 
-type vimeoVideo struct {
-	Id string
+// Video url uses the video name, eg, `/videos/brighton-wok`
+func (v video) URL(req *http.Request, s *site) *url.URL {
+	return getUrl(v, req, s, []string{"name", v.Name})
 }
 
-// --
+func (v video) Content(req *http.Request, s *site) (c resourceContent) {
+	c.title = "Video"
+	c.description = "Video page"
+	c.content = map[string]interface{}{"video": v}
+	return
+}
 
+// GET sets the video from the URL vars.
+func (v video) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
+	switch r.Method {
+	case "GET":
+		vars := mux.Vars(r)
+		var err error
+		vp, err := GetVideoByName(vars["name"])
+		v = *vp
+		if err != nil {
+			if err == ErrVideoNotFound {
+				notFound{}.ServeHTTP(w, r, reqU)
+				return
+			}
+			_ = logger.Err(fmt.Sprintf("Failed to get video by name: %v", err))
+			notFound{}.ServeHTTP(w, r, reqU)
+			return
+		}
+		writeResource(w, r, &v, reqU)
+		return
+	}
+}
 func GetVideoByName(name string) (v *video, err error) {
 	v = new(video)
 	session, err := mgo.Dial("127.0.0.1")

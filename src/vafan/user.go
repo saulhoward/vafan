@@ -8,6 +8,7 @@
 package vafan
 
 import (
+	"code.google.com/p/gorilla/mux"
 	"crypto/hmac"
 	"crypto/rand"
 	"crypto/sha1"
@@ -18,33 +19,56 @@ import (
 	"hash"
 	"io"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strings"
 )
 
 var ErrWrongPassword = errors.New("user: password fail")
 
-type User struct {
+type user struct {
 	Id           string // UUID v4 with dashes
 	Username     string
 	EmailAddress string
 	Role         string
-	URL          string
+	Location     string
 	passwordHash string
 	salt         string
 	IsLoggedIn   bool
 }
 
-func (u *User) getURL(r *http.Request) string {
-	userRes := usersResource{u}
-	return userRes.URL(r, nil).String()
+// HTTP Resource methods
+
+func (u user) URL(req *http.Request, s *site) *url.URL {
+	return getUrl(u, req, s, []string{"id", u.Id})
 }
+
+func (u user) Content(req *http.Request, s *site) (c resourceContent) {
+	c.title = "User"
+	c.description = "User page"
+	c.content = map[string]interface{}{"user": u}
+	return
+}
+
+func (u user) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
+	// check if user has permission? whose user page is this?
+	vars := mux.Vars(r)
+	u = *getUserById(vars["id"])
+	if userIsSame(reqU, &u) || reqU.Role == "superadmin" {
+		writeResource(w, r, &u, reqU)
+		return
+	}
+	forbidden{}.ServeHTTP(w, r, reqU)
+	return
+}
+
+// Other methods
 
 const defaultUserRole = "user"
 
 // brand new user, freshly minted id
-func NewUser() *User {
-	u := User{newUUID(), "", "", defaultUserRole, "", "", "", false}
+func NewUser() *user {
+	u := user{Id: newUUID(), Role: defaultUserRole}
 	return &u
 }
 
@@ -76,7 +100,7 @@ func hashPassword(password string, salt string) string {
 
 // -- User stuff
 
-func getUserByUsername(username string) (u *User) {
+func getUserByUsername(username string) (u *user) {
 	u = NewUser()
 	db := connectSQLDB()
 	defer db.Close()
@@ -93,7 +117,7 @@ func getUserByUsername(username string) (u *User) {
 	return
 }
 
-func getUserByEmailAddress(emailAddress string) (u *User) {
+func getUserByEmailAddress(emailAddress string) (u *user) {
 	u = NewUser()
 	db := connectSQLDB()
 	defer db.Close()
@@ -110,7 +134,7 @@ func getUserByEmailAddress(emailAddress string) (u *User) {
 	return
 }
 
-func getUserById(id string) (u *User) {
+func getUserById(id string) (u *user) {
 	u = NewUser()
 	db := connectSQLDB()
 	defer db.Close()
@@ -128,18 +152,18 @@ func getUserById(id string) (u *User) {
 }
 
 // just wants an id, the simplest form of user
-func GetUser(id string) *User {
-	u := User{id, "", "", defaultUserRole, "", "", "", false}
+func GetUser(id string) *user {
+	u := user{Id: id, Role: defaultUserRole}
 	return &u
 }
 
 // needs a map of user properties, id must be set
-func getUserForUserInfo(userInfo map[string]string) (u *User, err error) {
+func getUserForUserInfo(userInfo map[string]string) (u *user, err error) {
 	if userInfo["Id"] == "" {
 		err = errors.New("User: ID must be set")
 		return
 	}
-	newU := User{userInfo["Id"], userInfo["Username"], userInfo["EmailAddress"], userInfo["Role"], "", "", "", false}
+	newU := user{Id: userInfo["Id"], Username: userInfo["Username"], EmailAddress: userInfo["EmailAddress"], Role: userInfo["Role"]}
 	return &newU, err
 }
 
@@ -162,7 +186,7 @@ func MakeUserAdmin(name string) (err error) {
 	return
 }
 
-func (u *User) save(password string) error {
+func (u *user) save(password string) error {
 	u.salt = createSalt()
 	u.passwordHash = hashPassword(password, u.salt)
 	db := connectSQLDB()
@@ -181,7 +205,7 @@ func (u *User) save(password string) error {
 	return nil
 }
 
-func (u *User) changeRole(role string) (err error) {
+func (u *user) changeRole(role string) (err error) {
 	db := connectSQLDB()
 	defer db.Close()
 	query := `update users set role=? where id=?`
@@ -198,7 +222,7 @@ func (u *User) changeRole(role string) (err error) {
 	return nil
 }
 
-func (u *User) isLegal(password string) bool {
+func (u *user) isLegal(password string) bool {
 	if !u.isUsernameLegal() ||
 		!u.isEmailAddressLegal() ||
 		!u.isPasswordLegal(password) {
@@ -207,7 +231,7 @@ func (u *User) isLegal(password string) bool {
 	return true
 }
 
-func (u *User) isUsernameLegal() bool {
+func (u *user) isUsernameLegal() bool {
 	var re = regexp.MustCompile(`[^\d+|\w+]`)
 	if re.MatchString(u.Username) {
 		return false
@@ -215,7 +239,7 @@ func (u *User) isUsernameLegal() bool {
 	return true
 }
 
-func (u *User) isRegistered() bool {
+func (u *user) isRegistered() bool {
 	db := connectSQLDB()
 	defer db.Close()
 	selectUser, err := db.Prepare(`select id from users where id=?`)
@@ -236,7 +260,7 @@ func (u *User) isRegistered() bool {
 	return true
 }
 
-func (u *User) isUsernameNew() bool {
+func (u *user) isUsernameNew() bool {
 	db := connectSQLDB()
 	defer db.Close()
 	selectUser, err := db.Prepare(`select username from users where username=?`)
@@ -257,14 +281,14 @@ func (u *User) isUsernameNew() bool {
 	return false
 }
 
-func (u *User) isEmailAddressLegal() bool {
+func (u *user) isEmailAddressLegal() bool {
 	if strings.Contains(u.EmailAddress, "@") {
 		return true
 	}
 	return false
 }
 
-func (u *User) isEmailAddressNew() bool {
+func (u *user) isEmailAddressNew() bool {
 	db := connectSQLDB()
 	defer db.Close()
 	selectUser, err := db.Prepare(`select emailAddress from users where emailAddress=?`)
@@ -285,26 +309,26 @@ func (u *User) isEmailAddressNew() bool {
 	return false
 }
 
-func (u *User) isPasswordLegal(password string) bool {
+func (u *user) isPasswordLegal(password string) bool {
 	if len(password) < 6 {
 		return false
 	}
 	return true
 }
 
-func (u *User) isNew() bool {
+func (u *user) isNew() bool {
 	if u.isRegistered() || !u.isUsernameNew() || !u.isEmailAddressNew() {
 		return false
 	}
 	return true
 }
 
-func (u *User) setLoggedIn() {
+func (u *user) setLoggedIn() {
 	u.IsLoggedIn = true
 }
 
 // Login
-func login(usernameOrEmailAddress string, password string) (u *User, err error) {
+func login(usernameOrEmailAddress string, password string) (u *user, err error) {
 	// confirm username and or email exists, get user
 	u = NewUser()
 	err = nil
@@ -325,7 +349,7 @@ func login(usernameOrEmailAddress string, password string) (u *User, err error) 
 	return
 }
 
-func userIsSame(u1 *User, u2 *User) bool {
+func userIsSame(u1 *user, u2 *user) bool {
 	if u1.Id == u2.Id {
 		return true
 	}

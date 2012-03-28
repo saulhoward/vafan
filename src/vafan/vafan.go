@@ -155,35 +155,35 @@ func registerHandlers() {
 	// -- Resources
 
 	router.Host(hostRe).Path(`/` + formatRe).
-		Name("indexResource").Handler(callHandler(indexResource{}))
+		Name("index").Handler(callHandler(index{}))
 
 	// user resources
 	router.Host(hostRe).Path(`/users/auth` + formatRe).
-		Name("usersAuthResource").Handler(callHandler(usersAuthResource{}))
+		Name("userAuth").Handler(callHandler(userAuth{}))
 	router.Host(hostRe).Path(`/users/sync` + formatRe).
-		Name("usersSyncResource").Handler(callHandler(usersSyncResource{}))
+		Name("userSync").Handler(callHandler(userSync{}))
 	router.Host(hostRe).Path(`/users/registrar` + formatRe).
-		Name("usersRegistrarResource").Handler(callHandler(usersRegistrarResource{}))
+		Name("userRegistrar").Handler(callHandler(userRegistrar{}))
 	router.Host(hostRe).Path(`/users/` + uuidRe + formatRe).
-		Name("usersResource").Handler(callHandler(usersResource{}))
+		Name("user").Handler(callHandler(user{}))
 
 	// media resources
 	router.Host(hostRe).Path(`/videos` + formatRe).
-		Name("videosResource").Handler(callHandler(videosResource{}))
+		Name("videos").Handler(callHandler(videos{}))
 	router.Host(hostRe).Path(`/videos/` + nameRe + formatRe).
-		Name("videoResource").Handler(callHandler(videoResource{}))
+		Name("video").Handler(callHandler(video{}))
 
 	/* router.Host(hostRe).Path(`/movies/` + nameRe + formatRe). */
 	/* Name("moviesResource").Handler(callHandler(moviesResource{})) */
 
 	// http status codes
 	router.Host(hostRe).Path(`/403` + formatRe).
-		Name("forbiddenResource").Handler(callHandler(forbiddenResource{}))
+		Name("forbidden").Handler(callHandler(forbidden{}))
 	router.Host(hostRe).Path(`/404` + formatRe).
-		Name("notFoundResource").Handler(callHandler(notFoundResource{}))
+		Name("notFound").Handler(callHandler(notFound{}))
 
 	// 404
-	router.NotFoundHandler = callHandler(notFoundResource{})
+	router.NotFoundHandler = callHandler(notFound{})
 }
 
 func getCanonicalSite(r Resource) (s *site, err error) {
@@ -197,7 +197,7 @@ func getCanonicalSite(r Resource) (s *site, err error) {
 	return
 }
 
-func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *User) {
+func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *user) {
 	_ = logger.Info(fmt.Sprintf("Requested url: '%v' writing resource '%v'", req.URL.String(), resourceName(res)))
 	// get the site and env requested
 	s, env := getSite(req)
@@ -215,7 +215,7 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *Us
 	resContent := res.Content(req, s)
 	content := resContent.content
 	content["links"] = getLinks(req)
-	u.URL = u.getURL(req)
+	u.Location = u.URL(req, nil).String()
 	content["requestingUser"] = u
 
 	// write the resource in requested format
@@ -265,18 +265,18 @@ func getLinks(req *http.Request) map[string]interface{} {
 	cfLinks := make(map[string]string)
 	siteLinks := make(map[string]string)
 
-	cfLinks["index"] = indexResource{}.URL(req, convictFilms).String()
-	cfLinks["videos"] = videosResource{}.URL(req, convictFilms).String()
-	cfLinks["usersAuth"] = usersAuthResource{}.URL(req, nil).String()
-	cfLinks["usersRegistrar"] = usersRegistrarResource{}.URL(req, nil).String()
+	cfLinks["index"] = index{}.URL(req, convictFilms).String()
+	cfLinks["videos"] = videos{}.URL(req, convictFilms).String()
+	cfLinks["userAuth"] = userAuth{}.URL(req, nil).String()
+	cfLinks["userRegistrar"] = userRegistrar{}.URL(req, nil).String()
 
-	bwLinks["index"] = indexResource{}.URL(req, brightonWok).String()
-	bwLinks["videos"] = videosResource{}.URL(req, brightonWok).String()
+	bwLinks["index"] = index{}.URL(req, brightonWok).String()
+	bwLinks["videos"] = videos{}.URL(req, brightonWok).String()
 
-	siteLinks["index"] = indexResource{}.URL(req, nil).String()
-	siteLinks["videos"] = videosResource{}.URL(req, nil).String()
-	siteLinks["usersAuth"] = usersAuthResource{}.URL(req, nil).String()
-	siteLinks["usersRegistrar"] = usersRegistrarResource{}.URL(req, nil).String()
+	siteLinks["index"] = index{}.URL(req, nil).String()
+	siteLinks["videos"] = videos{}.URL(req, nil).String()
+	siteLinks["userAuth"] = userAuth{}.URL(req, nil).String()
+	siteLinks["userRegistrar"] = userRegistrar{}.URL(req, nil).String()
 
 	l["site"] = siteLinks
 	l["brightonWok"] = bwLinks

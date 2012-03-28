@@ -1,15 +1,12 @@
-// Vafan - a web server for Convict Films
-//
-// Youtube awareness. 
-//
+// Copyright 2012 Saul Howard. All rights reserved.
+
+// Youtube videos. 
+
 // Takes a youtube ID and fills in properties from
-// the youtube API
-//
-//     https://developers.google.com/youtube/2.0/developers_guide_protocol_video_entries
-//
-// @url    http://saulhoward.com/vafan
-// @author saul@saulhoward.com
-//
+// the youtube API.
+
+// https://developers.google.com/youtube/2.0/developers_guide_protocol_video_entries
+
 package vafan
 
 import (
@@ -50,7 +47,7 @@ type youtubeThumbnail struct {
 }
 
 func (y *youtubeVideo) FetchDetails() (err error) {
-    youtubeDevKey, err := conf.String("default", "youtube-dev-key")
+	youtubeDevKey, err := conf.String("default", "youtube-dev-key")
 	if err != nil {
 		_ = logger.Err(fmt.Sprintf("Failed to fetch youtube dev key from config: %v", err))
 		return

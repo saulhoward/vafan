@@ -232,6 +232,9 @@ header.navbar h1 a.brighton-wok {
     position: relative;
     background: url(/img/brighton-wok/ganja-boxing-pattern.jpg) top left repeat;
 }
+#video #video-selector .modal {
+    position: relative;
+}
 #video #video-selector {
     position: relative;
     z-index: 2;
