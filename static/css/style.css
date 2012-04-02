@@ -277,6 +277,10 @@ footer i.icon-facebook-sign {
     background-color: #333;
 }
 
+.thumbnail {
+    background-color: #F5F5F5;
+}
+
 
 /* ==|== media queries ======================================================
    Media Queries for Responsive Design.

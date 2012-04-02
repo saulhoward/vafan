@@ -42,7 +42,7 @@ a:hover, a:active { outline: 0; }
  * General Typography, colors etc
    ========================================================================== */
 body {
-    color: black;
+    color: #333;
     font-size: 14px;
 }
 p {

@@ -26,6 +26,7 @@ type video struct {
 	Name        string // names are unique
 	Title       string
 	Description markdown
+	Location    string
 	Sites       []*site // the sites that display this vid
 	Youtube     youtubeVideo
 	Vimeo       vimeoVideo

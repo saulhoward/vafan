@@ -5,6 +5,29 @@
         </p>
 </header>
 
+<div class="row">
+    <div class="span12">
+        <ul class="thumbnails">
+
+            {{range .videos}}
+                <li class="span3">
+                    <div class="thumbnail">
+                        <a href="{{.Location}}">
+                            <img 
+                            src="http://placehold.it/260x180"
+                            alt=""
+                            >
+                        </a>
+                        <h5>{{.Title}}</h5>
+                        <p>Thumbnail caption right
+                        here...</p>
+                    </div>
+                </li>
+            {{end}}
+
+        </ul>
+    </div>
+</div>
 
 <div class="row">
     <div class="span6">

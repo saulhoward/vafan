@@ -30,7 +30,7 @@ func getTemplatePath(file string, format string, res Resource, s *site) string {
         os.Exit(1)
     }
 
-    _ = logger.Info(fmt.Sprintf("Looking for template format: %v and resource: %v", format, resourceDirName(res)))
+    //_ = logger.Info(fmt.Sprintf("Looking for template format: %v and resource: %v", format, resourceDirName(res)))
 
     //Check for the most specific template first
     checkFormat := format

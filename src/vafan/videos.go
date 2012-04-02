@@ -6,14 +6,16 @@ package vafan
 
 import (
 	"fmt"
+	"launchpad.net/mgo"
 	"net/http"
 	"net/url"
 )
 
 // Represents a collection of videos.
 type videos struct {
-	video *video
-	data  resourceData
+	video  *video       // a new video, being added
+	videos []video      // the collection of videos
+	data   resourceData // other data
 }
 
 func (res videos) URL(req *http.Request, s *site) *url.URL {
@@ -21,8 +23,8 @@ func (res videos) URL(req *http.Request, s *site) *url.URL {
 }
 
 func (res videos) Content(req *http.Request, s *site) (c resourceContent) {
-	c.title = "Video"
-	c.description = "Video page"
+	c.title = "Video Library"
+	c.description = "Video collection"
 	if res.data != nil {
 		c.content = res.data
 	} else {
@@ -31,14 +33,25 @@ func (res videos) Content(req *http.Request, s *site) (c resourceContent) {
 	if res.video != nil {
 		res.data["video"] = res.video
 	}
+	if res.videos != nil {
+		for i, v := range res.videos {
+			res.videos[i].Location = v.URL(req, nil).String()
+		}
+		res.data["videos"] = res.videos
+	}
 	return
 }
 
+// View the videos, and, if user has permission, get a form to post a new video
 func (res videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 	res.data = emptyContent
+	var err error
+	res.videos, err = getAllVideos()
+	if err != nil {
+		res.videos = nil
+	}
 	switch r.Method {
 	case "GET":
-
 		writeResource(w, r, res, reqU)
 		return
 	case "POST":
@@ -90,6 +103,26 @@ func (res videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) 
 			forbidden{}.ServeHTTP(w, r, reqU)
 			return
 		}
+	}
+	return
+}
+
+func getAllVideos() (v []video, err error) {
+	session, err := mgo.Dial("127.0.0.1")
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
+		return
+	}
+	defer session.Close()
+	c := session.DB("vafan").C("videos")
+	err = c.Find(nil).All(&v)
+	if err != nil {
+		if err == mgo.NotFound {
+			err = ErrVideoNotFound
+			return
+		}
+		_ = logger.Err(fmt.Sprintf("Failed to get video (Mongo): %v", err))
+		return
 	}
 	return
 }
