@@ -4,7 +4,7 @@
 
 package vafan
 
-type markdown string
+type Markdown string
 
 // - renders as HTML when read as JSON
 /* NOT WORKING???

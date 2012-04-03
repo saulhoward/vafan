@@ -13,10 +13,19 @@
                 <li class="span3">
                     <div class="thumbnail">
                         <a href="{{.Location}}">
+                            {{if eq .Thumbnail ""}}
                             <img 
-                            src="http://placehold.it/260x180"
+                            src="http://placehold.it/210x180"
+                            width="210"
+                            alt="Placeholder"
+                            >
+                            {{else}}
+                            <img 
+                            src="{{.Thumbnail.URL}}"
+                            width="210"
                             alt=""
                             >
+                            {{end}}
                         </a>
                         <h5>{{.Title}}</h5>
                         <p>Thumbnail caption right

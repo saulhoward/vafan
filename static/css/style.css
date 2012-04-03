@@ -269,7 +269,10 @@ footer i.icon-twitter-sign {
 footer i.icon-facebook-sign {
     color: #3B5998;
 }
-/* Bootstrap overrides */
+
+/*
+ * Bootstrap overrides
+ */
 .nav-list > li > a, .nav-list .nav-header {
     text-shadow: none;
 }
@@ -280,7 +283,6 @@ footer i.icon-facebook-sign {
 .thumbnail {
     background-color: #F5F5F5;
 }
-
 
 /* ==|== media queries ======================================================
    Media Queries for Responsive Design.
@@ -296,6 +298,17 @@ footer i.icon-facebook-sign {
     }
 }
 
+/* Thumbnail img scaling */
+@media (min-width: 1200px) {
+    .span3 .thumbnail img {
+        width: 260px;
+    }
+}
+@media (max-width: 979px) and (min-width: 768px) {
+    .span3 .thumbnail img {
+        width: 156px;
+    }
+}
 
 /* ==|== non-semantic helper classes ========================================
    Please define your styles before this section.

@@ -25,16 +25,23 @@ type video struct {
 	Id          string
 	Name        string // names are unique
 	Title       string
-	Description markdown
+	Description Markdown
 	Location    string
+	Thumbnail   Image
 	Sites       []*site // the sites that display this vid
 	Youtube     youtubeVideo
 	Vimeo       vimeoVideo
 }
 
+type Image struct {
+	URL    string
+	Height string
+	Width  string
+}
+
 // External video types, eg, youtube, vimeo
 type externalVideo interface {
-	FetchDetails() (err error)
+	FetchData() (err error)
 }
 
 // Video url uses the video name, eg, `/videos/brighton-wok`
@@ -70,6 +77,7 @@ func (v video) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 		return
 	}
 }
+
 func GetVideoByName(name string) (v *video, err error) {
 	v = new(video)
 	session, err := mgo.Dial("127.0.0.1")
@@ -99,10 +107,38 @@ func (v *video) save() (err error) {
 	}
 	defer session.Close()
 	c := session.DB("vafan").C("videos")
-	err = c.Insert(v)
+
+	//err = c.Insert(v)
+	id, err := c.Upsert(bson.M{"name": v.Name}, v)
+
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to insert video (Mongo): %v", err))
+		_ = logger.Err(fmt.Sprintf("Failed to insert or update video (Mongo): %v", err))
 		return
+	}
+	_ = logger.Info(fmt.Sprintf("Inserted or updated video (Mongo): %v", id))
+
+	return
+}
+
+func (v *video) UpdateExternalData() (err error) {
+	err = v.Youtube.FetchData()
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed to fetch youtube details: %v", err))
+		return
+	}
+	err = v.save()
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed to save video: %v", err))
+		return
+	}
+	_ = logger.Info(fmt.Sprintf("Saved video details: %v", v.Youtube.Data.Title))
+
+	// Set a default thumbnail for this video
+	thumb, err := v.Youtube.getDefaultThumbnail()
+	if err == nil {
+		v.Thumbnail = Image{URL: thumb.URL, Width: thumb.Width, Height: thumb.Height}
+		v.save()
+		_ = logger.Info(fmt.Sprintf("Saved video thumbnail: %v", v.Thumbnail.URL))
 	}
 	return
 }

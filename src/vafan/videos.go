@@ -56,12 +56,13 @@ func (res videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) 
 		return
 	case "POST":
 		if reqU.Role == "superadmin" {
-			// This is a post to create a new user
+			// This is a post to create a new video
 			r.ParseForm()
 			res.video = new(video)
 			decoder.Decode(res.video, r.Form)
+			// as markdown is not a string, ParseForm() won't decode it
+			res.video.Description = Markdown(r.Form.Get("Description"))
 
-			// check for errors in post
 			if res.video.Sites == nil || res.video.isNameLegal() == false ||
 				res.video.Title == "" || res.video.Description == "" {
 				// found errors in post
@@ -85,6 +86,10 @@ func (res videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) 
 
 			// legal viddya, try to save
 			err := res.video.save()
+
+			// Fetch extra metadata from external sources (concurrently)
+			go res.video.UpdateExternalData()
+
 			var url *url.URL
 			if err != nil {
 				_ = logger.Err(fmt.Sprintf("Failed to save new video: %v", err))

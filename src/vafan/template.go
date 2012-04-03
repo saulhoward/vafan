@@ -88,7 +88,7 @@ func getPageTemplate(format string, res Resource, s *site) (t *template.Template
 
 // Uses black friday library to convert markdown to html, this is
 // assumed safe
-func markdownToHtml(md markdown) template.HTML {
+func markdownToHtml(md Markdown) template.HTML {
     bmd := []byte(md)
     bhtml := blackfriday.MarkdownCommon(bmd)
     return template.HTML(bhtml)

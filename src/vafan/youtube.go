@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -23,8 +24,8 @@ const singleYoutubeVideoURL = "https://gdata.youtube.com/feeds/api/videos/{id}?&
 var ErrYoutubeNotFound = errors.New("youtube: id doesn't exist")
 
 type youtubeVideo struct {
-	Id string
-	youtubeXML
+	Id   string
+	Data youtubeXML
 }
 
 type youtubeXML struct {
@@ -46,7 +47,7 @@ type youtubeThumbnail struct {
 	Name   string `xml:"name,attr"`
 }
 
-func (y *youtubeVideo) FetchDetails() (err error) {
+func (y *youtubeVideo) FetchData() (err error) {
 	youtubeDevKey, err := conf.String("default", "youtube-dev-key")
 	if err != nil {
 		_ = logger.Err(fmt.Sprintf("Failed to fetch youtube dev key from config: %v", err))
@@ -63,16 +64,30 @@ func (y *youtubeVideo) FetchDetails() (err error) {
 		_ = logger.Err(fmt.Sprintf("Failed reading youtube response body: %v", err))
 		return
 	}
-	err = xml.Unmarshal([]byte(data), &y.youtubeXML)
+	err = xml.Unmarshal([]byte(data), &y.Data)
 	if err != nil {
 		_ = logger.Err(fmt.Sprintf("Failed unmarshalling youtube XML: %v", err))
 		return
 	}
+	return
+}
 
-	// save this stuff to mongo
-	//...
-	print(y.Thumbnails[0].URL)
-
+func (y *youtubeVideo) getDefaultThumbnail() (t youtubeThumbnail, err error) {
+	maxWidth := 0
+	for _, thumb := range y.Data.Thumbnails {
+		width, err := strconv.Atoi(thumb.Width)
+		if err == nil {
+			if width > maxWidth {
+				t = thumb
+			}
+			maxWidth = width
+		}
+	}
+	if t.URL == "" {
+		err = errors.New("youtube: default thumbnail not found")
+		_ = logger.Err(fmt.Sprintf("Failed getting default youtube thumbnail: %v", err))
+		return
+	}
 	return
 }
 
