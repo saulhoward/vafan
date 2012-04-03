@@ -283,6 +283,9 @@ footer i.icon-facebook-sign {
 .thumbnail {
     background-color: #F5F5F5;
 }
+.datepicker {
+    color: #333;
+}
 
 /* ==|== media queries ======================================================
    Media Queries for Responsive Design.

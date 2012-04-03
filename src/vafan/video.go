@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"time"
 )
 
 // ErrVideoNotFound is returned by video when the named video does not
@@ -22,17 +23,20 @@ var ErrVideoNotFound = errors.New("video: doesn't exist")
 // A video represents data describing a video, hosted on an external
 // site such as Youtube or Vimeo
 type video struct {
-	Id          string
-	Name        string // names are unique
-	Title       string
-	Description Markdown
-	Location    string
-	Thumbnail   Image
-	Sites       []*site // the sites that display this vid
-	Youtube     youtubeVideo
-	Vimeo       vimeoVideo
+	Id               string
+	Name             string // names are unique
+	Title            string
+	Date             time.Time
+	ShortDescription string
+	Description      Markdown
+	Location         string
+	Thumbnail        Image
+	Sites            []*site // the sites that display this vid
+	Youtube          youtubeVideo
+	Vimeo            vimeoVideo
 }
 
+// Image type
 type Image struct {
 	URL    string
 	Height string

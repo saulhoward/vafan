@@ -24,8 +24,9 @@ const singleYoutubeVideoURL = "https://gdata.youtube.com/feeds/api/videos/{id}?&
 var ErrYoutubeNotFound = errors.New("youtube: id doesn't exist")
 
 type youtubeVideo struct {
-	Id   string
-	Data youtubeXML
+	Id       string
+	Location string
+	Data     youtubeXML
 }
 
 type youtubeXML struct {
@@ -34,6 +35,7 @@ type youtubeXML struct {
 	Statistics    youtubeStats       `xml:"statistics"`
 	PublishedDate string             `xml:"published"`
 	Thumbnails    []youtubeThumbnail `xml:"group>thumbnail"`
+	Links         []youtubeLink      `xml:"link"`
 }
 type youtubeStats struct {
 	Views      int `xml:"viewCount,attr"`
@@ -45,6 +47,10 @@ type youtubeThumbnail struct {
 	Width  string `xml:"width,attr"`
 	Time   string `xml:"time,attr"`
 	Name   string `xml:"name,attr"`
+}
+type youtubeLink struct {
+	Rel      string `xml:"rel,attr"`
+	Location string `xml:"href,attr"`
 }
 
 func (y *youtubeVideo) FetchData() (err error) {
@@ -69,6 +75,10 @@ func (y *youtubeVideo) FetchData() (err error) {
 		_ = logger.Err(fmt.Sprintf("Failed unmarshalling youtube XML: %v", err))
 		return
 	}
+	y.Location, err = y.getLocation()
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed setting youtube video URL: %v", err))
+	}
 	return
 }
 
@@ -88,6 +98,18 @@ func (y *youtubeVideo) getDefaultThumbnail() (t youtubeThumbnail, err error) {
 		_ = logger.Err(fmt.Sprintf("Failed getting default youtube thumbnail: %v", err))
 		return
 	}
+	return
+}
+
+func (y *youtubeVideo) getLocation() (l string, err error) {
+	for _, link := range y.Data.Links {
+		if link.Rel == "alternate" {
+			l = link.Location
+            return
+		}
+	}
+	err = errors.New("youtube: video location not found")
+	_ = logger.Err(fmt.Sprintf("Failed getting youtube video URL: %v", err))
 	return
 }
 

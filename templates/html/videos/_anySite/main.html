@@ -28,8 +28,7 @@
                             {{end}}
                         </a>
                         <h5>{{.Title}}</h5>
-                        <p>Thumbnail caption right
-                        here...</p>
+                        <p>{{.ShortDescription}}</p>
                     </div>
                 </li>
             {{end}}
@@ -39,10 +38,24 @@
 </div>
 
 <div class="row">
-    <div class="span6">
+    <div class="span4">
+            <h2>Add new videos here</h2>
+            <p>
+            Fill in the video details to add a new video to Convict
+            Films.
+            </p>
+            <p>
+                Each video will get a unique URL on each site that you
+                choose.
+            </p>
+            <p>
+                If you give a Youtube or Vimeo ID, details will be
+                downloaded from those sites.
+            </p>
+    </div>
+    <div class="span8">
 
         {{if eq .requestingUser.Role "superadmin"}}
-            <h2>Add a video</h2>
             <form method="POST" action="{{.url}}" class="form-horizontal">
                 <fieldset>
                     <legend>Video details</legend>
@@ -59,7 +72,7 @@
                                 placeholder="brighton-wok-trailer"
                                 >
                             <p class="help-block">
-                                {{or .errors.Name "'URL name' - should be letters and no spaces."}}
+                                {{or .errors.Name "'URL name' - must contain letters, numbers or dashes, but no spaces."}}
                             </p>
                         </div>
                     </div>
@@ -79,6 +92,45 @@
                                 >
                             <p class="help-block">
                                 {{or .errors.Title "Full title of the video."}}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="control-group {{if .errors.Date}}error{{end}}">
+                        <label class="control-label" for="Date">
+                            Date
+                        </label>
+                        <div class="controls">
+                            <input
+                                type="text"
+                                class="input-xlarge datepicker"
+                                id="Date"
+                                name="Date"
+                                value="{{.video.Date}}"
+                                placeholder="2012-04-01"
+                                data-date-format="yyyy-mm-dd"
+                                >
+                            <p class="help-block">
+                                {{or .errors.Date "Project date."}}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="control-group {{if .errors.ShortDescription}}error{{end}}">
+                        <label class="control-label" for="ShortDescription">
+                            Short Description
+                        </label>
+                        <div class="controls">
+                            <input
+                                type="text"
+                                class="input-xlarge"
+                                id="ShortDescription"
+                                name="ShortDescription"
+                                value="{{.video.ShortDescription}}"
+                                placeholder="The Legend of Ganja Boxing"
+                                >
+                            <p class="help-block">
+                                {{or .errors.ShortDescription "Short description, to use as a sub-title."}}
                             </p>
                         </div>
                     </div>

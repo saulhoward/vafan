@@ -6,6 +6,8 @@ $(function () {
     vafan.fonts.load();
     vafan.threeDeeDvd.start();
     vafan.video.start();
+
+    $('.datepicker').datepicker();
 });
 
 // -- GLOBAL FUNCTIONS

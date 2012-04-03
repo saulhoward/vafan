@@ -1,7 +1,7 @@
 <header class="jumbotron subhead" id="overview">
         <h1>{{.video.Title}}</h1>
         <p class="lead">
-        A subtitle would go here
+        {{.video.ShortDescription}}
         </p>
 </header>
 
@@ -20,10 +20,44 @@
         {{if .video.Vimeo.Id}}
             <p>Vimeo, biatches</p>
         {{end}}
+
     </div>
     <div class="span6">
         <div class="well">
             {{markdown .video.Description}}
         </div>
+
+        {{if .video.Youtube.Data.Title}}
+            <div class="youtube-details">
+                <h3>This video on Youtube</h3>
+                <dl class="dl-horizontal">
+                    <dt>
+                    Title:
+                    </dt>
+                    <dd>
+                    <a href="{{.video.Youtube.Location}}">
+                       {{.video.Youtube.Data.Title}}</a>
+                    </dd>
+                    <dt>
+                    Published:
+                    </dt>
+                    <dd>
+                    {{.video.Youtube.Data.PublishedDate}}
+                    </dd>
+                    <dt>
+                    Views:
+                    </dt>
+                    <dd>
+                    {{.video.Youtube.Data.Statistics.Views}}
+                    </dd>
+                    <dt>
+                    Favourites:
+                    </dt>
+                    <dd>
+                    {{.video.Youtube.Data.Statistics.Favourites}}
+                    </dd>
+                <dl>
+            </div>
+        {{end}}
     </div>
 </div>

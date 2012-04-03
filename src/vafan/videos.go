@@ -9,6 +9,7 @@ import (
 	"launchpad.net/mgo"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 // Represents a collection of videos.
@@ -62,16 +63,29 @@ func (res videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) 
 			decoder.Decode(res.video, r.Form)
 			// as markdown is not a string, ParseForm() won't decode it
 			res.video.Description = Markdown(r.Form.Get("Description"))
+			// Two possible date formats
+			var dateErr error
+			res.video.Date, dateErr = time.Parse("2006-01-02", r.Form.Get("Date"))
+			if dateErr != nil {
+				res.video.Date, dateErr = time.Parse("2006-01-02 15:04:05 +0000 UTC", r.Form.Get("Date"))
+			}
 
 			if res.video.Sites == nil || res.video.isNameLegal() == false ||
+				res.video.ShortDescription == "" || dateErr != nil ||
 				res.video.Title == "" || res.video.Description == "" {
 				// found errors in post
 				errors := map[string]interface{}{}
 				if res.video.isNameLegal() == false {
 					errors["Name"] = "Must contain only alphanumericals and dashes.."
 				}
+				if dateErr != nil {
+					errors["Date"] = "Date is unreadable. It must look like 2012-04-01."
+				}
 				if res.video.Title == "" {
 					errors["Title"] = "Must have title."
+				}
+				if res.video.ShortDescription == "" {
+					errors["ShortDescription"] = "Must have short description."
 				}
 				if res.video.Description == "" {
 					errors["Description"] = "Must have description."
