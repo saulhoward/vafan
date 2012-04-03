@@ -58,18 +58,22 @@ func (res videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) 
 	case "POST":
 		if reqU.Role == "superadmin" {
 			// This is a post to create a new video
+			res.video = newVideo()
 			r.ParseForm()
-			res.video = new(video)
 			decoder.Decode(res.video, r.Form)
+
 			// as markdown is not a string, ParseForm() won't decode it
 			res.video.Description = Markdown(r.Form.Get("Description"))
-			// Two possible date formats
+
+			// Date - two possible formats.
 			var dateErr error
 			res.video.Date, dateErr = time.Parse("2006-01-02", r.Form.Get("Date"))
 			if dateErr != nil {
 				res.video.Date, dateErr = time.Parse("2006-01-02 15:04:05 +0000 UTC", r.Form.Get("Date"))
 			}
 
+			// All other video data
+            // TODO check youtube, vimeo ids
 			if res.video.Sites == nil || res.video.isNameLegal() == false ||
 				res.video.ShortDescription == "" || dateErr != nil ||
 				res.video.Title == "" || res.video.Description == "" {

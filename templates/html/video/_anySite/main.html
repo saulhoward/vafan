@@ -8,16 +8,16 @@
 <div class="row">
     <div class="span6">
 
-        {{if .video.Youtube.Id}}
+        {{if .video.ExternalVideos.Youtube.ID}}
             <iframe class="youtube-player" type="text/html" 
                     width="100%" height="385"
-                    src="http://www.youtube.com/embed/{{.video.Youtube.Id}}"
+                    src="http://www.youtube.com/embed/{{.video.ExternalVideos.Youtube.ID}}"
                     frameborder="0"
                     >
             </iframe>
         {{end}}
 
-        {{if .video.Vimeo.Id}}
+        {{if .video.ExternalVideos.Vimeo.ID}}
             <p>Vimeo, biatches</p>
         {{end}}
 
@@ -27,7 +27,7 @@
             {{markdown .video.Description}}
         </div>
 
-        {{if .video.Youtube.Data.Title}}
+        {{if .video.ExternalVideos.Youtube.Data.Title}}
             <div class="youtube-details">
                 <h3>This video on Youtube</h3>
                 <dl class="dl-horizontal">
@@ -35,26 +35,26 @@
                     Title:
                     </dt>
                     <dd>
-                    <a href="{{.video.Youtube.Location}}">
-                       {{.video.Youtube.Data.Title}}</a>
+                    <a href="{{.video.ExternalVideos.Youtube.Location}}">
+                       {{.video.ExternalVideos.Youtube.Data.Title}}</a>
                     </dd>
                     <dt>
                     Published:
                     </dt>
                     <dd>
-                    {{.video.Youtube.Data.PublishedDate}}
+                    {{.video.ExternalVideos.Youtube.Data.PublishedDate}}
                     </dd>
                     <dt>
                     Views:
                     </dt>
                     <dd>
-                    {{.video.Youtube.Data.Statistics.Views}}
+                    {{.video.ExternalVideos.Youtube.Data.Statistics.Views}}
                     </dd>
                     <dt>
                     Favourites:
                     </dt>
                     <dd>
-                    {{.video.Youtube.Data.Statistics.Favourites}}
+                    {{.video.ExternalVideos.Youtube.Data.Statistics.Favourites}}
                     </dd>
                 <dl>
             </div>

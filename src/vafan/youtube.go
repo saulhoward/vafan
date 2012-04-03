@@ -24,7 +24,7 @@ const singleYoutubeVideoURL = "https://gdata.youtube.com/feeds/api/videos/{id}?&
 var ErrYoutubeNotFound = errors.New("youtube: id doesn't exist")
 
 type youtubeVideo struct {
-	Id       string
+	ID       string
 	Location string
 	Data     youtubeXML
 }
@@ -59,7 +59,7 @@ func (y *youtubeVideo) FetchData() (err error) {
 		_ = logger.Err(fmt.Sprintf("Failed to fetch youtube dev key from config: %v", err))
 		return
 	}
-	r := strings.NewReplacer("{id}", y.Id, "{key}", youtubeDevKey)
+	r := strings.NewReplacer("{id}", y.ID, "{key}", youtubeDevKey)
 	res, err := http.Get(r.Replace(singleYoutubeVideoURL))
 	if err != nil {
 		_ = logger.Err(fmt.Sprintf("Failed to GET youtube URL: %v", err))
@@ -82,7 +82,8 @@ func (y *youtubeVideo) FetchData() (err error) {
 	return
 }
 
-func (y *youtubeVideo) getDefaultThumbnail() (t youtubeThumbnail, err error) {
+func (y *youtubeVideo) getDefaultThumbnail() (i Image, err error) {
+	var t youtubeThumbnail
 	maxWidth := 0
 	for _, thumb := range y.Data.Thumbnails {
 		width, err := strconv.Atoi(thumb.Width)
@@ -98,6 +99,7 @@ func (y *youtubeVideo) getDefaultThumbnail() (t youtubeThumbnail, err error) {
 		_ = logger.Err(fmt.Sprintf("Failed getting default youtube thumbnail: %v", err))
 		return
 	}
+	i = Image{URL: t.URL, Width: t.Width, Height: t.Height}
 	return
 }
 
@@ -105,7 +107,7 @@ func (y *youtubeVideo) getLocation() (l string, err error) {
 	for _, link := range y.Data.Links {
 		if link.Rel == "alternate" {
 			l = link.Location
-            return
+			return
 		}
 	}
 	err = errors.New("youtube: video location not found")

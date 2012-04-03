@@ -183,21 +183,22 @@
                 <fieldset>
                     <legend>Vimeo video</legend>
 
-                    <div class="control-group {{if .errors.VimeoId}}error{{end}}">
-                        <label class="control-label" for="Vimeo.Id">Vimeo ID</label>
+                    <div class="control-group {{if .errors.ExternalVideos.Vimeo}}error{{end}}">
+                        <label class="control-label"
+                            for="ExternalVideos.Vimeo.ID">Vimeo ID</label>
                         <div class="controls">
                             <div class="input-prepend">
                                 <span class="add-on">vimeo.com/</span>
                                 <input
                                     type="text"
                                     class="input"
-                                    id="Vimeo.Id prependedInput"
-                                    name="Vimeo.Id"
-                                    value="{{.video.Vimeo.Id}}"
+                                    id="vimeo prependedInput"
+                                    name="ExternalVideos.Vimeo.ID"
+                                    value="{{.video.ExternalVideos.Vimeo.ID}}"
                                     placeholder="35687624"
                                     >
                                 <p class="help-block">
-                                    {{or .errors.VimeoId "Vimeo ID, from the Vimeo page URL"}}
+                                    {{or .errors.ExternalVideos.Vimeo "Vimeo ID, from the Vimeo page URL"}}
                                 </p>
                             </div>
                         </div>
@@ -208,21 +209,22 @@
                 <fieldset>
                     <legend>Youtube video</legend>
 
-                    <div class="control-group {{if .errors.YoutubeId}}error{{end}}">
-                        <label class="control-label" for="Youtube.Id">Youtube ID</label>
+                    <div class="control-group {{if .errors.ExternalVideos.Youtube}}error{{end}}">
+                        <label class="control-label"
+                            for="ExternalVideos.Youtube.ID">Youtube ID</label>
                         <div class="controls">
                             <div class="input-prepend">
                                 <span class="add-on">&hellip;/watch?v=</span>
                                 <input
                                     type="text"
                                     class="input"
-                                    id="Youtube.Id prependedInput"
-                                    name="Youtube.Id"
-                                    value="{{.video.Youtube.Id}}"
+                                    id="youtube prependedInput"
+                                    name="ExternalVideos.Youtube.ID"
+                                    value="{{.video.ExternalVideos.Youtube.ID}}"
                                     placeholder="hFSlQrB3iGY"
                                     >
                                 <p class="help-block">
-                                    {{or .errors.YoutubeId "Youtube ID, from the Youtube page URL"}}
+                                    {{or .errors.ExternalVideos.Youtube "Youtube ID, from the Youtube page URL"}}
                                 </p>
                             </div>
                         </div>

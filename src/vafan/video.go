@@ -32,20 +32,31 @@ type video struct {
 	Location         string
 	Thumbnail        Image
 	Sites            []*site // the sites that display this vid
-	Youtube          youtubeVideo
-	Vimeo            vimeoVideo
+	ExternalVideos   externalVideos
 }
 
-// Image type
+// Image type.
 type Image struct {
 	URL    string
 	Height string
 	Width  string
 }
 
-// External video types, eg, youtube, vimeo
-type externalVideo interface {
+type externalVideos struct {
+	Youtube *youtubeVideo
+	Vimeo   *vimeoVideo
+}
+
+// External video interface, eg, youtube, vimeo.
+type externalVideoProvider interface {
 	FetchData() (err error)
+	getDefaultThumbnail() (i Image, err error)
+}
+
+// A video constructor
+func newVideo() (v *video) {
+	v = new(video)
+	return v
 }
 
 // Video url uses the video name, eg, `/videos/brighton-wok`
@@ -125,25 +136,29 @@ func (v *video) save() (err error) {
 }
 
 func (v *video) UpdateExternalData() (err error) {
-	err = v.Youtube.FetchData()
-	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to fetch youtube details: %v", err))
-		return
-	}
-	err = v.save()
-	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to save video: %v", err))
-		return
-	}
-	_ = logger.Info(fmt.Sprintf("Saved video details: %v", v.Youtube.Data.Title))
+	externalVideos := []externalVideoProvider{v.ExternalVideos.Youtube, v.ExternalVideos.Vimeo}
+	var thumbs []Image
+	for _, extVid := range externalVideos {
+		err = extVid.FetchData()
+		if err != nil {
+			_ = logger.Err(fmt.Sprintf("Failed to fetch external video details: %v", err))
+			continue
+		}
+		err = v.save()
+		if err != nil {
+			_ = logger.Err(fmt.Sprintf("Failed to save video: %v", err))
+			continue
+		}
 
-	// Set a default thumbnail for this video
-	thumb, err := v.Youtube.getDefaultThumbnail()
-	if err == nil {
-		v.Thumbnail = Image{URL: thumb.URL, Width: thumb.Width, Height: thumb.Height}
-		v.save()
-		_ = logger.Info(fmt.Sprintf("Saved video thumbnail: %v", v.Thumbnail.URL))
+		// Set a default thumbnail for this video
+		thumb, err := extVid.getDefaultThumbnail()
+		if err == nil {
+			thumbs = append(thumbs, thumb)
+		}
 	}
+	// Choose a thumbnail to be the default.
+	v.Thumbnail = thumbs[0]
+	v.save()
 	return
 }
 
