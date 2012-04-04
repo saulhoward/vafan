@@ -77,9 +77,9 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow:inset 0px 0px 100px rgba(212,217,115,0.5);
     padding-left: 15px;
     padding-right: 15px;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box; 
+    /* -moz-box-sizing: border-box; */
+    /* -webkit-box-sizing: border-box; */
+    /* box-sizing: border-box;  */
 }
 .index #main > .container {
     background: none;
