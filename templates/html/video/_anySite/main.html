@@ -108,29 +108,31 @@
         <h2>Related Videos</h2>
         <div class="row">
             <div class="span8">
-                {{range .relatedVideos}}
-                    <li class="span3">
-                        <div class="thumbnail">
-                            <a href="{{.Location}}">
-                                {{if eq .Thumbnail ""}}
-                                    <img 
-                                        src="http://placehold.it/210x180"
-                                        width="210"
-                                        alt="Placeholder"
-                                        >
-                                {{else}}
-                                    <img 
-                                        src="{{.Thumbnail.URL}}"
-                                        width="210"
-                                        alt=""
-                                        >
-                                {{end}}
-                            </a>
-                            <h5>{{.Title}}</h5>
-                            <p>{{.ShortDescription}}</p>
-                        </div>
-                    </li>
-                {{end}}
+                <ul class="thumbnails">
+                    {{range .relatedVideos}}
+                        <li class="span3">
+                            <div class="thumbnail">
+                                <a href="{{.Location}}">
+                                    {{if eq .Thumbnail ""}}
+                                        <img 
+                                            src="http://placehold.it/210x180"
+                                            width="210"
+                                            alt="Placeholder"
+                                            >
+                                    {{else}}
+                                        <img 
+                                            src="{{.Thumbnail.URL}}"
+                                            width="210"
+                                            alt=""
+                                            >
+                                    {{end}}
+                                </a>
+                                <h5>{{.Title}}</h5>
+                                <p>{{.ShortDescription}}</p>
+                            </div>
+                        </li>
+                    {{end}}
+                </ul>
             </div>
         </div>
     </div>

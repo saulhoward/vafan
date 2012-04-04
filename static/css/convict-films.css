@@ -61,9 +61,12 @@ h1, h2, h3, h4, h5, h6 {
 .hero-unit h1 {
     color: #D1E751;
 }
-.thumbnail p, .thumbnail h5 {
-    color: #333;
+
+.thumbnail {
+    background-color: rgba(0,0,0,0.4);
+    border-color: black;
 }
+
 
 /* ==========================================================================
  * Layout, div specifics
