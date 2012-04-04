@@ -7,6 +7,7 @@ package vafan
 import (
 	"fmt"
 	"launchpad.net/mgo"
+	"launchpad.net/mgo/bson"
 	"net/http"
 	"net/url"
 	"time"
@@ -43,11 +44,13 @@ func (res videos) Content(req *http.Request, s *site) (c resourceContent) {
 	return
 }
 
-// View the videos, and, if user has permission, get a form to post a new video
+// View the videos, and, if user has permission, get a form to post a
+// new video.
 func (res videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 	res.data = emptyContent
 	var err error
-	res.videos, err = getAllVideos()
+	site, _ := getSite(r)
+	res.videos, err = getAllVideos(site)
 	if err != nil {
 		res.videos = nil
 	}
@@ -73,7 +76,7 @@ func (res videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) 
 			}
 
 			// All other video data
-            // TODO check youtube, vimeo ids
+			// TODO check youtube, vimeo ids
 			if res.video.Sites == nil || res.video.isNameLegal() == false ||
 				res.video.ShortDescription == "" || dateErr != nil ||
 				res.video.Title == "" || res.video.Description == "" {
@@ -130,7 +133,8 @@ func (res videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) 
 	return
 }
 
-func getAllVideos() (v []video, err error) {
+func getAllVideos(s *site) (v []video, err error) {
+	v = []video{}
 	session, err := mgo.Dial("127.0.0.1")
 	if err != nil {
 		_ = logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
@@ -138,7 +142,28 @@ func getAllVideos() (v []video, err error) {
 	}
 	defer session.Close()
 	c := session.DB("vafan").C("videos")
-	err = c.Find(nil).All(&v)
+	err = c.Find(bson.M{"sites.name": s.Name}).All(&v)
+	if err != nil {
+		if err == mgo.NotFound {
+			err = ErrVideoNotFound
+			return
+		}
+		_ = logger.Err(fmt.Sprintf("Failed to get video (Mongo): %v", err))
+		return
+	}
+	return
+}
+
+func getRelatedVideos(v *video, s *site) (relVids []video, err error) {
+	relVids = []video{}
+	session, err := mgo.Dial("127.0.0.1")
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
+		return
+	}
+	defer session.Close()
+	c := session.DB("vafan").C("videos")
+	err = c.Find(bson.M{"sites.name": s.Name, "name": bson.M{"$ne": v.Name}}).All(&relVids)
 	if err != nil {
 		if err == mgo.NotFound {
 			err = ErrVideoNotFound

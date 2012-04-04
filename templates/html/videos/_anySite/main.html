@@ -37,25 +37,26 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="span4">
-            <h2>Add new videos here</h2>
-            <p>
-            Fill in the video details to add a new video to Convict
-            Films.
-            </p>
-            <p>
-                Each video will get a unique URL on each site that you
-                choose.
-            </p>
-            <p>
-                If you give a Youtube or Vimeo ID, details will be
-                downloaded from those sites.
-            </p>
-    </div>
-    <div class="span8">
+{{/* Add a New Video */}}
+{{if eq .requestingUser.Role "superadmin"}}
+    <div class="row">
+        <div class="span4">
+                <h2>Add new videos here</h2>
+                <p>
+                Fill in the video details to add a new video to Convict
+                Films.
+                </p>
+                <p>
+                    Each video will get a unique URL on each site that you
+                    choose.
+                </p>
+                <p>
+                    If you give a Youtube or Vimeo ID, details will be
+                    downloaded from those sites.
+                </p>
+        </div>
+        <div class="span8">
 
-        {{if eq .requestingUser.Role "superadmin"}}
             <form method="POST" action="{{.url}}" class="form-horizontal">
                 <fieldset>
                     <legend>Video details</legend>
@@ -239,7 +240,6 @@
                         class="btn">Cancel</button>
                 </div>
             </form>
-        {{end}}
-
+        </div>
     </div>
-</div>
+{{end}}

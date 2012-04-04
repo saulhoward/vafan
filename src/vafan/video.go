@@ -42,6 +42,9 @@ type Image struct {
 	Width  string
 }
 
+// These satisfy the externalVideoProvider interface, below.
+// I am explicit about their type so the mongo lib can write data
+// straight into them.
 type externalVideos struct {
 	Youtube *youtubeVideo
 	Vimeo   *vimeoVideo
@@ -68,6 +71,13 @@ func (v video) Content(req *http.Request, s *site) (c resourceContent) {
 	c.title = "Video"
 	c.description = "Video page"
 	c.content = map[string]interface{}{"video": v}
+	relatedVideos, err := getRelatedVideos(&v, s)
+	if err == nil && len(relatedVideos) > 0 {
+		for i, v := range relatedVideos {
+			relatedVideos[i].Location = v.URL(req, nil).String()
+		}
+		c.content["relatedVideos"] = relatedVideos
+	}
 	return
 }
 
@@ -135,18 +145,27 @@ func (v *video) save() (err error) {
 	return
 }
 
+// Fetches external data from the External Video Providers and saves it
+// to the video.
 func (v *video) UpdateExternalData() (err error) {
-	externalVideos := []externalVideoProvider{v.ExternalVideos.Youtube, v.ExternalVideos.Vimeo}
+	_ = logger.Info("Updating video external data.")
+	externalVideos := map[string]externalVideoProvider{}
+	if v.ExternalVideos.Youtube.ID != "" {
+		externalVideos["youtube"] = v.ExternalVideos.Youtube
+	}
+	if v.ExternalVideos.Vimeo.ID != "" {
+		externalVideos["vimeo"] = v.ExternalVideos.Vimeo
+	}
 	var thumbs []Image
-	for _, extVid := range externalVideos {
+	for provider, extVid := range externalVideos {
 		err = extVid.FetchData()
 		if err != nil {
-			_ = logger.Err(fmt.Sprintf("Failed to fetch external video details: %v", err))
+			_ = logger.Err(fmt.Sprintf("Failed to fetch external video details (%v): %v", provider, err))
 			continue
 		}
 		err = v.save()
 		if err != nil {
-			_ = logger.Err(fmt.Sprintf("Failed to save video: %v", err))
+			_ = logger.Err(fmt.Sprintf("Failed to save video (%v): %v", provider, err))
 			continue
 		}
 
@@ -155,6 +174,7 @@ func (v *video) UpdateExternalData() (err error) {
 		if err == nil {
 			thumbs = append(thumbs, thumb)
 		}
+		_ = logger.Info(fmt.Sprintf("Fetched video data for %v.", provider))
 	}
 	// Choose a thumbnail to be the default.
 	v.Thumbnail = thumbs[0]

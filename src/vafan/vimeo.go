@@ -29,16 +29,16 @@ type vimeoVideo struct {
 }
 
 type vimeoJSON struct {
-	title                 string
-	url                   string
-	upload_date           string
-	thumbnail_small       string
-	thumbnail_medium      string
-	thumbnail_large       string
-	stats_number_of_plays int
-	stats_number_of_likes int
-	width                 int
-	height                int
+	Title              string `json:"title"`
+	Url                string `json:"url"`
+	UploadDate         string `json:"upload_date"`
+	ThumbnailSmall     string `json:"thumbnail_small"`
+	ThumbnailMedium    string `json:"thumbnail_medium"`
+	ThumbnailLarge     string `json:"thumbnail_large"`
+	StatsNumberOfPlays int    `json:"stats_number_of_plays"`
+	StatsNumberOfLikes int    `json:"stats_number_of_likes"`
+	Width              int    `json:"width"`
+	Height             int    `json:"height"`
 }
 
 func (v *vimeoVideo) FetchData() (err error) {
@@ -53,18 +53,22 @@ func (v *vimeoVideo) FetchData() (err error) {
 		_ = logger.Err(fmt.Sprintf("Failed reading Vimeo response body: %v", err))
 		return
 	}
-	err = json.Unmarshal([]byte(data), &v.Data)
+    // Vimeo data is returned as an array
+    vArr := []vimeoJSON{}
+	err = json.Unmarshal([]byte(data), &vArr)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed unmarshalling Vimeo JSON: %v", err))
+		_ = logger.Err(fmt.Sprintf("Failed unmarshalling Vimeo JSON (%v): %v", r.Replace(singleVimeoVideoURLSchema), err))
 		return
 	}
+    // Just use the first element
+    v.Data = vArr[0]
 	// Set default url
-	v.Location = v.Data.url
+	v.Location = v.Data.Url
 	return
 }
 
 func (v *vimeoVideo) getDefaultThumbnail() (i Image, err error) {
-	i = Image{URL: v.Data.url, Width: "640"}
+	i = Image{URL: v.Data.Url, Width: "640"}
 	return
 }
 

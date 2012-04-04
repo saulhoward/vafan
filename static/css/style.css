@@ -243,6 +243,16 @@ header.navbar .navbar-search {
     border-color: #4DBCE9;
 }
 
+/*
+ * Related Videos
+ */
+.relatedVideos {
+    padding-top: 20px;
+}
+.relatedVideos h2 {
+    padding-bottom: 20px;
+}
+
 /*Footer
  **/
 footer {
