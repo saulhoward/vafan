@@ -6,8 +6,6 @@ package vafan
 
 import (
 	"fmt"
-	"launchpad.net/mgo"
-	"launchpad.net/mgo/bson"
 	"net/http"
 	"net/url"
 	"time"
@@ -15,101 +13,101 @@ import (
 
 // Represents a collection of videos.
 type videos struct {
-	video  *video       // a new video, being added
-	videos []video      // the collection of videos
-	data   resourceData // other data
+	video  *video       // a new video, as it is being added
+	videos []*video      // the collection of videos
+	data   resourceData // assembled data for response
 }
 
-func (res videos) URL(req *http.Request, s *site) *url.URL {
-	return getUrl(res, req, s, nil)
+func (vids videos) URL(req *http.Request, s *site) *url.URL {
+	return getUrl(vids, req, s, nil)
 }
 
-func (res videos) Content(req *http.Request, s *site) (c resourceContent) {
+func (vids videos) Content(req *http.Request, s *site) (c resourceContent) {
 	c.title = "Video Library"
 	c.description = "Video collection"
-	if res.data != nil {
-		c.content = res.data
+	if vids.data != nil {
+		c.content = vids.data
 	} else {
 		c.content = emptyContent
 	}
-	if res.video != nil {
-		res.data["video"] = res.video
+	if vids.video != nil {
+		vids.data["video"] = vids.video
 	}
-	if res.videos != nil {
-		for i, v := range res.videos {
-			res.videos[i].Location = v.URL(req, nil).String()
+	if vids.videos != nil {
+		for i, v := range vids.videos {
+			vids.videos[i].Location = v.URL(req, nil).String()
 		}
-		res.data["videos"] = res.videos
+		vids.data["videos"] = vids.videos
 	}
 	return
 }
 
 // View the videos, and, if user has permission, get a form to post a
 // new video.
-func (res videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
-	res.data = emptyContent
+func (vids videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
+	vids.data = emptyContent
 	var err error
 	site, _ := getSite(r)
-	res.videos, err = getAllVideos(site)
+	vids.videos, err = getAllVideos(site)
 	if err != nil {
-		res.videos = nil
+		vids.videos = nil
 	}
 	switch r.Method {
 	case "GET":
-		writeResource(w, r, res, reqU)
+		writeResource(w, r, vids, reqU)
 		return
 	case "POST":
 		if reqU.Role == "superadmin" {
 			// This is a post to create a new video
-			res.video = newVideo()
+			vids.video = newVideo()
 			r.ParseForm()
-			decoder.Decode(res.video, r.Form)
+			decoder.Decode(vids.video, r.Form)
 
 			// as markdown is not a string, ParseForm() won't decode it
-			res.video.Description = Markdown(r.Form.Get("Description"))
+			vids.video.Description = Markdown(r.Form.Get("Description"))
 
 			// Date - two possible formats.
 			var dateErr error
-			res.video.Date, dateErr = time.Parse("2006-01-02", r.Form.Get("Date"))
+			vids.video.Date, dateErr = time.Parse("2006-01-02", r.Form.Get("Date"))
 			if dateErr != nil {
-				res.video.Date, dateErr = time.Parse("2006-01-02 15:04:05 +0000 UTC", r.Form.Get("Date"))
+				vids.video.Date, dateErr = time.Parse("2006-01-02 15:04:05 +0000 UTC", r.Form.Get("Date"))
 			}
 
 			// All other video data
 			// TODO check youtube, vimeo ids
-			if res.video.Sites == nil || res.video.isNameLegal() == false ||
-				res.video.ShortDescription == "" || dateErr != nil ||
-				res.video.Title == "" || res.video.Description == "" {
+			if vids.video.Sites == nil || vids.video.isNameLegal() == false ||
+				vids.video.ShortDescription == "" || dateErr != nil ||
+				vids.video.Title == "" || vids.video.Description == "" {
 				// found errors in post
 				errors := map[string]interface{}{}
-				if res.video.isNameLegal() == false {
+				if vids.video.isNameLegal() == false {
 					errors["Name"] = "Must contain only alphanumericals and dashes.."
 				}
 				if dateErr != nil {
 					errors["Date"] = "Date is unreadable. It must look like 2012-04-01."
 				}
-				if res.video.Title == "" {
+				if vids.video.Title == "" {
 					errors["Title"] = "Must have title."
 				}
-				if res.video.ShortDescription == "" {
+				if vids.video.ShortDescription == "" {
 					errors["ShortDescription"] = "Must have short description."
 				}
-				if res.video.Description == "" {
+				if vids.video.Description == "" {
 					errors["Description"] = "Must have description."
 				}
-				if res.video.Sites == nil {
+				if vids.video.Sites == nil {
 					errors["Sites"] = "Must have at least one site."
 				}
-				res.data["errors"] = errors
-				writeResource(w, r, res, reqU)
+				vids.data["errors"] = errors
+				writeResource(w, r, vids, reqU)
 				return
 			}
 
 			// legal viddya, try to save
-			err := res.video.save()
+			err := vids.video.save()
 
 			// Fetch extra metadata from external sources (concurrently)
-			go res.video.UpdateExternalData()
+			go vids.video.UpdateExternalData()
 
 			var url *url.URL
 			if err != nil {
@@ -117,8 +115,8 @@ func (res videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) 
 				url = videos{}.URL(r, nil)
 				addFlash(w, r, "Failed to save new video", "error")
 			} else {
-				_ = logger.Info(fmt.Sprintf("Saved new video: %v", res.video.Id))
-				url = res.video.URL(r, nil)
+				_ = logger.Info(fmt.Sprintf("Saved new video: %v", vids.video.Id))
+				url = vids.video.URL(r, nil)
 				addFlash(w, r, "Added a video!", "success")
 			}
 
@@ -129,48 +127,6 @@ func (res videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) 
 			forbidden{}.ServeHTTP(w, r, reqU)
 			return
 		}
-	}
-	return
-}
-
-func getAllVideos(s *site) (v []video, err error) {
-	v = []video{}
-	session, err := mgo.Dial("127.0.0.1")
-	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
-		return
-	}
-	defer session.Close()
-	c := session.DB("vafan").C("videos")
-	err = c.Find(bson.M{"sites.name": s.Name}).All(&v)
-	if err != nil {
-		if err == mgo.NotFound {
-			err = ErrVideoNotFound
-			return
-		}
-		_ = logger.Err(fmt.Sprintf("Failed to get video (Mongo): %v", err))
-		return
-	}
-	return
-}
-
-func getRelatedVideos(v *video, s *site) (relVids []video, err error) {
-	relVids = []video{}
-	session, err := mgo.Dial("127.0.0.1")
-	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
-		return
-	}
-	defer session.Close()
-	c := session.DB("vafan").C("videos")
-	err = c.Find(bson.M{"sites.name": s.Name, "name": bson.M{"$ne": v.Name}}).All(&relVids)
-	if err != nil {
-		if err == mgo.NotFound {
-			err = ErrVideoNotFound
-			return
-		}
-		_ = logger.Err(fmt.Sprintf("Failed to get video (Mongo): %v", err))
-		return
 	}
 	return
 }

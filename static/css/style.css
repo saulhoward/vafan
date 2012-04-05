@@ -86,7 +86,7 @@ body {
     margin: 0;
 }
 #main > .container {
-    padding-bottom: 100px;
+    padding-bottom: 25px;
 }
 #main > .container,
 #complementary > .container {

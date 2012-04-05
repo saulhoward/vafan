@@ -56,7 +56,7 @@ type externalVideoProvider interface {
 	getDefaultThumbnail() (i Image, err error)
 }
 
-// A video constructor
+// Video constructor.
 func newVideo() (v *video) {
 	v = new(video)
 	return v
@@ -103,27 +103,7 @@ func (v video) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 	}
 }
 
-func GetVideoByName(name string) (v *video, err error) {
-	v = new(video)
-	session, err := mgo.Dial("127.0.0.1")
-	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
-		return
-	}
-	defer session.Close()
-	c := session.DB("vafan").C("videos")
-	err = c.Find(bson.M{"name": name}).One(v)
-	if err != nil {
-		if err == mgo.NotFound {
-			err = ErrVideoNotFound
-			return
-		}
-		_ = logger.Err(fmt.Sprintf("Failed to get video (Mongo): %v", err))
-		return
-	}
-	return
-}
-
+// Save a video to the DB.
 func (v *video) save() (err error) {
 	session, err := mgo.Dial("127.0.0.1")
 	if err != nil {
@@ -189,4 +169,73 @@ func (v *video) isNameLegal() bool {
 		return false
 	}
 	return true
+}
+
+// -- Get Videos from DB.
+
+// Get one video.
+func GetVideoByName(name string) (v *video, err error) {
+	v = new(video)
+	session, err := mgo.Dial("127.0.0.1")
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
+		return
+	}
+	defer session.Close()
+	c := session.DB("vafan").C("videos")
+	err = c.Find(bson.M{"name": name}).One(v)
+	if err != nil {
+		if err == mgo.NotFound {
+			err = ErrVideoNotFound
+			return
+		}
+		_ = logger.Err(fmt.Sprintf("Failed to get video (Mongo): %v", err))
+		return
+	}
+	return
+}
+
+// Generic get videos - takes a selector.
+func getVideos(selector bson.M) (vids []*video, err error) {
+	vids = []*video{}
+	session, err := mgo.Dial("127.0.0.1")
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
+		return
+	}
+	defer session.Close()
+	c := session.DB("vafan").C("videos")
+	err = c.Find(selector).All(&vids)
+	if err != nil {
+		if err == mgo.NotFound {
+			err = ErrVideoNotFound
+			return
+		}
+		_ = logger.Err(fmt.Sprintf("Failed to get video (Mongo): %v", err))
+		return
+	}
+	return
+}
+
+// All videos for a particular site.
+func getAllVideos(s *site) (v []*video, err error) {
+	v = []*video{}
+	v, err = getVideos(bson.M{"sites.name": s.Name})
+	return
+}
+
+// Featured videos - used for the index videos.
+func getFeaturedVideos(s *site) (v []*video, err error) {
+	v = []*video{}
+	v, err = getVideos(bson.M{"sites.name": s.Name})
+	return
+}
+
+// Returns videos, except the video passed in, and will have tag
+// matching.
+func getRelatedVideos(v *video, s *site) (relVids []*video, err error) {
+	relVids = []*video{}
+	selector := bson.M{"sites.name": s.Name, "name": bson.M{"$ne": v.Name}}
+	relVids, err = getVideos(selector)
+	return
 }
