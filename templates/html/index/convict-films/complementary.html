@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row featured-videos">
     <div class="span12">
         <ul class="thumbnails">
             {{range .videos}}
@@ -31,30 +31,43 @@
 <div class="row">
     <div class="brighton-wok span6">
         <h2>Ninjas! Ganja! Kung Fu!</h2>
-        <a class="dvd" href="{{.links.brightonWok.index}}">DVD</a>
-        <div class="span3">
-            <blockquote>
+        <div class="row">
+            <div class="span3">
+                <a class="dvd" href="{{.links.brightonWok.index}}">DVD</a>
+            </div>
+            <div class="span3 details">
+                <blockquote>
+                    <p>
+                    The best thing since sliced bread.
+                    </p>
+                    <small>
+                        Alison
+                        <cite title>Daily Mail</cite>
+                    </small>
+                </blockquote>
                 <p>
-                The best thing since sliced bread.
+                You can buy the <b>Brighton Wok: The Legend of Ganja Boxing</b>
+                DVD online at the <a
+                    href="{{.links.brightonWok.index}}">official website</a>.
                 </p>
-                <small>
-                    Alison
-                    <cite title>Daily Mail</cite>
-                </small>
-            </blockquote>
-            <p class="well">
-            You can buy the <b>Brighton Wok: The Legend of Ganja Boxing</b>
-            DVD online at the <a
-                href="{{.links.brightonWok.index}}">official website</a>.
-            </p>
+            </div>
         </div>
     </div>
 
     <div class="span6">
-        <h2><i class="icon-film icon-large"></i> Not sure what content</h2>
-
+        <h2><i class="icon-flag icon-large"></i> We are <b>Convict
+                Films</b></h2>
         <p>
-        Should go here. Links? Twitter? Something we care about?
+        Our company started back in 2001 when a group of friends came
+        together to make the film <b>Brighton Wok</b>. Since then
         </p>
+        <ul>
+            <li>
+            <a href="{{.links.brightonWok.index}}">Brighton Wok</a>
+            </li>
+            <li>
+            <a href="{{.links.site.videos}}">Video Library</a>
+            </li>
+        </ul>
     </div>
 </div>
