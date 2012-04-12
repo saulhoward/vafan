@@ -6,6 +6,7 @@
 package vafan
 
 import (
+	"code.google.com/p/go.net/websocket"
 	"code.google.com/p/gorilla/mux"
 	"encoding/json"
 	"errors"
@@ -167,11 +168,17 @@ func registerHandlers() {
 	router.Host(hostRe).Path(`/users/` + uuidRe + formatRe).
 		Name("user").Handler(callHandler(user{}))
 
-	// media resources
+	// Media resources
 	router.Host(hostRe).Path(`/videos` + formatRe).
 		Name("videos").Handler(callHandler(videos{}))
 	router.Host(hostRe).Path(`/videos/` + nameRe + formatRe).
 		Name("video").Handler(callHandler(video{}))
+
+	// Twitter resource, inc. websockets resource.
+	router.Host(hostRe).Path(`/tweets` + formatRe).
+		Name("tweets").Handler(callHandler(twitter{}))
+	router.Host(hostRe).Path(`/tweets/stream` + formatRe).
+		Name("tweetStream").Handler(websocket.Handler(streamTweets))
 
 	/* router.Host(hostRe).Path(`/movies/` + nameRe + formatRe). */
 	/* Name("moviesResource").Handler(callHandler(moviesResource{})) */

@@ -8,7 +8,10 @@ $(function () {
     vafan.video.start();
 
     $('.datepicker').datepicker();
+
+    //vafan.twitter.streamTweets()
 });
+
 
 // -- GLOBAL FUNCTIONS
 
