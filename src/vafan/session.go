@@ -1,10 +1,8 @@
-// Vafan - a web server for Convict Films
+// Copyright 2012 Saul Howard. All rights reserved.
 //
 // Session
 //
-// @url    http://saulhoward.com/vafan
-// @author saul@saulhoward.com
-//
+
 package vafan
 
 import (
@@ -121,11 +119,7 @@ func newLoginSession(w http.ResponseWriter, r *http.Request, u *user) (s *sessio
 		"EmailAddress": u.EmailAddress,
 		"Role":         u.Role,
 	}
-	db := radix.NewClient(radix.Configuration{
-		Database: 0,  // (default: 0)
-		Timeout:  10, // (default: 10)
-		Address:  "127.0.0.1:6379",
-	})
+	db := radix.NewClient(redisConfiguration)
 	defer db.Close()
 	reply := db.Command("hmset", sessionKey, userInfo)
 	if reply.Error() != nil {
@@ -192,11 +186,7 @@ func getLoginUser(sId string) (u *user, err error) {
 	u = NewUser()
 	sessionKey := "sessions:" + sId
 	// get user
-	db := radix.NewClient(radix.Configuration{
-		Database: 0,  // (default: 0)
-		Timeout:  10, // (default: 10)
-		Address:  "127.0.0.1:6379",
-	})
+	db := radix.NewClient(redisConfiguration)
 	defer db.Close()
 	reply := db.Command("hgetall", sessionKey)
 	if reply.Error() != nil {

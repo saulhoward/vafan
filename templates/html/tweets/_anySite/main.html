@@ -1,14 +1,18 @@
 <header class="jumbotron subhead" id="overview">
-        <h1>Tweets</h1>
+        <h1>Convict Tweets</h1>
         <p class="lead">
-        Bunch of fackin tweets
+        Some of the crew's recent activity on Twitter
         </p>
 </header>
 
 <div class="row">
     <div class="span8">
         <div id="tweets">
-
+            <ul class="unstyled">
+                {{range .tweets}}
+                <li>{{.Text}}</li>
+                {{end}}
+            </ul>
         </div>
     </div>
 </div>

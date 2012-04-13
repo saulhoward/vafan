@@ -7,13 +7,15 @@
 package vafan
 
 import (
+	"github.com/araddon/httpstream"
 	"net/http"
 	"net/url"
 )
 
 type index struct {
-	videos []*video     // collection of videos
-	data   resourceData // assembled data for response
+	videos []*video            // featured videos
+	tweets []*httpstream.Tweet // recent tweets
+	data   resourceData        // assembled data for response
 }
 
 func (res index) URL(req *http.Request, s *site) *url.URL {
@@ -25,12 +27,18 @@ func (res index) Content(req *http.Request, s *site) (c resourceContent) {
 	c.description = "Home page"
 
 	var err error
+
 	res.videos, err = getFeaturedVideos(s)
 	if err == nil {
 		for i, v := range res.videos {
 			res.videos[i].Location = v.URL(req, nil).String()
 		}
 		res.data["videos"] = res.videos
+	}
+
+	res.tweets, err = getLatestTweets()
+	if err == nil {
+		res.data["tweets"] = res.tweets
 	}
 
 	if res.data != nil {

@@ -176,7 +176,7 @@ func registerHandlers() {
 
 	// Twitter resource, inc. websockets resource.
 	router.Host(hostRe).Path(`/tweets` + formatRe).
-		Name("tweets").Handler(callHandler(twitter{}))
+		Name("tweets").Handler(callHandler(tweets{}))
 	router.Host(hostRe).Path(`/tweets/stream` + formatRe).
 		Name("tweetStream").Handler(websocket.Handler(streamTweets))
 

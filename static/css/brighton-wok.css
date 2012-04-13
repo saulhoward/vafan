@@ -377,7 +377,12 @@ header.navbar h1 a.brighton-wok {
 /* Twitter Tweets
  */
 #links .twitter {
+    color: #333;
     margin-top: 50px;
+}
+#links .twitter h1 {
+    color: #333;
+
 }
 #links .tweets-wrapper {
     width: 350px;

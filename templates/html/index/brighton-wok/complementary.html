@@ -78,29 +78,13 @@
                 <div class="twitter">
                     <div class="tweets-wrapper">
                         <div class="tweets">
-                            <h1>Twitter</h1>
-                            <ul>
-                                <li>
-                                Tweet one
-                            </li>
-                                <li>
-                                Tweet one
-                            </li>
-                                <li>
-                                Tweet one
-                            </li>
-                                <li>
-                                Tweet one
-                            </li>
-                                    <li>
-                                Tweet one
-                            </li>
-                                <li>
-                                Tweet one
-                            </li>
-
+                            <h1><i class="icon-twitter-sign"></i> Twitter</h1>
+                            <ul class="unstyled">
+                                {{range .tweets}}
+                                <li>{{.Text}}</li>
+                                {{end}}
                             </ul>
-                        </div>
+                       </div>
                     </div>
                 </div>
 
