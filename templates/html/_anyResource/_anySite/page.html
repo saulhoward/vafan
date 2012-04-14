@@ -1,166 +1,190 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
-<head>
-  <meta charset="utf-8">
-  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
-       More info: h5bp.com/b/378 -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <head>
+        <meta charset="utf-8">
+        <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+        More info: h5bp.com/b/378 -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>{{.title}} - {{.site.Title}}</title>
-  <meta name="description" content="{{.description}}">
-  <meta name="author" content="{{.author}}">
+        <title>{{.title}} - {{.site.Title}}</title>
+        <meta name="description" content="{{.description}}">
+        <meta name="author" content="{{.author}}">
 
-  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+        <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
 
-  <!-- CSS: implied media=all -->
-  <!-- CSS concatenated and minified via ant build script-->
-  <link rel="stylesheet" href="/css/bootstrap/bootstrap.css">
-  <link rel="stylesheet" href="/css/bootstrap/bootstrap-responsive.css">
-  <!-- Font Awesome - http://fortawesome.github.com/Font-Awesome -->
-  <link rel="stylesheet" href="/css/font-awesome/font-awesome.css">
-  <link rel="stylesheet" href="/css/datepicker/datepicker.css">
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/{{.site.Name}}.css">
-  <!-- end CSS-->
+        <!-- CSS: implied media=all -->
+        <!-- CSS concatenated and minified via ant build script-->
+        <link rel="stylesheet" href="/css/bootstrap/bootstrap.css">
+        <link rel="stylesheet" href="/css/bootstrap/bootstrap-responsive.css">
+        <!-- Font Awesome - http://fortawesome.github.com/Font-Awesome -->
+        <link rel="stylesheet" href="/css/font-awesome/font-awesome.css">
+        <link rel="stylesheet" href="/css/datepicker/datepicker.css">
+        <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/{{.site.Name}}.css">
+        <!-- end CSS-->
 
-  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
+        <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
 
-  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
-       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
-       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
-  <script src="/js/libs/modernizr-2.0.6.min.js"></script>
-</head>
+            <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+            Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+            For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+            <script src="/js/libs/modernizr-2.0.6.min.js"></script>
+    </head>
 
-<body class="{{.resource}}">
+    <body class="{{.resource}}">
 
-  <div id="page-container">
-    {{/**
-       * See http://www.w3.org/WAI/PF/aria/roles#landmark_roles 
-       **/}}
-    <header role="banner" class="navbar">
-        <div class="navbar-inner">
-            <div class="container">
-                {{template "banner.html" .}}
-                <div role="search">
-                    {{template "search.html" .}}
+        {{/* Facebook Javascript SDK */}}
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src =
+            "//connect.facebook.net/en_US/all.js#xfbml=1";
+            fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        </script>
+
+        <div id="page-container">
+            {{/**
+            * See http://www.w3.org/WAI/PF/aria/roles#landmark_roles 
+            **/}}
+            <header role="banner" class="navbar">
+            <div class="navbar-inner">
+                <div class="container">
+                    {{template "banner.html" .}}
+                    <div role="search">
+                        {{template "search.html" .}}
+                    </div>
                 </div>
             </div>
-        </div>
-    </header>
+            </header>
 
-    {{if .flashes }}
-        <div class="flash">
-            {{if .flashes.success }}
+            {{if .flashes }}
+            <div class="flash">
+                {{if .flashes.success }}
                 {{range .flashes.success }}
-                    <div class="alert alert-block alert-success fade in">
-                        <a class="close" data-dismiss="alert">×</a>
-                        <h4 class="alert-heading">Success</h4>
-                        {{.}}
-                    </div>
+                <div class="alert alert-block alert-success fade in">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <h4 class="alert-heading">Success</h4>
+                    {{.}}
+                </div>
                 {{end}}
-            {{end}}
-            {{if .flashes.error }}
+                {{end}}
+                {{if .flashes.error }}
                 {{range .flashes.error }}
-                    <div class="alert alert-block alert-error fade in">
-                        <a class="close" data-dismiss="alert">×</a>
-                        <h4 class="alert-heading">There was an error</h4>
-                        {{.}}
-                        </div>
+                <div class="alert alert-block alert-error fade in">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <h4 class="alert-heading">There was an error</h4>
+                    {{.}}
+                </div>
                 {{end}}
-            {{end}}
-            {{if .flashes.warning }}
+                {{end}}
+                {{if .flashes.warning }}
                 {{range .flashes.warning }}
-                    <div class="alert alert-block fade in">
+                <div class="alert alert-block fade in">
                     <a class="close" data-dismiss="alert">×</a>
-                        <h4 class="alert-heading">Warning</h4>
-                        {{.}}
-                    </div>
+                    <h4 class="alert-heading">Warning</h4>
+                    {{.}}
+                </div>
                 {{end}}
-            {{end}}
-            {{if .flashes.information }}
+                {{end}}
+                {{if .flashes.information }}
                 {{range .flashes.information }}
-                    <div class="alert alert-block alert-info fade in">
+                <div class="alert alert-block alert-info fade in">
                     <a class="close" data-dismiss="alert">×</a>
-                        <h4 class="alert-heading">Warning</h4>
-                        {{.}}
-                    </div>
+                    <h4 class="alert-heading">Warning</h4>
+                    {{.}}
+                </div>
                 {{end}}
+                {{end}}
+
+            </div>
             {{end}}
- 
-        </div>
-    {{end}}
 
-    <div id="main" role="main">
-        <div class="container">
-            {{template "main.html" .}}
-        </div>
-    </div>
-
-    <div id="complementary" role="complementary">
-        <div class="container">
-            {{template "complementary.html" .}}
-        </div>
-    </div>
-    
-    <div class="separator footer">
-        <div class="container">
-        </div>
-    </div>
-
-    <footer>
-        <div id="nav" role="navigation">
-            <div class="container">
-                {{template "navigation.html" .}}
+            <div id="main" role="main">
+                <div class="container">
+                    {{template "main.html" .}}
+                </div>
             </div>
-        </div>
 
-        <div id="contentinfo" role="contentinfo">
-            <div class="container">
-                {{template "contentinfo.html" .}}
-
-                {{/* Dev stuff */}}
-                {{if eq .environment "dev"}}
-                    {{if .requestingUser}}
-                    <p class="pull-right">User: {{.requestingUser.Id}}</p>
-                    {{end}}
-                {{end}}
-
+            <div id="complementary" role="complementary">
+                <div class="container">
+                    {{template "complementary.html" .}}
+                </div>
             </div>
-        </div>
 
-    </footer>
+            <div class="separator footer">
+                <div class="container">
+                </div>
+            </div>
 
-  </div> <!--! end of #container -->
+            <footer>
+                <div id="nav" role="navigation">
+                    <div class="container">
+                        {{template "navigation.html" .}}
+                    </div>
+                </div>
 
-  <!-- JavaScript at the bottom for fast page loading -->
+                <div class="sharing">
+                    <div class="container">
+                        <div class="fb-like" data-href="http://brighton-wok.com"
+                            data-send="true" data-width="450"
+                            data-show-faces="true" data-colorscheme="dark"
+                            data-font="arial">
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
+                <div id="contentinfo" role="contentinfo">
+                    <div class="container">
+                        {{template "contentinfo.html" .}}
 
-  <!-- scripts concatenated and minified via ant build script-->
-  <script type="text/javascript" src="/js/libs/bootstrap.js"></script>
-  <script type="text/javascript" src="/js/libs/Three.js"></script>
-  <script type="text/javascript" src="/js/libs/froogaloop.js"></script>
-  <script type="text/javascript" src="/js/libs/bootstrap-datepicker.js"></script>
+                        {{/* Dev stuff */}}
+                        {{if eq .environment "dev"}}
+                        {{if .requestingUser}}
+                        <p class="pull-right">User: {{.requestingUser.Id}}</p>
+                        {{end}}
+                        {{end}}
 
-  <script type="text/javascript" src="/js/vafan/fonts.js"></script>
-  <script type="text/javascript" src="/js/vafan/threeDeeDvd.js"></script>
-  <script type="text/javascript" src="/js/vafan/video.js"></script>
+                    </div>
+                </div>
 
-  <script defer src="/js/script.js"></script>
-  <!-- end scripts-->
+            </footer>
 
-  <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
-       mathiasbynens.be/notes/async-analytics-snippet -->
-  <script>
-    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-    s.parentNode.insertBefore(g,s)}(document,'script'));
-  </script>
-</body>
+        </div> <!--! end of #container -->
+
+        <!-- JavaScript at the bottom for fast page loading -->
+
+        <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
+
+        <!-- scripts concatenated and minified via ant build script-->
+        <script type="text/javascript" src="/js/libs/underscore.js"></script>
+        <script type="text/javascript" src="/js/libs/bootstrap.js"></script>
+        <script type="text/javascript" src="/js/libs/Three.js"></script>
+        <script type="text/javascript" src="/js/libs/froogaloop.js"></script>
+        <script type="text/javascript" src="/js/libs/bootstrap-datepicker.js"></script>
+
+        <script type="text/javascript" src="/js/vafan/fonts.js"></script>
+        <script type="text/javascript" src="/js/vafan/threeDeeDvd.js"></script>
+        <script type="text/javascript" src="/js/vafan/video.js"></script>
+        <script type="text/javascript" src="/js/vafan/twitter.js"></script>
+
+        <script defer src="/js/script.js"></script>
+        <!-- end scripts-->
+
+        <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
+        mathiasbynens.be/notes/async-analytics-snippet -->
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+                g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+                s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
 </html>

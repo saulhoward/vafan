@@ -41,29 +41,34 @@ const (
 // The list of tweets. A tweet is defined in twittertypes.go
 type tweets []*tweet
 
-// Len, for the Sort interface
+// Methods implementing Sort interface
+
 func (tws tweets) Len() int {
 	return len(tws)
 }
 
-// Swap, for the Sort interface
 func (tws tweets) Swap(i, j int) {
 	tws[i], tws[j] = tws[j], tws[i]
 }
 
-// Less, for the Sort interface. Sort on timestamp.
-func (tws tweets) Less(i, j int) bool {
-	iTime, _ := time.Parse("Mon Jan 02 15:04:05 +0000", tws[i].Created_at)
-	jTime, _ := time.Parse("Mon Jan 02 15:04:05 +0000", tws[j].Created_at)
+// Provides a specific timestamp sort.
+type reverseCreatedAtTweets struct {
+	tweets
+}
+
+// Sort on 'created_at' timestamp, latest first.
+func (tws reverseCreatedAtTweets) Less(i, j int) bool {
+	iTime, _ := time.Parse("Mon Jan 02 15:04:05 +0000 2006", tws.tweets[i].Created_at)
+	jTime, _ := time.Parse("Mon Jan 02 15:04:05 +0000 2006", tws.tweets[j].Created_at)
 	return iTime.After(jTime)
 }
 
-// URL to implement Resource interface.
+// Methods implementing Resource interface.
+
 func (tw tweets) URL(req *http.Request, s *site) *url.URL {
 	return getUrl(tw, req, s, nil)
 }
 
-// Content to implement Resource interface.
 func (tw tweets) Content(req *http.Request, s *site) (c resourceContent) {
 	c.title = "Crew Tweets"
 	c.description = "Tweets about Convict Films"
@@ -74,7 +79,6 @@ func (tw tweets) Content(req *http.Request, s *site) (c resourceContent) {
 	return
 }
 
-// ServeHTTP to implement Resource interface
 func (tw tweets) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 	tw, err := getFeaturedTweets()
 	if err != nil {
@@ -84,7 +88,9 @@ func (tw tweets) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 	return
 }
 
-// Return a 'clever' selection of the latest tweets.
+// Functions to fetch tweet collections from REST API, save them to
+// Redis cache, and return them.
+
 func getFeaturedTweets() (tws tweets, err error) {
 	tws, err = getTweets("featured")
 	if err != nil {
@@ -99,7 +105,7 @@ func getFeaturedTweets() (tws tweets, err error) {
 }
 
 // Featured tweets are compiled from the other types of tweets.
-func storeFeaturedTweets() (featured tweets) {
+func storeFeaturedTweets() (err error) {
 	timeline, err := getTweets("user_timeline")
 	if err != nil {
 		if err == ErrStaleTweets || err == ErrNoTweetsFound {
@@ -125,12 +131,13 @@ func storeFeaturedTweets() (featured tweets) {
 		}
 	}
 
-	featured = tweets{}
+	featured := tweets{}
 	featured = append(featured, favorites...)
 	featured = append(featured, mentions...)
 	featured = append(featured, timeline...)
-	sort.Sort(featured)
+	sort.Sort(reverseCreatedAtTweets{featured})
 
+err = saveTweets("featured", featured[:8])
 	return
 }
 
@@ -206,7 +213,7 @@ func saveTweets(key string, tws tweets) (err error) {
 	return
 }
 
-// Get tweets from Redis.
+// Get tweets from Redis cache. Returned error warns if empty or stale.
 func getTweets(key string) (tws tweets, err error) {
 	db := radix.NewClient(redisConfiguration)
 	defer db.Close()
@@ -324,7 +331,7 @@ func getTwitterAuth() (o *oauth.OAuth, err error) {
 	return
 }
 
-// -- Streaming tweets via websockets --
+// Functions for streaming tweets via websockets
 
 // Websocket handler.
 func streamTweets(ws *websocket.Conn) {

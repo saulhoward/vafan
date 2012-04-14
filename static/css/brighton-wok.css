@@ -274,7 +274,7 @@ header.navbar h1 a.brighton-wok {
     box-shadow:inset 0px 0px 100px rgba(0,0,0,0.6), 0px 0px 50px #000;
     border-left: 1px solid black;
     border-right: 1px solid black;
-    padding: 1em 0;
+    padding: 1em 0 50px 0;
     color: #FFF47B;
 }
 #links h1.ninja {
@@ -364,7 +364,7 @@ header.navbar h1 a.brighton-wok {
     font-size: 18px;
     width: 100%;
     max-width: 400px;
-    margin: 45px auto;
+    margin: 45px auto 25px auto;
 }
 #links .about h1 {
     color: #fdffcc;
@@ -378,18 +378,22 @@ header.navbar h1 a.brighton-wok {
  */
 #links .twitter {
     color: #333;
-    margin-top: 50px;
-    -webkit-transform: rotate(1.5deg);
-    -moz-transform: rotate(1.5deg);
-    -ms-transform: rotate(1.5deg);
-    -o-transform: rotate(1.5deg);
+    font-size: 13px;
 }
 #links .twitter h2 {
     color: #333;
     font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 #links .tweets-wrapper {
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.6);
+    -webkit-transform: rotate(1.5deg);
+    -moz-transform: rotate(1.5deg);
+    -ms-transform: rotate(1.5deg);
+    -o-transform: rotate(1.5deg);
+
+    -webkit-box-shadow: 0px 0px 25px 1px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0px 0px 25px 1px rgba(0, 0, 0, 0.4);
+    box-shadow: 0px 0px 25px 1px rgba(0, 0, 0, 0.4);
+
     width: 350px;
     color: #333;
     margin: 0 auto;
@@ -415,12 +419,59 @@ header.navbar h1 a.brighton-wok {
     border-color: rgba(102,49,17,0.6);
 }
 .tweet-box i {
-    color: rgba(102,49,17,0.8);
+    color: #4099FF;
     display: inline-block;
     -webkit-transform: rotate(-10deg);
     -moz-transform: rotate(-10deg);
     -ms-transform: rotate(-10deg);
     -o-transform: rotate(-10deg);
+}
+
+/*
+ * Facebook like box
+ */
+.facebook {
+    width: 420px;
+    margin: 0 auto 25px auto;
+    padding: 5px 10px;
+    background: #feffff;
+    background: -moz-linear-gradient(top, #feffff 0%, #d2ebf9 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#feffff), color-stop(100%,#d2ebf9));
+    background: -webkit-linear-gradient(top, #feffff 0%,#d2ebf9 100%);
+    background: -o-linear-gradient(top, #feffff 0%,#d2ebf9 100%);
+    background: -ms-linear-gradient(top, #feffff 0%,#d2ebf9 100%);
+    background: linear-gradient(top, #feffff 0%,#d2ebf9 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#feffff', endColorstr='#d2ebf9',GradientType=0 );
+    -webkit-box-shadow: 0px 0px 25px 1px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0px 0px 25px 1px rgba(0, 0, 0, 0.4);
+    box-shadow: 0px 0px 25px 1px rgba(0, 0, 0, 0.4);
+    border: 1px solid #d2ebf9;
+    -webkit-transform: rotate(-0.5deg);
+    -moz-transform: rotate(-0.5deg);
+    -ms-transform: rotate(-0.5deg);
+    -o-transform: rotate(-0.5deg);
+}
+.facebook h2 {
+    margin-bottom: 10px;
+}
+.facebook h2 a {
+
+}
+.facebook i {
+    color: #3B5998;
+    display: inline-block;
+    -webkit-transform: rotate(5deg);
+    -moz-transform: rotate(5deg);
+    -ms-transform: rotate(5deg);
+    -o-transform: rotate(5deg);
+}
+
+/*
+ * Gallery (carousel)
+ */
+#gallery {
+    width: 420px;
+    margin: 0 auto 25px auto;
 }
 
 /* ==|== media queries ======================================================
@@ -492,34 +543,7 @@ header.navbar h1 a.brighton-wok {
 
 /* Tablet Portrait size to standard 960 (devices and browsers) */
 @media only screen and (min-width: 768px) and (max-width: 959px) {
-    #movie {
-        height: 600px;
-    }
-    #information {
-        width: 55%;
-        float: right;
-        margin-top: 100px;
-    }
-    #dvd {
-        margin-top: 0;
-        margin-left: 0;
-        width: 45%;
-        float: left;
-    }
-    #dvd img {
-        margin-top: 50px;
-        margin-left: auto;
-        margin-right: auto;
-        float: right;
-    }
-    #links .about-group,
-    #links .share-group {
-        width: 48%;
-        padding: 14px;
-        display: inline-block;
-        vertical-align: top;
-        margin: 0 auto;
-    }
+
 }
 
 /* All Mobile Sizes (devices and browser) */
@@ -558,7 +582,9 @@ header.navbar h1 a.brighton-wok {
     }
 }
 
-/* Specfic style requirements */
+/*
+ * Specfic style requirements
+ */
 @media only screen and (max-width: 651px) {
     #video #video-selector {
         padding-top: 0;
@@ -582,12 +608,70 @@ header.navbar h1 a.brighton-wok {
         width: 100%;
         height: 100%;
     }
-#buy {
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
+    #buy {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    #links .tweets-wrapper {
+        width: 100%;
+    }
 }
+
+@media (max-width: 979px) and (min-width: 768px) {
+    #links .container {
+        background: transparent;
+        box-shadow: none;
+        border: none;
+    }
+    #links {
+        background: #5d381e url(/img/brighton-wok/wood-tile.jpg) top left repeat;
+        box-shadow:inset 0px 0px 100px rgba(0,0,0,0.6), 0px 0px 50px #000;
+    }
+    .facebook {
+        width: 100%;
+    }
+    #movie {
+        height: 600px;
+    }
+    #information {
+        width: 55%;
+        float: right;
+        margin-top: 100px;
+    }
+    #dvd {
+        margin-top: 0;
+        margin-left: 0;
+        width: 45%;
+        float: left;
+    }
+    #dvd img {
+        margin-top: 50px;
+        margin-left: auto;
+        margin-right: auto;
+        float: right;
+    }
+    #gallery {
+        width: 100%;
+        height: auto;
+    }
+ 
 }
+@media screen and (max-width: 767px) {
+    #links .tweets-wrapper {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+    }
+    .facebook {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+    }
+}
+
 
 /*
  * Pier Background image specific
