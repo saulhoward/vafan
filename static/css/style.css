@@ -280,6 +280,74 @@ header.navbar .navbar-search {
     padding-bottom: 20px;
 }
 
+
+/*
+ * Tweets
+ */
+/* Twitter Brand Color (blue) */
+/*
+div.tweet-box {
+    border-color: #4099FF;
+    background-color: #4099FF;
+}
+.tweet-box i, .tweet-box h2 {
+    color: #eeeeee;
+}
+.tweet-box ul li {
+    background: #feffff;
+    background: -moz-linear-gradient(top, #feffff 0%, #d2ebf9 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#feffff), color-stop(100%,#d2ebf9));
+    background: -webkit-linear-gradient(top, #feffff 0%,#d2ebf9 100%);
+    background: -o-linear-gradient(top, #feffff 0%,#d2ebf9 100%);
+    background: -ms-linear-gradient(top, #feffff 0%,#d2ebf9 100%);
+    background: linear-gradient(top, #feffff 0%,#d2ebf9 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#feffff', endColorstr='#d2ebf9',GradientType=0 );
+    border-color: #4099FF;
+}
+*/
+
+/* Tweets layout */
+div.tweet-box {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    border-width: 2px;
+    border-style: solid;
+}
+.tweet-box h2 {
+    margin-left: 5px;
+}
+.tweet-box ul {
+    margin-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+    border-top-width: 1px;
+    border-top-style: solid;
+}
+.tweet-box ul li {
+    padding: 5px;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    position: relative;
+    min-height: 32px;
+}
+.tweet-box li img {
+    display: inline-block;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+.tweet-box li span {
+    display: inline-block;
+    margin-left: 40px;
+}
+.tweet-box li span.date {
+    font-size: 10px;
+    color: #888;
+}
+
 /*Footer
  **/
 footer {

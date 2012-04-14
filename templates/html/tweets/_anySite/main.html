@@ -6,11 +6,29 @@
 </header>
 
 <div class="row">
-    <div class="span8">
-        <div id="tweets">
-            <ul class="unstyled">
+    <div class="span6">
+        <div class="tweet-box">
+            <h2>
+                <i class="icon-twitter-sign icon-large"></i>&nbsp;<a href="{{.links.site.twitter}}">@ConvictFilms</a>
+            </h2>
+            <ul>
                 {{range .tweets}}
-                <li>{{.Text}}</li>
+                <li>
+                {{if .User}}
+                <img
+                src="{{.User.Profile_image_url}}"
+                width="32"
+                height="32" />
+                {{else}}
+                <img
+                src="http://placekitten.com/32/32"
+                width="32"
+                height="32"
+                />
+                {{end}}
+                <span class="text">{{.Text}}</span>
+                <span class="date">{{.Created_at}}</span>
+                </li>
                 {{end}}
             </ul>
         </div>

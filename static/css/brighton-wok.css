@@ -379,12 +379,17 @@ header.navbar h1 a.brighton-wok {
 #links .twitter {
     color: #333;
     margin-top: 50px;
+    -webkit-transform: rotate(1.5deg);
+    -moz-transform: rotate(1.5deg);
+    -ms-transform: rotate(1.5deg);
+    -o-transform: rotate(1.5deg);
 }
-#links .twitter h1 {
+#links .twitter h2 {
     color: #333;
-
+    font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 #links .tweets-wrapper {
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.6);
     width: 350px;
     color: #333;
     margin: 0 auto;
@@ -398,12 +403,24 @@ header.navbar h1 a.brighton-wok {
     background: linear-gradient(top, #fcfbef 0%,#fdffcc 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfbef', endColorstr='#fdffcc',GradientType=0 ); /* IE6-9 */
     border: 1px solid #fff;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
 }
 #links .tweets {
     background: transparent right bottom no-repeat url(/img/icons/twitter-128x128.png);
+}
+/* Tweetbox Colors */
+.tweet-box ul, .tweet-box ul li, div.tweet-box {
+    border-color: rgba(102,49,17,0.6);
+}
+.tweet-box i {
+    color: rgba(102,49,17,0.8);
+    display: inline-block;
+    -webkit-transform: rotate(-10deg);
+    -moz-transform: rotate(-10deg);
+    -ms-transform: rotate(-10deg);
+    -o-transform: rotate(-10deg);
 }
 
 /* ==|== media queries ======================================================

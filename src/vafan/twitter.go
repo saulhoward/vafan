@@ -19,105 +19,186 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"sort"
+	"strconv"
+	"time"
 )
 
+// A global auth type, used by oauth package.
 var twAuth *oauth.OAuth
 
+// When tweets are fetched from cache, their timestamp is checked and
+// may return these errors.
+var ErrStaleTweets = errors.New("Twitter: Tweets are more than 10 min old.")
+var ErrNoTweetsFound = errors.New("Twitter: No tweets found.")
+
+// Twitter user IDs - should be in config!
 const (
 	twConvictFilmsID = 25679402
 	twSaulHowardID   = 7273252
 )
 
-type tweets struct {
-	tweets []*httpstream.Tweet
-	data   resourceData // assembled data for response
+// The list of tweets. A tweet is defined in twittertypes.go
+type tweets []*tweet
+
+// Len, for the Sort interface
+func (tws tweets) Len() int {
+	return len(tws)
 }
 
+// Swap, for the Sort interface
+func (tws tweets) Swap(i, j int) {
+	tws[i], tws[j] = tws[j], tws[i]
+}
+
+// Less, for the Sort interface. Sort on timestamp.
+func (tws tweets) Less(i, j int) bool {
+	iTime, _ := time.Parse("Mon Jan 02 15:04:05 +0000", tws[i].Created_at)
+	jTime, _ := time.Parse("Mon Jan 02 15:04:05 +0000", tws[j].Created_at)
+	return iTime.After(jTime)
+}
+
+// URL to implement Resource interface.
 func (tw tweets) URL(req *http.Request, s *site) *url.URL {
 	return getUrl(tw, req, s, nil)
 }
 
+// Content to implement Resource interface.
 func (tw tweets) Content(req *http.Request, s *site) (c resourceContent) {
-	c.title = "Tweets"
-	c.description = "Tweets"
-	var err error
-	tw.tweets, err = getLatestTweets()
-	if err != nil {
-		tw.tweets = nil
+	c.title = "Crew Tweets"
+	c.description = "Tweets about Convict Films"
+	c.content = emptyContent
+	if tw != nil {
+		c.content["tweets"] = tw
 	}
-	if tw.tweets != nil {
-		tw.data["tweets"] = tw.tweets
-	}
-
-	if tw.data != nil {
-		c.content = tw.data
-	} else {
-		c.content = emptyContent
-	}
-
 	return
 }
 
+// ServeHTTP to implement Resource interface
 func (tw tweets) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
-	tw.data = emptyContent
+	tw, err := getFeaturedTweets()
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Error when getting tweets: %v", err))
+	}
 	writeResource(w, r, tw, reqU)
 	return
 }
 
 // Return a 'clever' selection of the latest tweets.
-func getLatestTweets() (tws []*httpstream.Tweet, err error) {
-
-	// get latest tweets from redis
-
-	// return them (may be empty)
-
-	//if they're empty, or if they're old, get them from the twitter
-	// api concurrently and put them in redis for next time.
-
-	// --
-
-	tws, _ = getTweets("user_timeline")
+func getFeaturedTweets() (tws tweets, err error) {
+	tws, err = getTweets("featured")
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed fetching user timeline tweets: %v", err))
+		if err == ErrStaleTweets || err == ErrNoTweetsFound {
+			go storeFeaturedTweets()
+			err = nil
+		} else {
+			_ = logger.Err(fmt.Sprintf("Failed getting featured tweets (from cache): %v", err))
+		}
+	}
+	return
+}
+
+// Featured tweets are compiled from the other types of tweets.
+func storeFeaturedTweets() (featured tweets) {
+	timeline, err := getTweets("user_timeline")
+	if err != nil {
+		if err == ErrStaleTweets || err == ErrNoTweetsFound {
+			go storeUserTimelineTweets()
+		} else {
+			_ = logger.Err(fmt.Sprintf("Failed getting user timeline tweets (from cache): %v", err))
+		}
+	}
+	mentions, err := getTweets("mentions")
+	if err != nil {
+		if err == ErrStaleTweets || err == ErrNoTweetsFound {
+			go storeMentionTweets()
+		} else {
+			_ = logger.Err(fmt.Sprintf("Failed getting mention tweets (from cache): %v", err))
+		}
+	}
+	favorites, err := getTweets("favorites")
+	if err != nil {
+		if err == ErrStaleTweets || err == ErrNoTweetsFound {
+			go storeFavoriteTweets()
+		} else {
+			_ = logger.Err(fmt.Sprintf("Failed getting favorite tweets (from cache): %v", err))
+		}
 	}
 
-	// Only fetch new lot of tweets if necessary.
-	go storeUserTimelineTweets()
+	featured = tweets{}
+	featured = append(featured, favorites...)
+	featured = append(featured, mentions...)
+	featured = append(featured, timeline...)
+	sort.Sort(featured)
 
-	//tws = append(tws, userTimeline)
 	return
 }
 
 // Fetch and cache recent tweets posted by the user.
 func storeUserTimelineTweets() (err error) {
-	_ = logger.Info("storing...")
 	params := make(map[string]string)
-	params["user_id"] = string(twConvictFilmsID)
+	params["user_id"] = strconv.Itoa(twConvictFilmsID)
 	params["count"] = "20"
 	params["include_rts"] = "1"
 	tws, err := fetchTweets("https://api.twitter.com/1/statuses/user_timeline.json", params)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed fetching user timeline tweets: %v", err))
-		//return
+		_ = logger.Err(fmt.Sprintf("Failed fetching user timeline tweets (ntp?): %v", err))
+		return
 	}
 	err = saveTweets("user_timeline", tws)
 	return
 }
 
+// Fetch and cache recent tweets which mention the user.
+func storeMentionTweets() (err error) {
+	params := make(map[string]string)
+	params["user_id"] = strconv.Itoa(twConvictFilmsID)
+	params["count"] = "20"
+	params["include_rts"] = "1"
+	tws, err := fetchTweets("https://api.twitter.com/1/statuses/mentions.json", params)
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed fetching mention tweets (ntp?): %v", err))
+		return
+	}
+	err = saveTweets("mentions", tws)
+	return
+}
+
+// Fetch and cache recent tweets which the user has 'favored'.
+func storeFavoriteTweets() (err error) {
+	params := make(map[string]string)
+	params["user_id"] = strconv.Itoa(twConvictFilmsID)
+	params["count"] = "20"
+	tws, err := fetchTweets("https://api.twitter.com/1/favorites.json", params)
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed fetching favorite tweets (ntp?): %v", err))
+		return
+	}
+	err = saveTweets("favorites", tws)
+	return
+}
+
 // Save an array of tweets in Redis.
-func saveTweets(key string, tws []*httpstream.Tweet) (err error) {
-	_ = logger.Info("saving...")
+func saveTweets(key string, tws tweets) (err error) {
+	_ = logger.Info(fmt.Sprintf("Saving '%v' tweets to Redis", key))
 	// Saving tweets as a json blob.
 	twsJSON, err := json.Marshal(tws)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed marshalling tweets json: %v", err))
+		_ = logger.Err(fmt.Sprintf("Failed marshalling '%v' tweets json: %v", key, err))
 		return
 	}
 	db := radix.NewClient(redisConfiguration)
 	defer db.Close()
-	reply := db.Command("set", "tweets:"+key, twsJSON)
+
+	timestamp := time.Now().Unix()
+	twsMap := map[string]string{
+		"tweets":    string(twsJSON),
+		"timestamp": strconv.Itoa(int(timestamp)),
+	}
+	tweetKey := "tweets:" + key
+	reply := db.Command("hmset", tweetKey, twsMap)
 	if reply.Error() != nil {
-		errText := fmt.Sprintf("Failed to set tweet data (Redis): %v", reply.Error())
+		errText := fmt.Sprintf("Failed to set '%v' tweet data (Redis): %v", key, reply.Error())
 		_ = logger.Err(errText)
 		err = errors.New(errText)
 		return
@@ -126,36 +207,61 @@ func saveTweets(key string, tws []*httpstream.Tweet) (err error) {
 }
 
 // Get tweets from Redis.
-func getTweets(key string) (tws []*httpstream.Tweet, err error) {
+func getTweets(key string) (tws tweets, err error) {
 	db := radix.NewClient(redisConfiguration)
 	defer db.Close()
-	reply := db.Command("get", "tweets:"+key)
+	reply := db.Command("hgetall", "tweets:"+key)
 	if reply.Error() != nil {
-		errText := fmt.Sprintf("Failed to get tweet data (Redis): %v", reply.Error())
+		errText := fmt.Sprintf("Failed to get '%v' tweet data (Redis): %v", key, reply.Error())
 		_ = logger.Err(errText)
 		err = errors.New(errText)
 		return
 	}
-	twsJSON := reply.String()
+	twsMap, err := reply.StringMap()
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed getting tweets json (Redis): %v", err))
+		errText := fmt.Sprintf("Stringmap for '%v' tweets failed (Redis): %v", key, reply.Error())
+		_ = logger.Err(errText)
+		err = errors.New(errText)
 		return
 	}
-	tws = []*httpstream.Tweet{}
-	err = json.Unmarshal([]byte(twsJSON), &tws)
+
+	tws = tweets{}
+	err = json.Unmarshal([]byte(twsMap["tweets"]), &tws)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed unmarshalling tweets json: %v", err))
+		_ = logger.Err(fmt.Sprintf("Failed unmarshalling '%v' tweets json: %v", key, err))
+		err = ErrNoTweetsFound
 		return
 	}
+
+	// Check the timestamp for freshness.
+	then, err := strconv.Atoi(twsMap["timestamp"])
+	if err != nil {
+		_ = logger.Err(fmt.Sprintf("Failed getting timestamp for '%v' tweets: %v", key, err))
+		return
+	}
+	now := int(time.Now().Unix())
+	diff := now - then
+	_ = logger.Info(fmt.Sprintf("'%v' tweets are %v seconds old.", key, diff))
+	if diff > 600 {
+		_ = logger.Info(fmt.Sprintf("'%v' tweets are more than 10 min old (%v secs).", key, diff))
+		err = ErrStaleTweets
+	}
+
+	// Did we get any tweets?
+	if len(tws) < 1 {
+		err = ErrNoTweetsFound
+	}
+
 	return
 }
 
 // Generic tweet fetcher. Requires REST URL.
-func fetchTweets(url string, params map[string]string) (tws []*httpstream.Tweet, err error) {
+func fetchTweets(url string, params map[string]string) (tws tweets, err error) {
+	_ = logger.Info(fmt.Sprintf("Fetching tweets from: %v", url))
 	// Get OAuth, set as a Global
 	if twAuth == nil {
 		twAuth, err = getTwitterAuth()
-		if err != nil {
+		if err != nil || twAuth.Authorized() == false {
 			_ = logger.Err(fmt.Sprintf("Failed initialising twitter authentication: %v", err))
 			return
 		}
@@ -170,11 +276,17 @@ func fetchTweets(url string, params map[string]string) (tws []*httpstream.Tweet,
 		_ = logger.Err(fmt.Sprintf("Failed reading twitter response body: %v", err))
 		return
 	}
-	tws = []*httpstream.Tweet{}
+	tws = tweets{}
 	err = json.Unmarshal([]byte(data), &tws)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Error unmarshalling tweet JSON: %v", err))
-		err = nil
+		/* Commented out err log, as it's spamming (it complains
+		 * about null values) */
+		//_ = logger.Err(fmt.Sprintf("Error unmarshalling tweet JSON: '%v' '%v'", err, string(data)))
+
+		// Was anything unmarshalled?
+		if len(tws) > 0 {
+			err = nil
+		}
 	}
 	return
 }
@@ -266,11 +378,11 @@ func writeTweet(w io.Writer, line []byte) {
 		var friends httpstream.FriendList
 		json.Unmarshal(line, &friends)
 	default:
-		tweet := httpstream.Tweet{}
-		json.Unmarshal(line, &tweet)
-		if tweet.User != nil {
+		tw := tweet{}
+		json.Unmarshal(line, &tw)
+		if tw.User != nil {
 			//println(th, " ", tweet.User.Screen_name, ": ", tweet.Text)
-			w.Write([]byte(tweet.Text))
+			w.Write([]byte(tw.Text))
 		}
 	}
 }
