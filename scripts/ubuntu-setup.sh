@@ -1,7 +1,7 @@
 #! /bin/bash
 
 ###
-# Setup script for Vafan server on Ubuntu Natty
+# Setup script for Vafan server on Ubuntu 11.10
 #
 #  * must be run as root
 #  * must be run from vafan root directory
@@ -22,10 +22,10 @@ apt-get update && apt-get upgrade
 # required packages 
 apt-get --assume-yes install python-software-properties \
     mongodb mongodb-clients build-essential \
-    mysql-server
+    mysql-server redis-server
 
-# Go - needs its own repository on natty
+# Go - needs its own repository 
 add-apt-repository ppa:gophers/go
 apt-get update
-apt-get --assume-yes install golang-weekly
+apt-get --assume-yes install golang-stab;e
 
