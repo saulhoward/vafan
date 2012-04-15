@@ -24,7 +24,7 @@ vafan.video = {
     start: function()
     {
         var modalHtml = $('#modal-template').html();
-        $('#video .container').append(modalHtml);
+        $('#video .video-wrapper').append(modalHtml);
 
         var videoHtml = $('#video-template').html();
 
@@ -36,11 +36,24 @@ vafan.video = {
             jQuery('iframe.vimeo', this).each(function(){
                 Froogaloop(this).addEvent('ready', vafan.video.videoReady);
             });
+            $('#video-selector').addClass('playing');
         })
+        $('#brighton-wok-trailer').on('hide', function () {
+            $('#video-selector').removeClass('playing');
+        })
+ 
+        /* Needed as the 'video-wrapper' div is relative and doesn't
+         * close the modal */
+        $('#video-selector .video-wrapper').live('click', function(){
+            if ($('#brighton-wok-trailer').is(":visible")) {
+                $('#brighton-wok-trailer').modal('hide');
+            }
+        });
+
     },
 
     /* Set up a Vimeo Iframe
-    */
+     */
     videoReady: function (playerID)
     {
         Froogaloop(playerID).api('play');

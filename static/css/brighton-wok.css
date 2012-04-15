@@ -234,11 +234,21 @@ header.navbar h1 a.brighton-wok {
     background: url(/img/brighton-wok/ganja-boxing-pattern.jpg) top left repeat;
 }
 #video #video-selector .modal {
-    position: relative;
+    position: absolute;
+    width: 651px;
+    height: 367px;
+    margin: 0 0 0 -325px;
+    top: 0;
+    left: 50%;
+    outline: 0;
+}
+#brighton-wok-trailer {
+    outline: 0;
 }
 #video #video-selector {
+    outline: 0;
     position: relative;
-    z-index: 2;
+    z-index: 1050; /* Above the modal background */
     background: #151515 url(/img/brighton-wok/micro-carbon.png) top left repeat;
     box-shadow:inset 0px 6px 150px #000;
     height: auto;
@@ -265,7 +275,12 @@ header.navbar h1 a.brighton-wok {
     margin: 0 auto;
     display: block;
 }
-
+.video-wrapper {
+    position: relative;
+}
+#video div#video-selector.playing h2 {
+    color: black !important;
+}
 
 /*
  * Links Div
