@@ -27,5 +27,5 @@ apt-get --assume-yes install python-software-properties \
 # Go - needs its own repository 
 add-apt-repository ppa:gophers/go
 apt-get update
-apt-get --assume-yes install golang-stab;e
+apt-get --assume-yes install golang-stable
 
