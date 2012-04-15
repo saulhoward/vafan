@@ -406,9 +406,9 @@ header.navbar h1 a.brighton-wok {
     -ms-transform: rotate(1.5deg);
     -o-transform: rotate(1.5deg);
 
-    -webkit-box-shadow: 0px 0px 25px 1px rgba(255, 255, 255, 0.2);
-    -moz-box-shadow: 0px 0px 25px 1px rgba(255, 255, 255, 0.2);
-    box-shadow: 0px 0px 25px 1px rgba(255, 255, 255, 0.2);
+    -webkit-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
+    -moz-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
+    box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
 
     width: 350px;
     color: #333;
@@ -459,9 +459,9 @@ header.navbar h1 a.brighton-wok {
     background: linear-gradient(top, #feffff 0%,#d2ebf9 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#feffff', endColorstr='#d2ebf9',GradientType=0 );
 
-    -webkit-box-shadow: 0px 0px 25px 1px rgba(255, 255, 255, 0.2);
-    -moz-box-shadow: 0px 0px 25px 1px rgba(255, 255, 255, 0.2);
-    box-shadow: 0px 0px 25px 1px rgba(255, 255, 255, 0.2);
+    -webkit-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
+    -moz-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
+    box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
 
     border: 1px solid #d2ebf9;
     -webkit-transform: rotate(-0.5deg);
@@ -490,9 +490,9 @@ header.navbar h1 a.brighton-wok {
 #gallery {
     width: 420px;
     margin: 40px 0 25px auto;
-    -webkit-box-shadow: 0px 0px 25px 1px rgba(255, 255, 255, 0.1);
-    -moz-box-shadow: 0px 0px 25px 1px rgba(255, 255, 255, 0.1);
-    box-shadow: 0px 0px 25px 1px rgba(255, 255, 255, 0.1);
+    -webkit-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
+    -moz-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
+    box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
 }
 /* images are 16:9 */
 #gallery img {
@@ -504,6 +504,10 @@ header.navbar h1 a.brighton-wok {
  * Small DVD Box
  */
 .dvd-small {
+    -webkit-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
+    -moz-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
+    box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
+
     float: none;
     background: black;
     margin: 40px auto 0 auto;
