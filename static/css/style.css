@@ -52,7 +52,7 @@ body {
  * Very dark Grey-blue-black
  *     #2A363B
  * Light orangey-pink
- *     #E84A5F
+ *   0 0   #E84A5F
  *
  * Source: http://www.colourlovers.com/palette/15/tech_light
  * Limey (mid green)
@@ -392,7 +392,11 @@ footer i.icon-facebook-sign {
     text-shadow: none;
 }
 .nav > li > a:hover {
-    background-color: #333;
+    background-color: #E84A5F;
+    color: black;
+}
+.nav > li > a:hover i {
+    color: black;
 }
 
 .thumbnail {

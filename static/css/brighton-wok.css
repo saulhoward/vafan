@@ -272,7 +272,7 @@ header.navbar h1 a.brighton-wok {
     background: black;
 }
 .modal.video iframe {
-    margin: 0 auto;
+    margin: 26px auto 0 auto;
     display: block;
 }
 .video-wrapper {
