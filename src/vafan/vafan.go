@@ -37,7 +37,7 @@ var conf = getConfig()
 
 func getConfig() (c *config.Config) {
 	//var conf, _ = config.ReadDefault("/srv/vafan/config/config.ini")
-	c, err := config.ReadDefault("/home/saul/vafan-config.ini")
+	c, err := config.ReadDefault("/home/vafan/vafan-config.ini")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed reading configuration: %v", err)
 		panic(err)

@@ -3,27 +3,36 @@ Vafan
 
 A website/api/media-server.
 
+Technical Overview
+------------------
+
+A server, written in Go, which can be run as a standalone or behind
+nginx or Apache. The server requires MongoDB, MySQL and Redis.
+
+A set of templates and Javascript libraries.
+
 Installation Instructions 
 -------------------------
 
-### Ubuntu Natty
+### Ubuntu 11.10
 
-To install Vafan on a new machine. Instructions are for Natty.
+To install Vafan on a new machine. Instructions are for Oneric (11.10).
 
-1. Install Ubuntu
+1. Install Ubuntu.
 
-2. Install git
+2. Install git:
 
         sudo apt-get install git-core
 
-3. Clone vafan
+3. Clone vafan:
 
         cd /srv/
         git clone git://github.com/saulhoward/vafan.git
 
-4. As root, run the setup script to install apt packages
+4. As root, run the setup script to install apt packages:
 
-        sudo /srv/vafan/scripts/natty-setup.sh
+        cd /srv/vafan
+        sudo scripts/ubuntu-setup.sh
 
 5. Optionally, set up your Go environment. Eg.:
 
@@ -31,8 +40,21 @@ To install Vafan on a new machine. Instructions are for Natty.
         echo "export GOPATH=$GOPATH:/srv/vafan" >> ~/.bashrc
         source ~/.bashrc
 
-6. Build the vafan command
+6. Build the vafan command:
 
-        go build /srv/vafan/cmd/vafan/vafan.go
+        cd /srv/vafan/cmd/vafan
+        go build vafan.go
     
-   This will complain.
+    This will complain about missing third-party libraries. You must
+    install them, eg,
+
+        go get code.google.com/p/gorilla/mux
+
+    Some of the packages may depend on other Ubuntu packages. For
+    example, googlecode packages use mercurial (hg), so:
+
+        apt-get install mercurial
+
+    Once they are installed, you should be able to build vafan.go.
+
+
