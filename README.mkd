@@ -76,4 +76,13 @@ To install Vafan on a new machine. Instructions are for Oneric (11.10).
         cp /srv/vafan/config/config.ini /etc/vafan/vafan.ini
         vim /etc/vafan/vafan.ini
 
+9. Daemonize, a la AG's ace blog:
 
+    * http://nf.id.au/deploying-go-web-services-behind-nginx-under
+
+    Using the init.d script in the repo:
+
+        ln -s /srv/vafan/cmd/src/vafan-server/vafan-server
+        /usr/sbin/vafan-server
+        /etc/init.d/vafan start
+        update-rc.d vafan defaults
