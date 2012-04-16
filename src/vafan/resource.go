@@ -58,7 +58,17 @@ func getUrl(res Resource, req *http.Request, s *site, urlData []string) *url.URL
 	if format == ".html" {
 		format = ""
 	}
-	host := env + "." + s.Host + ":8888"
+	var host string
+	if env == "production" {
+		host = s.Host
+	} else {
+		host = env + "." + s.Host
+	}
+	/*
+		if vafanConfig.port != "" {
+			host = host + ":" + vafanConfig.port
+		}
+	*/
 	urlPairs := []string{"format", format, "host", host}
 	if urlData != nil {
 		for _, p := range urlData {

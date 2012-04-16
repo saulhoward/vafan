@@ -80,7 +80,17 @@ func getCurrentUrl(r *http.Request) *url.URL {
 	url := r.URL
 	if url.Host == "" {
 		site, env := getSite(r)
-		host := env + "." + site.Host + ":8888"
+		var host string
+		if env == "production" {
+			host = site.Host
+		} else {
+			host = env + "." + site.Host
+		}
+		/*
+			if vafanConf.port != "" {
+				host = host + ":" + vafanConf.port
+			}
+		*/
 		url.Host = host
 	}
 	if url.Scheme == "" {
