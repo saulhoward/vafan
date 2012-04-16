@@ -32,9 +32,9 @@ func (res userRegistrar) Content(req *http.Request, s *site) (c resourceContent)
 func (res userRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 	switch r.Method {
 	case "POST":
-		// This is a post to create a new user
+		// This is a post to register the requesting user
 		r.ParseForm()
-		u := new(user)
+		u := &user{Id: reqU.Id}
 		decoder.Decode(u, r.Form)
 
 		// check for errors in post
