@@ -343,6 +343,7 @@ func login(usernameOrEmailAddress string, password string) (u *user, err error) 
 	}
 	// confirm that the user's password is correct
 	if hashPassword(password, u.salt) == u.passwordHash {
+
 		return
 	}
 	err = ErrWrongPassword
