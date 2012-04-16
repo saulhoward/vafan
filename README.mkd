@@ -3,13 +3,18 @@ Vafan
 
 A website/api/media-server.
 
+This codebase currently runs the websites:
+
+    http://brighton-wok.com
+    http://convictfilms.com
+
 Technical Overview
 ------------------
 
 A server, written in Go, which can be run as a standalone or behind
 nginx or Apache. The server requires MongoDB, MySQL and Redis.
 
-A set of templates and Javascript libraries.
+A set of templates, css, images and Javascript libraries.
 
 Installation Instructions 
 -------------------------
@@ -56,5 +61,19 @@ To install Vafan on a new machine. Instructions are for Oneric (11.10).
         apt-get install mercurial
 
     Once they are installed, you should be able to build vafan.go.
+
+7. Setup MySQL:
+
+        mysql -u root -ppassword
+        create database vafan;
+        quit
+        cd /srv/vafan/data/sql
+        mysql -u root -pRwcLjbRLekz99WsyNPBP vafan < users.sql
+
+8. Create the config file.
+
+        mkdir /etc/vafan
+        cp /srv/vafan/config/config.ini /etc/vafan/vafan.ini
+        vim /etc/vafan/vafan.ini
 
 
