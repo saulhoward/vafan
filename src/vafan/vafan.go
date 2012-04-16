@@ -77,10 +77,10 @@ var router = new(mux.Router) // gorilla's router
 
 // Start the server up
 func StartServer() {
-	_ = logger.Info("Starting the Vafan server, port 8888.")
+	_ = logger.Info("Starting the Vafan server, port 9980.")
 	registerHandlers()
 	http.Handle("/", router)
-	http.ListenAndServe(":8888", router)
+	http.ListenAndServe("127.0.0.1:9980", router)
 }
 
 // for when we haven't yet got a resource...
