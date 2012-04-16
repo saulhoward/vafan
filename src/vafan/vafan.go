@@ -293,10 +293,12 @@ func getSite(r *http.Request) (s *site, env string) {
 	s = defaultSite
 	// get the host (from mux or in the Host: field)
 	host := r.Host
-	vars := mux.Vars(r)
-	if vars["host"] != "" {
-		host = vars["host"]
-	}
+	/*
+	    vars := mux.Vars(r)
+			if vars["host"] != "" {
+				host = vars["host"]
+			}
+	*/
 	/* Should use one regex, perhaps like...
 	   var envRe string
 	   for i, env := range envs {
