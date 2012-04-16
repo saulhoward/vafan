@@ -53,22 +53,22 @@ func (v *vimeoVideo) FetchData() (err error) {
 		_ = logger.Err(fmt.Sprintf("Failed reading Vimeo response body: %v", err))
 		return
 	}
-    // Vimeo data is returned as an array
-    vArr := []vimeoJSON{}
+	// Vimeo data is returned as an array
+	vArr := []vimeoJSON{}
 	err = json.Unmarshal([]byte(data), &vArr)
 	if err != nil {
 		_ = logger.Err(fmt.Sprintf("Failed unmarshalling Vimeo JSON (%v): %v", r.Replace(singleVimeoVideoURLSchema), err))
 		return
 	}
-    // Just use the first element
-    v.Data = vArr[0]
+	// Just use the first element
+	v.Data = vArr[0]
 	// Set default url
 	v.Location = v.Data.Url
 	return
 }
 
 func (v *vimeoVideo) getDefaultThumbnail() (i Image, err error) {
-	i = Image{URL: v.Data.Url, Width: "640"}
+	i = Image{URL: v.Data.ThumbnailLarge, Width: "640", Height: "360"}
 	return
 }
 
