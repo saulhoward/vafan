@@ -137,7 +137,7 @@ func storeFeaturedTweets() (err error) {
 	featured = append(featured, timeline...)
 	sort.Sort(reverseCreatedAtTweets{featured})
 
-err = saveTweets("featured", featured[:8])
+	err = saveTweets("featured", featured[:8])
 	return
 }
 
@@ -301,32 +301,10 @@ func fetchTweets(url string, params map[string]string) (tws tweets, err error) {
 // Creates oauth using details from config.
 func getTwitterAuth() (o *oauth.OAuth, err error) {
 	o = new(oauth.OAuth)
-	var (
-		consumerKey    string
-		consumerSecret string
-		accessToken    string
-		accessSecret   string
-	)
-	consumerKey, err = conf.String("twitter", "consumer-key")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed reading twitter details from configuration: %v", err)
-	}
-	consumerSecret, err = conf.String("twitter", "consumer-secret")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed reading twitter details from configuration: %v", err)
-	}
-	accessToken, err = conf.String("twitter", "access-token")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed reading twitter details from configuration: %v", err)
-	}
-	accessSecret, err = conf.String("twitter", "access-secret")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed reading twitter details from configuration: %v", err)
-	}
-	o.ConsumerKey = consumerKey
-	o.ConsumerSecret = consumerSecret
-	o.AccessToken = accessToken
-	o.AccessSecret = accessSecret
+	o.ConsumerKey = vafanConf.twitter.consumerKey
+	o.ConsumerSecret = vafanConf.twitter.consumerSecret
+	o.AccessToken = vafanConf.twitter.accessToken
+	o.AccessSecret = vafanConf.twitter.accessSecret
 	o.SignatureMethod = "HMAC-SHA1"
 	return
 }
@@ -340,22 +318,13 @@ func streamTweets(ws *websocket.Conn) {
 
 // Connect to twitter streaming api and send lines to be written.
 func writeTweetStream(w io.Writer) {
-	var twUser, twPwd string
-	var err error
-	twUser, err = conf.String("twitter", "user")
-	twPwd, err = conf.String("twitter", "password")
-	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed reading twitter user/password from configuration: %v", err))
-		return
-	}
-
 	httpstream.SetLogger(log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile), "info")
 	stream := make(chan []byte, 1000)
 	done := make(chan bool)
-	client := httpstream.NewBasicAuthClient(twUser, twPwd, func(line []byte) {
+	client := httpstream.NewBasicAuthClient(vafanConf.twitter.user, vafanConf.twitter.password, func(line []byte) {
 		stream <- line
 	})
-	err = client.Filter([]int64{twSaulHowardID, twConvictFilmsID}, []string{"brightonwok", "brighton wok", "convictfilms", "convict films"}, false, done)
+    err := client.Filter([]int64{twSaulHowardID, twConvictFilmsID}, []string{"brightonwok", "brighton wok", "convictfilms", "convict films"}, false, done)
 	// this opens a go routine that is effectively thread 1
 	// err := client.Sample(done)
 	if err != nil {

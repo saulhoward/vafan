@@ -23,20 +23,13 @@ func resourceDirName(res Resource) string {
 }
 
 func getTemplatePath(file string, format string, res Resource, s *site) string {
-    var baseDir, err = conf.String("default", "base-dir")
-    if err != nil {
-        // fatal error?
-        fmt.Fprintf(os.Stderr, "Failed reading 'base-dir' from configuration: %v", err)
-        os.Exit(1)
-    }
-
     //_ = logger.Info(fmt.Sprintf("Looking for template format: %v and resource: %v", format, resourceDirName(res)))
 
     //Check for the most specific template first
     checkFormat := format
     checkResName := resourceDirName(res)
     checkSite := s.Name
-    for i:= 0; templateExists(baseDir, file, checkFormat, checkResName, checkSite) == false; i++ {
+    for i:= 0; templateExists(file, checkFormat, checkResName, checkSite) == false; i++ {
 		if i == 0 {
 			checkSite = "_anySite"
 		} else if i == 1 {
@@ -57,7 +50,7 @@ func getTemplatePath(file string, format string, res Resource, s *site) string {
             os.Exit(1)
 		}
 	}
-    return filepath.Join(baseDir, "templates", checkFormat, checkResName, checkSite, file)
+    return filepath.Join(vafanConf.baseDir, "templates", checkFormat, checkResName, checkSite, file)
 }
 
 func getPageTemplate(format string, res Resource, s *site) (t *template.Template, err error) {
@@ -94,8 +87,8 @@ func markdownToHtml(md Markdown) template.HTML {
     return template.HTML(bhtml)
 }
 
-func templateExists(baseDir string, file string, format string, resName string, siteName string) bool {
-	path := filepath.Join(baseDir, "templates", format, resName, siteName, file)
+func templateExists(file string, format string, resName string, siteName string) bool {
+	path := filepath.Join(vafanConf.baseDir, "templates", format, resName, siteName, file)
 	_, err := os.Stat(path)
 	if err != nil {
 		return false

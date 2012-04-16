@@ -75,7 +75,7 @@ func NewUser() *user {
 // -- DB
 
 func connectSQLDB() *sql.DB {
-	db, err := sql.Open("mymysql", "vafan/root/password")
+	db, err := sql.Open("mymysql", fmt.Sprintf("vafan/%v/%v", vafanConf.mysql.user, vafanConf.mysql.password))
 	if err != nil {
 		panic("Error connecting to mysql db: " + err.Error())
 	}

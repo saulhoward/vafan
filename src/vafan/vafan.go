@@ -11,7 +11,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/kless/goconfig/config"
 	"log/syslog"
 	"net/http"
 	"net/url"
@@ -27,19 +26,6 @@ func getLogger() (l *syslog.Writer) {
 	l, err := syslog.New(syslog.LOG_INFO, "vaf-serv")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed initializing syslog: %v", err)
-		panic(err)
-	}
-	return
-}
-
-// Get the config.
-var conf = getConfig()
-
-func getConfig() (c *config.Config) {
-	//var conf, _ = config.ReadDefault("/srv/vafan/config/config.ini")
-	c, err := config.ReadDefault("/home/vafan/vafan-config.ini")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed reading configuration: %v", err)
 		panic(err)
 	}
 	return
@@ -77,10 +63,15 @@ var router = new(mux.Router) // gorilla's router
 
 // Start the server up
 func StartServer() {
-	_ = logger.Info("Starting the Vafan server, port 9980.")
+	fullHost := vafanConf.host
+	if vafanConf.port != "" {
+		fullHost = fullHost + ":" + vafanConf.port
+	}
+
+	_ = logger.Info(fmt.Sprintf("Starting the Vafan server, host '%v', port '%v.'", vafanConf.host, vafanConf.port))
 	registerHandlers()
 	http.Handle("/", router)
-	http.ListenAndServe("127.0.0.1:9980", router)
+	http.ListenAndServe(fullHost, router)
 }
 
 // for when we haven't yet got a resource...
@@ -123,30 +114,24 @@ func callHandler(res Resource) http.HandlerFunc {
 func registerHandlers() {
 	_ = logger.Info("Setting Handlers.")
 
-	var baseDir, err = conf.String("default", "base-dir")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed reading 'base-dir' from configuration: %v", err)
-		os.Exit(1)
-	}
-
 	// Static directories
 	router.PathPrefix("/css").Handler(
 		http.StripPrefix("/css", http.FileServer(http.Dir(
-			filepath.Join(baseDir, "static", "css")))))
+			filepath.Join(vafanConf.baseDir, "static", "css")))))
 	router.PathPrefix("/js").Handler(
 		http.StripPrefix("/js", http.FileServer(http.Dir(
-			filepath.Join(baseDir, "static", "js")))))
+			filepath.Join(vafanConf.baseDir, "static", "js")))))
 	router.PathPrefix("/img").Handler(
 		http.StripPrefix("/img", http.FileServer(http.Dir(
-			filepath.Join(baseDir, "static", "img")))))
+			filepath.Join(vafanConf.baseDir, "static", "img")))))
 	router.PathPrefix("/fonts").Handler(
 		http.StripPrefix("/fonts", http.FileServer(http.Dir(
-			filepath.Join(baseDir, "static", "fonts")))))
+			filepath.Join(vafanConf.baseDir, "static", "fonts")))))
 
 	// web standard static files
 	router.Path("/favicon.ico").Handler(
 		http.FileServer(http.Dir(
-			filepath.Join(baseDir, "static"))))
+			filepath.Join(vafanConf.baseDir, "static"))))
 
 	// Regex strings used in url schemas
 	formatRe := `{format:(\.{1}[a-z]+)?}`   // matches '.json' etc.

@@ -54,12 +54,7 @@ type youtubeLink struct {
 }
 
 func (y *youtubeVideo) FetchData() (err error) {
-	youtubeDevKey, err := conf.String("default", "youtube-dev-key")
-	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to fetch youtube dev key from config: %v", err))
-		return
-	}
-	r := strings.NewReplacer("{id}", y.ID, "{key}", youtubeDevKey)
+	r := strings.NewReplacer("{id}", y.ID, "{key}", vafanConf.youtubeDevKey)
 	res, err := http.Get(r.Replace(singleYoutubeVideoURL))
 	if err != nil {
 		_ = logger.Err(fmt.Sprintf("Failed to GET youtube URL: %v", err))
