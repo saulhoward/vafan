@@ -132,12 +132,20 @@ func storeFeaturedTweets() (err error) {
 	}
 
 	featured := tweets{}
-	featured = append(featured, favorites...)
-	featured = append(featured, mentions...)
-	featured = append(featured, timeline...)
-	sort.Sort(reverseCreatedAtTweets{featured})
+	if len(favorites) > 0 {
+		featured = append(featured, favorites...)
+	}
+	if len(mentions) > 0 {
+		featured = append(featured, mentions...)
+	}
+	if len(timeline) > 0 {
+		featured = append(featured, timeline...)
+	}
 
-	err = saveTweets("featured", featured[:8])
+	if len(featured) > 0 {
+		sort.Sort(reverseCreatedAtTweets{featured})
+		err = saveTweets("featured", featured[:8])
+	}
 	return
 }
 
@@ -324,7 +332,7 @@ func writeTweetStream(w io.Writer) {
 	client := httpstream.NewBasicAuthClient(vafanConf.twitter.user, vafanConf.twitter.password, func(line []byte) {
 		stream <- line
 	})
-    err := client.Filter([]int64{twSaulHowardID, twConvictFilmsID}, []string{"brightonwok", "brighton wok", "convictfilms", "convict films"}, false, done)
+	err := client.Filter([]int64{twSaulHowardID, twConvictFilmsID}, []string{"brightonwok", "brighton wok", "convictfilms", "convict films"}, false, done)
 	// this opens a go routine that is effectively thread 1
 	// err := client.Sample(done)
 	if err != nil {
