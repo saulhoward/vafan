@@ -45,10 +45,10 @@ To install Vafan on a new machine. Instructions are for Oneric (11.10).
         echo "export GOPATH=$GOPATH:/srv/vafan" >> ~/.bashrc
         source ~/.bashrc
 
-6. Build the vafan command:
+6. Build the vafan-server command:
 
-        cd /srv/vafan/cmd/vafan
-        go build vafan.go
+        cd /srv/vafan/cmd/vafan-server
+        go build vafan-server.go
     
     This will complain about missing third-party libraries. You must
     install them, eg,
@@ -60,7 +60,7 @@ To install Vafan on a new machine. Instructions are for Oneric (11.10).
 
         apt-get install mercurial
 
-    Once they are installed, you should be able to build vafan.go.
+    Once they are installed, you should be able to build vafan-server.go.
 
 7. Setup MySQL:
 
@@ -82,7 +82,8 @@ To install Vafan on a new machine. Instructions are for Oneric (11.10).
 
     Using the init.d script in the repo:
 
-        ln -s /srv/vafan/cmd/src/vafan-server/vafan-server
-        /usr/sbin/vafan-server
+        cp /srv/vafan/scripts/vafan-init.sh /etc/init.d/vafan
+        chmod +x /etc/init.d/vafan
+        ln -s /srv/vafan/cmd/src/vafan-server/vafan-server /usr/sbin/vafan-server
         /etc/init.d/vafan start
         update-rc.d vafan defaults
