@@ -12,5 +12,6 @@
 
 VAFROOT="/srv/vafan"
 $VAFROOT/scripts/rebuild.sh
-$VAFROOT/scripts/minify-js.sh
+$VAFROOT/scripts/minify-assets.sh
 
+exit 0

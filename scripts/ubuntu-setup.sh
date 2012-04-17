@@ -24,6 +24,8 @@ apt-get --assume-yes install python-software-properties \
     mongodb mongodb-clients build-essential \
     mysql-server redis-server
 
+    #yui-compressor
+
 # Go - needs its own repository 
 add-apt-repository ppa:gophers/go
 apt-get update

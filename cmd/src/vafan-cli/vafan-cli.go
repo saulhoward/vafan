@@ -10,6 +10,7 @@ import (
 var start *bool = flag.Bool("start", false, "Start the server")
 var printTweets *bool = flag.Bool("tweets", false, "Get tweets")
 var javascriptFiles *bool = flag.Bool("list-javascript-files", false, "Get a list of javascript library files.")
+var cssFiles *string = flag.String("list-css-files", "", "Get a list of css files for a site name.")
 var makeUserAdmin *string = flag.String("make-admin", "", "Make this user an admin")
 var getVideoDetails *string = flag.String("get-video-details", "", "Get external video details")
 
@@ -32,6 +33,10 @@ func main() {
 	case *javascriptFiles:
 		j := vafan.GetJavascriptFileList()
 		fmt.Fprintln(os.Stdout, j)
+		os.Exit(0)
+	case *cssFiles != "":
+		c := vafan.GetCSSFileList(*cssFiles)
+		fmt.Fprintln(os.Stdout, c)
 		os.Exit(0)
 	case *printTweets:
 		//vafan.PrintTweets()

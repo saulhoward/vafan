@@ -236,10 +236,11 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *us
 			content["flashes"] = ""
 		}
 
-		// add in JS lib (may be minified)
+		// add in CSS & JS (may be minified)
 		content["javascriptLibraryHTML"] = getJavascriptLibraryHTML(s, env)
+		content["cssHTML"] = getCSSHTML(s, env)
 
-		w.Header().Add("Content-Type", "text/html")
+		w.Header().Add("Content-Type", "text/html; charset=UTF-8")
 		t, err := getPageTemplate(format, res, s, env)
 		if err != nil {
 			_ = logger.Err(fmt.Sprintf("Failed to get template: %v", err))
