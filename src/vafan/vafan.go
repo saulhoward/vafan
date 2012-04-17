@@ -130,7 +130,7 @@ func registerHandlers() {
 		http.StripPrefix("/css", gzipFileServer.FileServer(http.Dir(
 			filepath.Join(vafanConf.baseDir, "static", "css")))))
 	router.PathPrefix("/js").Handler(
-		http.StripPrefix("/js", http.FileServer(http.Dir(
+		http.StripPrefix("/js", gzipFileServer.FileServer(http.Dir(
 			filepath.Join(vafanConf.baseDir, "static", "js")))))
 	router.PathPrefix("/img").Handler(
 		http.StripPrefix("/img", http.FileServer(http.Dir(
