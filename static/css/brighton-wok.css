@@ -327,12 +327,12 @@ header.navbar h1 a.brighton-wok {
     padding: 0;
     position: relative;
     z-index: 0;
-    text-shadow: 1px 1px 2px #151515;
 }
 #links .reviews blockquote p {
     position: relative;
     z-index: 10;
     margin-bottom: 10px;
+    text-shadow: 1px 1px 2px #000000;
 }
 #links .reviews blockquote em {
     font-style: normal;
@@ -377,17 +377,26 @@ header.navbar h1 a.brighton-wok {
 }
 #links .about {
     color: #fcfbef;
-    font-size: 18px;
     width: 100%;
-    max-width: 400px;
-    margin: 45px auto 25px auto;
+    max-width: 450px;
+    margin: 5px auto 25px auto;
+    padding-left: 25px;
+}
+#links .about p {
+    font-size: 16px;
+    line-height: 1.4em;
 }
 #links .about h1 {
     color: #fdffcc;
+    margin-bottom: 5px;
 }
 #links .about em {
     font-style: normal;
     font-weight: bold;
+}
+
+#links .plot p {
+    font-style: italic;
 }
 
 /* Twitter Tweets
@@ -489,7 +498,7 @@ header.navbar h1 a.brighton-wok {
  */
 #gallery {
     width: 420px;
-    margin: 40px 0 25px auto;
+    margin: 25px 0 25px auto;
     -webkit-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
     -moz-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
     box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
@@ -498,6 +507,42 @@ header.navbar h1 a.brighton-wok {
 #gallery img {
     width: 420px;
     height: 236px;
+}
+
+/*
+ * Other links
+ */
+.other-links {
+    width: 80%;
+    max-width: 300px;
+    margin: 45px auto 25px auto;
+}
+.other-links.well {
+    background: rgba(255,255,255,0.8);
+    box-shadow: inset 1px 1px 20px 0px rgba(0,0,0,0.6);
+    border-color: rgba(102, 49, 17, 0.6);
+}
+.other-links ul {
+    font-size: 18px;
+    margin: 0 auto;
+    width: 100%;
+}
+.other-links ul a {
+    font-weight: bold;
+    width: 100%;
+    display: block;
+    padding: 5px 0;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+}
+.other-links ul a:hover {
+    text-decoration: none;
+    color: white;
+    background: #E84A5F;
+}
+.other-links ul a i {
+    padding-left: 5px;
 }
 
 /*
@@ -741,10 +786,12 @@ header.navbar h1 a.brighton-wok {
     .dvd-small .buy {
         width: 350px;
     }
-
-.dvd-small {
-    min-width: 560px;
-}
+    .dvd-small {
+        min-width: 560px;
+    }
+    #links .about {
+        padding-left: 0;
+    }
 }
 @media screen and (max-width: 767px) {
     #links .tweets-wrapper {
@@ -764,6 +811,9 @@ header.navbar h1 a.brighton-wok {
     }
     .dvd-small {
         background: black;
+    }
+    #links .about {
+        padding-left: 0;
     }
 }
 

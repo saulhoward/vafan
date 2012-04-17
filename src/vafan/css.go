@@ -34,7 +34,7 @@ func getSiteSpecificCSSFile(siteName string) string {
 func getCSSHTML(site *site, env string) template.HTML {
 	var html string
 	switch env {
-	case "devz":
+	case "dev":
 		for _, c := range getCSSFiles(site.Name) {
 			html = html + "\n" + getCSSTagHTML(c)
 		}
