@@ -458,7 +458,7 @@ header.navbar h1 a.brighton-wok {
  */
 .facebook {
     width: 420px;
-    margin: 0 auto 25px auto;
+    margin: 0 auto 45px auto;
     padding: 5px 10px;
     background: #feffff;
     background: -moz-linear-gradient(top, #feffff 0%, #d2ebf9 100%);
@@ -519,9 +519,9 @@ header.navbar h1 a.brighton-wok {
     margin: 45px auto 25px auto;
 }
 .other-links.well {
-    background: rgba(255,255,255,0.8);
+    background: rgba(0,0,0,0.5);
     box-shadow: inset 1px 1px 20px 0px rgba(0,0,0,0.6);
-    border-color: rgba(102, 49, 17, 0.6);
+    border-color: rgba(102, 49, 17, 0.4);
 }
 .other-links ul {
     font-size: 18px;
@@ -539,7 +539,7 @@ header.navbar h1 a.brighton-wok {
 }
 .other-links ul a:hover {
     text-decoration: none;
-    color: white;
+    color: black;
     background: #E84A5F;
 }
 .other-links ul a i {
@@ -550,9 +550,9 @@ header.navbar h1 a.brighton-wok {
  * Small DVD Box
  */
 .dvd-small {
-    -webkit-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
-    -moz-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
-    box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
+    -webkit-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1), inset 1px 1px 20px 0px rgba(0,0,0,0.6);
+    -moz-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1), inset 1px 1px 20px 0px rgba(0,0,0,0.6);
+    box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1), inset 1px 1px 20px 0px rgba(0,0,0,0.6);
 
     float: none;
     background: black;
@@ -561,6 +561,7 @@ header.navbar h1 a.brighton-wok {
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
+    border: 1px solid black;
 }
 .dvd-small a.dvd {
     width: 174px;
