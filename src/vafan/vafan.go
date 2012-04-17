@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	gzipFileServer "github.com/saulhoward/go-gzip-file-server"
 	"log/syslog"
 	"net/http"
 	"net/url"
@@ -126,7 +127,7 @@ func registerHandlers() {
 
 	// Static directories
 	router.PathPrefix("/css").Handler(
-		http.StripPrefix("/css", http.FileServer(http.Dir(
+		http.StripPrefix("/css", gzipFileServer.FileServer(http.Dir(
 			filepath.Join(vafanConf.baseDir, "static", "css")))))
 	router.PathPrefix("/js").Handler(
 		http.StripPrefix("/js", http.FileServer(http.Dir(
@@ -200,10 +201,10 @@ func getCanonicalSite(r Resource) (s *site, err error) {
 }
 
 func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *user) {
-	_ = logger.Info(fmt.Sprintf("Requested url: '%v' writing resource '%v'", req.URL.String(), resourceName(res)))
 	// get the site and env requested
 	s, env := getSite(req)
 	format := getFormat(req)
+	_ = logger.Info(fmt.Sprintf("Requested url: '%v' writing resource '%v' as format '%v'.", req.URL.String(), resourceName(res), format))
 	// should we redirect to a canonical host for this resource?
 	canonicalSite, err := getCanonicalSite(res)
 	if err == nil && canonicalSite.Name != s.Name {
@@ -235,8 +236,11 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *us
 			content["flashes"] = ""
 		}
 
+		// add in JS lib (may be minified)
+		content["javascriptLibraryHTML"] = getJavascriptLibraryHTML(s, env)
+
 		w.Header().Add("Content-Type", "text/html")
-		t, err := getPageTemplate(format, res, s)
+		t, err := getPageTemplate(format, res, s, env)
 		if err != nil {
 			_ = logger.Err(fmt.Sprintf("Failed to get template: %v", err))
 			return

@@ -1,7 +1,7 @@
 // Copyright 2012 Saul Howard. All rights reserved.
 
 // Index - the home page for a vafan site.
-// Will contain a bit fo everything, some videos, some photos etc.
+// Will contain a bit of everything, some videos, some photos etc.
 // As the main landing page, content should be A/B tested, rotated etc.
 
 package vafan
