@@ -64,6 +64,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Hero */
 .hero-unit {
     background-color: rgba(0,0,0,0.4);
+    *background-color: #151515;
     background-image: url(/img/convict-films/pixellated-beachy-head.png);
     background-position: 100% 50%;
     background-repeat: no-repeat;
@@ -75,6 +76,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .thumbnail {
     background-color: rgba(0,0,0,0.4);
+    *background-color: #151515;
     border-color: black;
 }
 

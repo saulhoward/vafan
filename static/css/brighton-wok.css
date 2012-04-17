@@ -223,6 +223,7 @@ header.navbar h1 a.brighton-wok {
 }
 .separator.footer {
     background: url(/img/brighton-wok/small-wood-tile.png) top left repeat-x;
+    *margin-top: -18px;
 }
  
 /*
@@ -299,8 +300,8 @@ header.navbar h1 a.brighton-wok {
     font-size: 48px;
     line-height: 48px;
     font-weight: normal;
-    color: rgba(202,7,0,1);
     text-align: center;
+    color: rgb(202,7,0);
     -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(202,7,0,1)), to(rgba(202,7,0,0.5)));
     text-shadow: -1px 0 2px #333;
     -webkit-transform: rotate(-3deg);
@@ -820,7 +821,6 @@ header.navbar h1 a.brighton-wok {
 /*
  * Pier Background image specific
  */
-
 @media screen and (min-width: 800px) {
     .index #main {
         background-image: url(/img/brighton-wok/pier-bg/pier-bg-800x600.jpg) ;

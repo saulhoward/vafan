@@ -154,6 +154,9 @@ func registerHandlers() {
 	router.Host(hostRe).Path(`/` + formatRe).
 		Name("index").Handler(callHandler(index{}))
 
+	router.Host(hostRe).Path(`/contact` + formatRe).
+		Name("contact").Handler(callHandler(contact{}))
+
 	// user resources
 	router.Host(hostRe).Path(`/users/auth` + formatRe).
 		Name("userAuth").Handler(callHandler(userAuth{}))
@@ -274,6 +277,7 @@ func getLinks(req *http.Request) map[string]interface{} {
 
 	cfLinks["index"] = index{}.URL(req, convictFilms).String()
 	cfLinks["videos"] = videos{}.URL(req, convictFilms).String()
+	cfLinks["contact"] = contact{}.URL(req, convictFilms).String()
 	cfLinks["userAuth"] = userAuth{}.URL(req, nil).String()
 	cfLinks["userRegistrar"] = userRegistrar{}.URL(req, nil).String()
 

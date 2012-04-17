@@ -31,16 +31,22 @@ func getSiteSpecificCSSFile(siteName string) string {
 	return "/css/" + siteName + ".css"
 }
 
+const ie6CSSFile = "/css/ie6.1.b.css"
+
 func getCSSHTML(site *site, env string) template.HTML {
 	var html string
+	html = html + "<!--[if ! lte IE 6]><!-->" + "\n"
 	switch env {
 	case "dev":
 		for _, c := range getCSSFiles(site.Name) {
-			html = html + "\n" + getCSSTagHTML(c)
+			html = html + getCSSTagHTML(c) + "\n"
 		}
 	default:
-		html = getCSSTagHTML(getSiteSpecificMinifiedCSSFile(site.Name))
+		html = html + getCSSTagHTML(getSiteSpecificMinifiedCSSFile(site.Name))
 	}
+	html = html + "<!--<![endif]--><!--[if lte IE 6]>" + "\n"
+	html = html + getCSSTagHTML(ie6CSSFile) + "\n"
+	html = html + "<![endif]-->" + "\n"
 	return template.HTML(html)
 }
 
