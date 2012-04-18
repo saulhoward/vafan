@@ -49,7 +49,6 @@ vafan.video = {
                 $('#brighton-wok-trailer').modal('hide');
             }
         });
-
     },
 
     /* Set up a Vimeo Iframe

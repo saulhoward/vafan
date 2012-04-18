@@ -41,12 +41,13 @@ type site struct {
 	Title     string
 	FullTitle string
 	Tagline   string
+	GoogleAnalyticsID   string
 }
 
 // Should be in config
 var sites = [...]site{
-	site{"convict-films", "convictfilms.com", "Convict Films", "Convict Films", "We make movies"},
-	site{"brighton-wok", "brighton-wok.com", "Brighton Wok", "Brighton Wok: The Legend of Ganja Boxing", "Ninjas! Ganja! Kung Fu!"},
+	site{"convict-films", "convictfilms.com", "Convict Films", "Convict Films", "We make movies", "UA-349594-1"},
+	site{"brighton-wok", "brighton-wok.com", "Brighton Wok", "Brighton Wok: The Legend of Ganja Boxing", "Ninjas! Ganja! Kung Fu!", "UA-349594-1"},
 }
 var defaultSite *site = &sites[0]
 var convictFilms *site = &sites[0]

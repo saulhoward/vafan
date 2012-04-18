@@ -70,6 +70,9 @@ h1, h2, h3, h4, h5, h6 {
     background: #151515 url(/img/brighton-wok/smoke-tile.jpg) top left repeat;
     box-shadow:inset 0px 0px 150px #000;
 }
+.index #page-container {
+    background: #151515;
+}
 #main > .container {
     border-left: 2px solid black;
     border-right: 2px solid black;
@@ -142,14 +145,27 @@ header.navbar h1 a.brighton-wok {
  * Movie and Title
  */
 .index #main {
+    background-image: url(/img/brighton-wok/pier-bg/pier-bg-1440x600.jpg) ;
+    background-position: 50% 0;
+    background-repeat: no-repeat;
     background-color: black;
 }
 #movie {
-    margin: 0;
+margin: 0;
+    height: 600px;
 }
 .information {
-    padding: 0;
+    width: 500px;
+    float: right;
+    margin-top: 100px;
+padding: 0;
 }
+.dvd {
+    margin-top: 50px;
+    width: 40%;
+    float: left;
+}
+
 .information h1, .information h2, 
 .information h3, .information h4,
 .information h5, .information h6 {
@@ -223,7 +239,7 @@ header.navbar h1 a.brighton-wok {
 }
 .separator.footer {
     background: url(/img/brighton-wok/small-wood-tile.png) top left repeat-x;
-    *margin-top: -18px;
+    /* margin-top: -18px; */
 }
  
 /*
@@ -286,6 +302,9 @@ header.navbar h1 a.brighton-wok {
 /*
  * Links Div
  */
+#links {
+    background: #151515 url(/img/brighton-wok/ganja-tile.jpg) top left repeat;
+}
 #links .container {
     background: #5d381e url(/img/brighton-wok/wood-tile.jpg) top left repeat;
     box-shadow:inset 0px 0px 100px rgba(0,0,0,0.6), 0px 0px 50px #000;
@@ -416,9 +435,9 @@ header.navbar h1 a.brighton-wok {
     -ms-transform: rotate(1.5deg);
     -o-transform: rotate(1.5deg);
 
-    -webkit-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
-    -moz-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
-    box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
+    -webkit-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(102, 49, 17, 0.3);
+    -moz-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(102, 49, 17, 0.3);
+    box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(102, 49, 17, 0.3);
 
     width: 350px;
     color: #333;
@@ -469,9 +488,9 @@ header.navbar h1 a.brighton-wok {
     background: linear-gradient(top, #feffff 0%,#d2ebf9 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#feffff', endColorstr='#d2ebf9',GradientType=0 );
 
-    -webkit-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
-    -moz-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
-    box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
+    -webkit-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(102, 49, 17, 0.3);
+    -moz-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(102, 49, 17, 0.3);
+    box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(102, 49, 17, 0.3);
 
     border: 1px solid #d2ebf9;
     -webkit-transform: rotate(-0.5deg);
@@ -500,9 +519,9 @@ header.navbar h1 a.brighton-wok {
 #gallery {
     width: 420px;
     margin: 25px 0 25px auto;
-    -webkit-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
-    -moz-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
-    box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1);
+    -webkit-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(102, 49, 17, 0.3);
+    -moz-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(102, 49, 17, 0.3);
+    box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(102, 49, 17, 0.3);
 }
 /* images are 16:9 */
 #gallery img {
@@ -519,8 +538,10 @@ header.navbar h1 a.brighton-wok {
     margin: 45px auto 25px auto;
 }
 .other-links.well {
-    background: rgba(0,0,0,0.5);
+    background-color: #151515;
+    background-color: rgba(0,0,0,0.5);
     box-shadow: inset 1px 1px 20px 0px rgba(0,0,0,0.6);
+    border-color: rgb(102, 49, 17);
     border-color: rgba(102, 49, 17, 0.4);
 }
 .other-links ul {
@@ -550,9 +571,9 @@ header.navbar h1 a.brighton-wok {
  * Small DVD Box
  */
 .dvd-small {
-    -webkit-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1), inset 1px 1px 20px 0px rgba(0,0,0,0.6);
-    -moz-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1), inset 1px 1px 20px 0px rgba(0,0,0,0.6);
-    box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(255, 255, 255, 0.1), inset 1px 1px 20px 0px rgba(0,0,0,0.6);
+    -webkit-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(102, 49, 17, 0.3), inset 1px 1px 20px 0px rgba(0,0,0,0.6);
+    -moz-box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(102, 49, 17, 0.3), inset 1px 1px 20px 0px rgba(0,0,0,0.6);
+    box-shadow: -5px -5px 15px 0px rgba(0,0,0,0.1), 5px 5px 15px 0px rgba(102, 49, 17, 0.3), inset 1px 1px 20px 0px rgba(0,0,0,0.6);
 
     float: none;
     background: black;
