@@ -121,6 +121,11 @@ h2 i, .what-we-do i {
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
+    border: 1px solid black;
+    margin-right: -2px;
+    -webkit-box-shadow: inset 1px 1px 20px 0px rgba(0,0,0,0.6);
+    -moz-box-shadow: inset 1px 1px 20px 0px rgba(0,0,0,0.6);
+    box-shadow: inset 1px 1px 20px 0px rgba(0,0,0,0.6);
 }
 .brighton-wok .details {
     margin-top: 15px;
@@ -135,8 +140,10 @@ h2 i, .what-we-do i {
     text-align: center;
     font-size: 34px;
     text-shadow: 1px 1px 1px black;
-    color: yellow;
     margin-top: 5px;
+}
+.brighton-wok h2 a {
+    color: yellow;
 }
 .brighton-wok a.dvd {
     width: 174px;

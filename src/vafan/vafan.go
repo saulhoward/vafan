@@ -36,17 +36,17 @@ var author string = "Saul Howard - saul@convictfilms.com"
 
 // Represents a site served by this server
 type site struct {
-	Name      string
-	Host      string
-	Title     string
-	FullTitle string
-	Tagline   string
-	GoogleAnalyticsID   string
+	Name              string
+	Host              string
+	Title             string
+	FullTitle         string
+	Tagline           string
+	GoogleAnalyticsID string
 }
 
 // Should be in config
 var sites = [...]site{
-	site{"convict-films", "convictfilms.com", "Convict Films", "Convict Films", "We make movies", "UA-349594-1"},
+	site{"convict-films", "convictfilms.com", "Convict Films", "Convict Films", "We make movies", "UA-349594-6"},
 	site{"brighton-wok", "brighton-wok.com", "Brighton Wok", "Brighton Wok: The Legend of Ganja Boxing", "Ninjas! Ganja! Kung Fu!", "UA-349594-1"},
 }
 var defaultSite *site = &sites[0]
@@ -173,6 +173,9 @@ func registerHandlers() {
 		Name("videos").Handler(callHandler(videos{}))
 	router.Host(hostRe).Path(`/videos/` + nameRe + formatRe).
 		Name("video").Handler(callHandler(video{}))
+
+	router.Host(hostRe).Path(`/dvds/` + nameRe + formatRe).
+		Name("dvd").Handler(callHandler(dvd{}))
 
 	// Twitter resource, inc. websockets resource.
 	router.Host(hostRe).Path(`/tweets` + formatRe).

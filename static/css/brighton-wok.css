@@ -160,7 +160,7 @@ margin: 0;
     margin-top: 100px;
 padding: 0;
 }
-.dvd {
+#movie .dvd {
     margin-top: 50px;
     width: 40%;
     float: left;
@@ -223,7 +223,7 @@ padding: 0;
     padding-left: 10px;
 }
 
-.dvd.three-dee img {
+#movie .dvd.three-dee img {
     display: none;
 }
 
@@ -632,14 +632,14 @@ padding: 0;
         float: right;
         margin-top: 100px;
     }
-    .dvd {
+    #movie .dvd {
         margin-top: 0;
         margin-left: 0;
         /* width: 450px; */
         width: 40%;
         float: left;
     }
-    .dvd img {
+    #movie .dvd img {
         margin-top: 50px;
         margin-left: 100px;
         float: right;
@@ -687,10 +687,10 @@ padding: 0;
 
 /* All Mobile Sizes (devices and browser) */
 @media only screen and (max-width: 767px) {
-    .dvd {
+    #movie .dvd {
         text-align: center;
     }
-    .dvd img {
+    #movie .dvd img {
         margin: 0 auto;
     }
     #links .reviews {
@@ -755,7 +755,7 @@ padding: 0;
     }
 }
 @media only screen and (max-width: 350px) {
-    .dvd img {
+    #movie .dvd img {
         width: 100%;
         height: 100%;
     }
@@ -790,13 +790,13 @@ padding: 0;
         float: right;
         margin-top: 100px;
     }
-    .dvd {
+    #movie .dvd {
         margin-top: 0;
         margin-left: 0;
         width: 45%;
         float: left;
     }
-    .dvd img {
+    #movie .dvd img {
         margin-top: 50px;
         margin-left: auto;
         margin-right: auto;

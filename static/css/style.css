@@ -95,7 +95,7 @@ body {
 header.navbar {
     width: 100%;
     height: 50px;
-    background: black url(/img/convict-films/metal-header-bg.png) top left repeat-x;
+    background: #151515 url(/img/convict-films/metal-header-bg.png) left top repeat-x;
     border-bottom: 1px solid #222;
     box-shadow: 0 2px 5px 0px rgba(0,0,0,0.4);
     position: relative;
