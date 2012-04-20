@@ -215,17 +215,17 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *us
 	// should we redirect to a canonical host for this resource?
 	canonicalSite, err := getCanonicalSite(res)
 	if err == nil && canonicalSite.Name != s.Name {
-		rUrl := res.URL(req, nil)
+		rUrl := res.GetURL(req, nil)
 		_ = logger.Info(fmt.Sprintf("Redirecting to canonical url: " + rUrl.String()))
 		http.Redirect(w, req, rUrl.String(), http.StatusMovedPermanently)
 		return
 	}
 
 	// Add defaults to the content, that are in every format
-	resContent := res.Content(req, s)
+	resContent := res.GetContent(req, s)
 	content := resContent.content
 	content["links"] = getLinks(req)
-	u.Location = u.URL(req, nil).String()
+	u.URL = u.GetURL(req, nil).String()
 	content["requestingUser"] = u
 
 	// write the resource in requested format
@@ -235,7 +235,7 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *us
 		content["description"] = resContent.description
 		content["site"] = s
 		content["environment"] = env
-		content["url"] = res.URL(req, nil)
+		content["url"] = res.GetURL(req, nil)
 		content["resource"] = resourceDirName(res)
 		if flashes := getFlashContent(w, req); len(flashes) > 0 {
 			content["flashes"] = flashes
@@ -279,19 +279,19 @@ func getLinks(req *http.Request) map[string]interface{} {
 	cfLinks := make(map[string]string)
 	siteLinks := make(map[string]string)
 
-	cfLinks["index"] = index{}.URL(req, convictFilms).String()
-	cfLinks["videos"] = videos{}.URL(req, convictFilms).String()
-	cfLinks["contact"] = contact{}.URL(req, convictFilms).String()
-	cfLinks["userAuth"] = userAuth{}.URL(req, nil).String()
-	cfLinks["userRegistrar"] = userRegistrar{}.URL(req, nil).String()
+	cfLinks["index"] = index{}.GetURL(req, convictFilms).String()
+	cfLinks["videos"] = videos{}.GetURL(req, convictFilms).String()
+	cfLinks["contact"] = contact{}.GetURL(req, convictFilms).String()
+	cfLinks["userAuth"] = userAuth{}.GetURL(req, nil).String()
+	cfLinks["userRegistrar"] = userRegistrar{}.GetURL(req, nil).String()
 
-	bwLinks["index"] = index{}.URL(req, brightonWok).String()
-	bwLinks["videos"] = videos{}.URL(req, brightonWok).String()
+	bwLinks["index"] = index{}.GetURL(req, brightonWok).String()
+	bwLinks["videos"] = videos{}.GetURL(req, brightonWok).String()
 
-	siteLinks["index"] = index{}.URL(req, nil).String()
-	siteLinks["videos"] = videos{}.URL(req, nil).String()
-	siteLinks["userAuth"] = userAuth{}.URL(req, nil).String()
-	siteLinks["userRegistrar"] = userRegistrar{}.URL(req, nil).String()
+	siteLinks["index"] = index{}.GetURL(req, nil).String()
+	siteLinks["videos"] = videos{}.GetURL(req, nil).String()
+	siteLinks["userAuth"] = userAuth{}.GetURL(req, nil).String()
+	siteLinks["userRegistrar"] = userRegistrar{}.GetURL(req, nil).String()
 
 	l["site"] = siteLinks
 	l["brightonWok"] = bwLinks

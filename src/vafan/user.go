@@ -27,23 +27,23 @@ import (
 var ErrWrongPassword = errors.New("user: password fail")
 
 type user struct {
-	Id           string // UUID v4 with dashes
-	Username     string
-	EmailAddress string
-	Role         string
-	Location     string
+	ID           string `json:"id"` // UUID v4 with dashes
+	Username     string `json:"username"`
+	EmailAddress string `json:"emailAddress"`
+	Role         string `json:"role"`
+	URL     string `json:"url"`
+	IsLoggedIn   bool   `json:"isLoggedIn"`
 	passwordHash string
 	salt         string
-	IsLoggedIn   bool
 }
 
 // HTTP Resource methods
 
-func (u user) URL(req *http.Request, s *site) *url.URL {
-	return getUrl(u, req, s, []string{"id", u.Id})
+func (u user) GetURL(req *http.Request, s *site) *url.URL {
+	return makeURL(u, req, s, []string{"id", u.ID})
 }
 
-func (u user) Content(req *http.Request, s *site) (c resourceContent) {
+func (u user) GetContent(req *http.Request, s *site) (c resourceContent) {
 	c.title = "User"
 	c.description = "User page"
 	c.content = map[string]interface{}{"user": u}
@@ -68,7 +68,7 @@ const defaultUserRole = "user"
 
 // brand new user, freshly minted id
 func NewUser() *user {
-	u := user{Id: newUUID(), Role: defaultUserRole}
+	u := user{ID: newUUID(), Role: defaultUserRole}
 	return &u
 }
 
@@ -109,7 +109,7 @@ func getUserByUsername(username string) (u *user) {
 		_ = logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
 		return
 	}
-	err = selectUser.QueryRow(username).Scan(&u.Id, &u.Username, &u.EmailAddress, &u.Role, &u.passwordHash, &u.salt)
+	err = selectUser.QueryRow(username).Scan(&u.ID, &u.Username, &u.EmailAddress, &u.Role, &u.passwordHash, &u.salt)
 	if err != nil {
 		_ = logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
 		return
@@ -126,7 +126,7 @@ func getUserByEmailAddress(emailAddress string) (u *user) {
 		_ = logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
 		return
 	}
-	err = selectUser.QueryRow(emailAddress).Scan(&u.Id, &u.Username, &u.EmailAddress, &u.Role, &u.passwordHash, &u.salt)
+	err = selectUser.QueryRow(emailAddress).Scan(&u.ID, &u.Username, &u.EmailAddress, &u.Role, &u.passwordHash, &u.salt)
 	if err != nil {
 		_ = logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
 		return
@@ -143,7 +143,7 @@ func getUserById(id string) (u *user) {
 		_ = logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
 		return
 	}
-	err = selectUser.QueryRow(id).Scan(&u.Id, &u.Username, &u.EmailAddress, &u.Role, &u.passwordHash, &u.salt)
+	err = selectUser.QueryRow(id).Scan(&u.ID, &u.Username, &u.EmailAddress, &u.Role, &u.passwordHash, &u.salt)
 	if err != nil {
 		_ = logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
 		return
@@ -153,7 +153,7 @@ func getUserById(id string) (u *user) {
 
 // just wants an id, the simplest form of user
 func GetUser(id string) *user {
-	u := user{Id: id, Role: defaultUserRole}
+	u := user{ID: id, Role: defaultUserRole}
 	return &u
 }
 
@@ -163,7 +163,7 @@ func getUserForUserInfo(userInfo map[string]string) (u *user, err error) {
 		err = errors.New("User: ID must be set")
 		return
 	}
-	newU := user{Id: userInfo["Id"], Username: userInfo["Username"], EmailAddress: userInfo["EmailAddress"], Role: userInfo["Role"]}
+	newU := user{ID: userInfo["Id"], Username: userInfo["Username"], EmailAddress: userInfo["EmailAddress"], Role: userInfo["Role"]}
 	return &newU, err
 }
 
@@ -197,7 +197,7 @@ func (u *user) save(password string) error {
 		_ = logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
 		return err
 	}
-	_, err = stmt.Exec(u.Id, u.Username, u.EmailAddress, u.passwordHash, u.salt, u.Role)
+	_, err = stmt.Exec(u.ID, u.Username, u.EmailAddress, u.passwordHash, u.salt, u.Role)
 	if err != nil {
 		_ = logger.Err(fmt.Sprintf("Failed to create user (MySQL): %v", err))
 		return err
@@ -214,7 +214,7 @@ func (u *user) changeRole(role string) (err error) {
 		_ = logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
 		return
 	}
-	_, err = stmt.Exec(role, u.Id)
+	_, err = stmt.Exec(role, u.ID)
 	if err != nil {
 		_ = logger.Err(fmt.Sprintf("Failed to change user role (MySQL): %v", err))
 		return
@@ -248,7 +248,7 @@ func (u *user) isRegistered() bool {
 		return false
 	}
 	var id int
-	err = selectUser.QueryRow(u.Id).Scan(&id)
+	err = selectUser.QueryRow(u.ID).Scan(&id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return false
@@ -350,7 +350,7 @@ func login(usernameOrEmailAddress string, password string) (u *user, err error) 
 }
 
 func userIsSame(u1 *user, u2 *user) bool {
-	if u1.Id == u2.Id {
+	if u1.ID == u2.ID {
 		return true
 	}
 	return false

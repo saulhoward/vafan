@@ -7,39 +7,38 @@
 
        https://github.com/araddon/httpstream/blob/master/twittertypes.go
 
-   (With uneeded values removed). If extra values are needed, check
-   there for help.
+   (With uneeded values removed and json names added). If extra values
+   are needed, check there for help.
 */
 
 package vafan
 
 type twitterUser struct {
-	Screen_name       string
-	Url               string
-	Profile_image_url string
-	Id                int64
+	Screen_name       string `json:"screenName"`
+	Url               string `json:"url"`
+	Profile_image_url string `json:"profileImageURL"`
+	Id                int64  `json:"id"`
 }
 
 type tweet struct {
-	Text       string
-	RawBytes   []byte
-	Id         int64
-	Created_at string
-	User       *twitterUser
+	Text       string       `json:"text"`
+	Id         int64        `json:"id"`
+	Created_at string       `json:"createdAt"`
+	User       *twitterUser `json:"user"`
 }
 
 type twitterSiteStreamMessage struct {
-	For_user int64
-	Message  tweet
+	For_user int64 `json:"forUser"`
+	Message  tweet `json:"message"`
 }
 
 type twitterEvent struct {
-	Target     twitterUser
-	Source     twitterUser
-	Created_at string
-	Event      string
+	Target     twitterUser `json:"target"`
+	Source     twitterUser `json:"source"`
+	Created_at string      `json:"createdAt"`
+	Event      string      `json:"event"`
 }
 
 type twitterFriendList struct {
-	Friends []int64
+	Friends []int64 `json:"friends"`
 }

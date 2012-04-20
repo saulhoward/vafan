@@ -18,8 +18,8 @@ var decoder = schema.NewDecoder()
 
 // A Resource represents data that can be served over HTTP.
 type Resource interface {
-	URL(req *http.Request, s *site) *url.URL
-	Content(req *http.Request, s *site) resourceContent
+	GetURL(req *http.Request, s *site) *url.URL
+	GetContent(req *http.Request, s *site) resourceContent
 	ServeHTTP(w http.ResponseWriter, r *http.Request, u *user)
 }
 
@@ -42,9 +42,9 @@ var resourceCanonicalSites = map[string]*site{
 	"usersSyncResource":      defaultSite,
 }
 
-// Gets a URL for a resource.
+// Makes a URL for a resource.
 // Used as a helper by struct.URL(r, s) methods.
-func getUrl(res Resource, req *http.Request, s *site, urlData []string) *url.URL {
+func makeURL(res Resource, req *http.Request, s *site, urlData []string) *url.URL {
 	curSite, env := getSite(req)
 	canonicalSite, err := getCanonicalSite(res)
 	if s == nil {

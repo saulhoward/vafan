@@ -60,7 +60,7 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *user, err error) {
 			if s.Name != userSyncSite.Name && canUserId == "" {
 				// We're on another site to the sync resource -
 				// redirect to the user sync!
-				syncUrl := userSync{}.URL(r, nil)
+				syncUrl := userSync{}.GetURL(r, nil)
 				redirectUrl := syncUrl.String() + "?redirect-url=" + url.QueryEscape(getCurrentUrl(r).String())
 				_ = logger.Info(fmt.Sprintf("Redirecting to sync url: %v", redirectUrl))
 				http.Redirect(w, r, redirectUrl, http.StatusTemporaryRedirect)
@@ -73,10 +73,10 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *user, err error) {
 				} else {
 					u = NewUser()
 				}
-				_ = logger.Info(fmt.Sprintf("Setting a new user cookie: %v", u.Id))
+				_ = logger.Info(fmt.Sprintf("Setting a new user cookie: %v", u.ID))
 				c = new(http.Cookie)
 				c.Name = "vafanUser"
-				c.Value = u.Id
+				c.Value = u.ID
 				c.Domain = "." + env + "." + s.Host
 				c.Path = "/"
 				http.SetCookie(w, c)
@@ -114,7 +114,7 @@ func newLoginSession(w http.ResponseWriter, r *http.Request, u *user) (s *sessio
 	err = nil
 	sessionKey := "sessions:" + s.id
 	userInfo := map[string]string{
-		"Id":           u.Id,
+		"Id":           u.ID,
 		"Username":     u.Username,
 		"EmailAddress": u.EmailAddress,
 		"Role":         u.Role,
@@ -207,7 +207,7 @@ func getLoginUser(sId string) (u *user, err error) {
 		return
 	}
 	u.setLoggedIn()
-	_ = logger.Info(fmt.Sprintf("User is logged in: %v", u.Id))
+	_ = logger.Info(fmt.Sprintf("User is logged in: %v", u.ID))
 	return
 }
 

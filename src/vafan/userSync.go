@@ -14,12 +14,12 @@ import (
 type userSync struct {
 }
 
-func (res userSync) URL(req *http.Request, s *site) *url.URL {
+func (res userSync) GetURL(req *http.Request, s *site) *url.URL {
 	// limit sync to default site
-	return getUrl(res, req, defaultSite, nil)
+	return makeURL(res, req, defaultSite, nil)
 }
 
-func (res userSync) Content(req *http.Request, s *site) (c resourceContent) {
+func (res userSync) GetContent(req *http.Request, s *site) (c resourceContent) {
 	c.title = "User Sync"
 	c.description = "Performs a user sync redirect"
 	c.content = emptyContent
@@ -39,7 +39,7 @@ func (res userSync) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user
 	}
 	q := ru.Query()
 	ru.RawQuery = "" // remove the query string
-	q.Set("canonical-user-id", url.QueryEscape(reqU.Id))
+	q.Set("canonical-user-id", url.QueryEscape(reqU.ID))
 	fullURL := ru.String() + "?" + q.Encode() // and add it back
 	_ = logger.Info(fmt.Sprintf("Returning to URL: %v", fullURL))
 	http.Redirect(w, r, fullURL, http.StatusTemporaryRedirect)

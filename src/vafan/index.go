@@ -12,16 +12,17 @@ import (
 )
 
 type index struct {
-	videos []*video     // featured videos
-	tweets tweets       // recent tweets
-	data   resourceData // assembled data for response
+	videos []*video        // featured videos
+	dvds   map[string]*dvd // featured dvds
+	tweets tweets          // recent tweets
+	data   resourceData    // assembled data for response
 }
 
-func (res index) URL(req *http.Request, s *site) *url.URL {
-	return getUrl(res, req, s, nil)
+func (res index) GetURL(req *http.Request, s *site) *url.URL {
+	return makeURL(res, req, s, nil)
 }
 
-func (res index) Content(req *http.Request, s *site) (c resourceContent) {
+func (res index) GetContent(req *http.Request, s *site) (c resourceContent) {
 	c.title = s.Tagline
 	c.description = "Home page"
 
@@ -30,9 +31,17 @@ func (res index) Content(req *http.Request, s *site) (c resourceContent) {
 	res.videos, err = getFeaturedVideos(s)
 	if err == nil {
 		for i, v := range res.videos {
-			res.videos[i].Location = v.URL(req, nil).String()
+			res.videos[i].URL = v.GetURL(req, nil).String()
 		}
 		res.data["videos"] = res.videos
+	}
+
+	res.dvds, err = getFeaturedDVDs(s)
+	if err == nil {
+		for i, d := range res.dvds {
+			res.dvds[i].URL = d.GetURL(req, nil).String()
+		}
+		res.data["dvds"] = res.dvds
 	}
 
 	res.tweets, err = getFeaturedTweets()

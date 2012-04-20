@@ -13,11 +13,11 @@ import (
 type notFound struct {
 }
 
-func (res notFound) URL(req *http.Request, s *site) *url.URL {
-	return getUrl(res, req, s, nil)
+func (res notFound) GetURL(req *http.Request, s *site) *url.URL {
+	return makeURL(res, req, s, nil)
 }
 
-func (res notFound) Content(req *http.Request, s *site) (c resourceContent) {
+func (res notFound) GetContent(req *http.Request, s *site) (c resourceContent) {
 	c.title = "404 - Not Found"
 	c.description = "The requested resource does not exist."
 	content := map[string]interface{}{}
@@ -37,11 +37,11 @@ func (res notFound) ServeHTTP(w http.ResponseWriter, r *http.Request, u *user) {
 type forbidden struct {
 }
 
-func (res forbidden) URL(req *http.Request, s *site) *url.URL {
-	return getUrl(res, req, s, nil)
+func (res forbidden) GetURL(req *http.Request, s *site) *url.URL {
+	return makeURL(res, req, s, nil)
 }
 
-func (res forbidden) Content(req *http.Request, s *site) (c resourceContent) {
+func (res forbidden) GetContent(req *http.Request, s *site) (c resourceContent) {
 	c.title = "403 - Forbidden"
 	c.description = "You are forbidden to access this resource"
 	content := map[string]interface{}{}

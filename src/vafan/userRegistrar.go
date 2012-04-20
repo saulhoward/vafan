@@ -14,12 +14,12 @@ type userRegistrar struct {
 	data resourceData
 }
 
-func (res userRegistrar) URL(req *http.Request, s *site) *url.URL {
+func (res userRegistrar) GetURL(req *http.Request, s *site) *url.URL {
 	// limit registration to default site
-	return getUrl(res, req, defaultSite, nil)
+	return makeURL(res, req, defaultSite, nil)
 }
 
-func (res userRegistrar) Content(req *http.Request, s *site) (c resourceContent) {
+func (res userRegistrar) GetContent(req *http.Request, s *site) (c resourceContent) {
 	c.title = "Register"
 	c.description = "Register here to access Convict Films"
 	if res.data == nil {
@@ -34,7 +34,7 @@ func (res userRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU 
 	case "POST":
 		// This is a post to register the requesting user
 		r.ParseForm()
-		u := &user{Id: reqU.Id}
+		u := &user{ID: reqU.ID}
 		decoder.Decode(u, r.Form)
 
 		// check for errors in post
@@ -66,10 +66,10 @@ func (res userRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU 
 		var url *url.URL
 		if err != nil {
 			_ = logger.Err(fmt.Sprintf("Failed to save new user: %v", err))
-			url = res.URL(r, nil)
+			url = res.GetURL(r, nil)
 			addFlash(w, r, "Failed to save new user", "error")
 		} else {
-			url = userAuth{}.URL(r, nil)
+			url = userAuth{}.GetURL(r, nil)
 			addFlash(w, r, "Registered a new user, please log in.", "success")
 		}
 
@@ -79,7 +79,7 @@ func (res userRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU 
 		if reqU.isNew() {
 			writeResource(w, r, res, reqU)
 		} else {
-			url := userAuth{}.URL(r, nil)
+			url := userAuth{}.GetURL(r, nil)
 			addFlash(w, r, "Your user ID already has an account, please log in.", "warning")
 			http.Redirect(w, r, url.String(), http.StatusSeeOther)
 		}

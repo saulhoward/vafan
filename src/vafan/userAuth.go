@@ -14,12 +14,12 @@ type userAuth struct {
 	data resourceData
 }
 
-func (res userAuth) URL(req *http.Request, s *site) *url.URL {
+func (res userAuth) GetURL(req *http.Request, s *site) *url.URL {
 	// limit authentication to default site
-	return getUrl(res, req, defaultSite, nil)
+	return makeURL(res, req, defaultSite, nil)
 }
 
-func (res userAuth) Content(req *http.Request, s *site) (c resourceContent) {
+func (res userAuth) GetContent(req *http.Request, s *site) (c resourceContent) {
 	c.title = "Login"
 	c.description = "Login here to access Convict Films"
 	if res.data == nil {
@@ -44,7 +44,7 @@ func (res userAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user
 			loginUser, err := login(r.Form.Get("UsernameOrEmailAddress"), r.Form.Get("Password"))
 			if err != nil {
 				_ = logger.Info(fmt.Sprintf("Failed to login user: %v", err))
-				url = res.URL(r, nil)
+				url = res.GetURL(r, nil)
 				addFlash(w, r, "Failed to login", "error")
 			} else {
 				// set the login session
@@ -54,7 +54,7 @@ func (res userAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user
 				} else {
 					_ = logger.Err(fmt.Sprintf("Failed to set user session: %v", err))
 				}
-				url = index{}.URL(r, nil)
+				url = index{}.GetURL(r, nil)
 				addFlash(w, r, "Login!", "success")
 			}
 			http.Redirect(w, r, url.String(), http.StatusSeeOther)
@@ -62,7 +62,7 @@ func (res userAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user
 			// try to logout
 			logout(w, r, reqU)
 			addFlash(w, r, "Logged out.", "success")
-			url = index{}.URL(r, nil)
+			url = index{}.GetURL(r, nil)
 			http.Redirect(w, r, url.String(), http.StatusSeeOther)
 		}
 	case "GET":

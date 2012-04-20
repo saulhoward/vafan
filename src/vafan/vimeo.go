@@ -23,14 +23,14 @@ const singleVimeoVideoURLSchema = "http://vimeo.com/api/v2/video/{id}.json"
 var ErrVimeoNotFound = errors.New("vimeo: id doesn't exist")
 
 type vimeoVideo struct {
-	ID       string
-	Location string
-	Data     vimeoJSON
+	ID   string    `json:"id"`
+	URL  string    `json:"url"`
+	Data vimeoJSON `json:"data"`
 }
 
 type vimeoJSON struct {
 	Title              string `json:"title"`
-	Url                string `json:"url"`
+	URL                string `json:"url"`
 	UploadDate         string `json:"upload_date"`
 	ThumbnailSmall     string `json:"thumbnail_small"`
 	ThumbnailMedium    string `json:"thumbnail_medium"`
@@ -63,7 +63,7 @@ func (v *vimeoVideo) FetchData() (err error) {
 	// Just use the first element
 	v.Data = vArr[0]
 	// Set default url
-	v.Location = v.Data.Url
+	v.URL = v.Data.URL
 	return
 }
 

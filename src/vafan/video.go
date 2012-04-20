@@ -23,31 +23,31 @@ var ErrVideoNotFound = errors.New("video: doesn't exist")
 // A video represents data describing a video, hosted on an external
 // site such as Youtube or Vimeo
 type video struct {
-	Id               string
-	Name             string // names are unique
-	Title            string
-	Date             time.Time
-	ShortDescription string
-	Description      Markdown
-	Location         string
-	Thumbnail        Image
-	Sites            []*site // the sites that display this vid
-	ExternalVideos   externalVideos
+	ID               string         `json:"id"`
+	Name             string         `json:"name"` // names are unique
+	Title            string         `json:"title"`
+	Date             time.Time      `json:"date"`
+	ShortDescription string         `json:"shortDescription"`
+	Description      Markdown       `json:"description"`
+	URL              string         `json:"url"`
+	Thumbnail        Image          `json:"thumbnail"`
+	Sites            []*site        `json:"sites"` // the sites that display this vid
+	ExternalVideos   externalVideos `json:"externalVideos"`
 }
 
 // Image type.
 type Image struct {
-	URL    string
-	Height string
-	Width  string
+	URL    string `json:"id"`
+	Height string `json:"height"`
+	Width  string `json:"width"`
 }
 
 // These satisfy the externalVideoProvider interface, below.
 // I am explicit about their type so the mongo lib can write data
 // straight into them.
 type externalVideos struct {
-	Youtube *youtubeVideo
-	Vimeo   *vimeoVideo
+	Youtube *youtubeVideo `json:"youtube"`
+	Vimeo   *vimeoVideo   `json:"vimeo"`
 }
 
 // External video interface, eg, youtube, vimeo.
@@ -63,18 +63,18 @@ func newVideo() (v *video) {
 }
 
 // Video url uses the video name, eg, `/videos/brighton-wok`
-func (v video) URL(req *http.Request, s *site) *url.URL {
-	return getUrl(v, req, s, []string{"name", v.Name})
+func (v video) GetURL(req *http.Request, s *site) *url.URL {
+	return makeURL(v, req, s, []string{"name", v.Name})
 }
 
-func (v video) Content(req *http.Request, s *site) (c resourceContent) {
+func (v video) GetContent(req *http.Request, s *site) (c resourceContent) {
 	c.title = "Video"
 	c.description = "Video page"
 	c.content = map[string]interface{}{"video": v}
 	relatedVideos, err := getRelatedVideos(&v, s)
 	if err == nil && len(relatedVideos) > 0 {
 		for i, v := range relatedVideos {
-			relatedVideos[i].Location = v.URL(req, nil).String()
+			relatedVideos[i].URL = v.GetURL(req, nil).String()
 		}
 		c.content["relatedVideos"] = relatedVideos
 	}

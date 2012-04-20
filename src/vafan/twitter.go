@@ -65,11 +65,11 @@ func (tws reverseCreatedAtTweets) Less(i, j int) bool {
 
 // Methods implementing Resource interface.
 
-func (tw tweets) URL(req *http.Request, s *site) *url.URL {
-	return getUrl(tw, req, s, nil)
+func (tw tweets) GetURL(req *http.Request, s *site) *url.URL {
+	return makeURL(tw, req, s, nil)
 }
 
-func (tw tweets) Content(req *http.Request, s *site) (c resourceContent) {
+func (tw tweets) GetContent(req *http.Request, s *site) (c resourceContent) {
 	c.title = "Crew Tweets"
 	c.description = "Tweets about Convict Films"
 	c.content = emptyContent

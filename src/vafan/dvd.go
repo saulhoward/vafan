@@ -17,15 +17,16 @@ var errDVDNotFound = errors.New("DVD: doesn't exist")
 
 // A dvd 
 type dvd struct {
-	ID               string
-	Name             string // names are unique
-	Title            string
-	Date             time.Time
-	ShortDescription string
-	Description      Markdown
-	Location         string
-	Thumbnail        Image
-	Sites            []*site // the sites that display this dvd
+	ID               string            `json:"id"`
+	Name             string            `json:"name"` // names are unique
+	Title            string            `json:"title"`
+	Prices           map[string]string `json:"prices"`
+	Date             time.Time         `json:"date"`
+	ShortDescription string            `json:"shortDescription"`
+	Description      Markdown          `json:"description"`
+	URL              string            `json:"url"`
+	Thumbnail        Image             `json:"thumbnail"`
+	sites            []*site           // the sites that display this dvd
 }
 
 // Video constructor.
@@ -36,11 +37,11 @@ func newDVD() (d *dvd) {
 
 // Methods to implement Resource interface
 
-func (d dvd) URL(req *http.Request, s *site) *url.URL {
-	return getUrl(d, req, s, []string{"name", d.Name})
+func (d dvd) GetURL(req *http.Request, s *site) *url.URL {
+	return makeURL(d, req, s, []string{"name", d.Name})
 }
 
-func (d dvd) Content(req *http.Request, s *site) (c resourceContent) {
+func (d dvd) GetContent(req *http.Request, s *site) (c resourceContent) {
 	c.title = "DVD"
 	c.description = "DVD page"
 	c.content = map[string]interface{}{"dvd": d}
@@ -53,7 +54,7 @@ func (d dvd) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 		vars := mux.Vars(r)
 		var err error
 		if vars["name"] == "brighton-wok-pal" {
-			d = getBrightonWokDVD()
+			d = *getBrightonWokDVD()
 		} else {
 			err = errDVDNotFound
 		}
@@ -71,14 +72,15 @@ func (d dvd) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 	}
 }
 
-func getBrightonWokDVD() dvd {
+func getBrightonWokDVD() *dvd {
 	createdOn, _ := time.Parse("2006-01-02", "2008-01-01")
 	desc := `## DVD
 dvddvdvd`
 	descMarkdown := Markdown(desc)
 	thumb := Image{URL: "/img/brighton-wok/dvd.png", Width: "640", Height: "360"}
 	allSites := []*site{&sites[0], &sites[1]}
-	return dvd{
+	prices := map[string]string{"GBP": "9.99", "USD": "19.99"}
+	return &dvd{
 		ID:               "001",
 		Name:             "brighton-wok-pal",
 		Title:            "Brighton Wok DVD",
@@ -86,6 +88,13 @@ dvddvdvd`
 		ShortDescription: "Brighton Wok DVD",
 		Description:      descMarkdown,
 		Thumbnail:        thumb,
-		Sites:            allSites,
+		Prices:           prices,
+		sites:            allSites,
 	}
+}
+
+func getFeaturedDVDs(s *site) (dvds map[string]*dvd, err error) {
+	bwok := getBrightonWokDVD()
+	dvds = map[string]*dvd{"brightonWok": bwok}
+	return
 }

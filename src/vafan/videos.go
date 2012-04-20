@@ -14,15 +14,15 @@ import (
 // Represents a collection of videos.
 type videos struct {
 	video  *video       // a new video, as it is being added
-	videos []*video      // the collection of videos
+	videos []*video     // the collection of videos
 	data   resourceData // assembled data for response
 }
 
-func (vids videos) URL(req *http.Request, s *site) *url.URL {
-	return getUrl(vids, req, s, nil)
+func (vids videos) GetURL(req *http.Request, s *site) *url.URL {
+	return makeURL(vids, req, s, nil)
 }
 
-func (vids videos) Content(req *http.Request, s *site) (c resourceContent) {
+func (vids videos) GetContent(req *http.Request, s *site) (c resourceContent) {
 	c.title = "Video Library"
 	c.description = "Video collection"
 	if vids.data != nil {
@@ -35,7 +35,7 @@ func (vids videos) Content(req *http.Request, s *site) (c resourceContent) {
 	}
 	if vids.videos != nil {
 		for i, v := range vids.videos {
-			vids.videos[i].Location = v.URL(req, nil).String()
+			vids.videos[i].URL = v.GetURL(req, nil).String()
 		}
 		vids.data["videos"] = vids.videos
 	}
@@ -112,11 +112,11 @@ func (vids videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user)
 			var url *url.URL
 			if err != nil {
 				_ = logger.Err(fmt.Sprintf("Failed to save new video: %v", err))
-				url = videos{}.URL(r, nil)
+				url = videos{}.GetURL(r, nil)
 				addFlash(w, r, "Failed to save new video", "error")
 			} else {
-				_ = logger.Info(fmt.Sprintf("Saved new video: %v", vids.video.Id))
-				url = vids.video.URL(r, nil)
+				_ = logger.Info(fmt.Sprintf("Saved new video: %v", vids.video.ID))
+				url = vids.video.GetURL(r, nil)
 				addFlash(w, r, "Added a video!", "success")
 			}
 
