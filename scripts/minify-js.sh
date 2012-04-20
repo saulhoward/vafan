@@ -15,7 +15,7 @@ test -f "/usr/bin/java" || exit 0;
 
 echo "Minifying JS..."
 
-JSFILES=`$VAFROOT/cmd/src/vafan-cli/vafan-cli -list-javascript-files | tr "\\n" " "`
+JSFILES=`$VAFROOT/src/vafan-cli/vafan-cli -list-javascript-files | tr "\\n" " "`
 
 java -jar $CLOSURECOMPILER --js $JSFILES --js_output_file $VAFROOT/static/js/vafan.min.js > /dev/null
 

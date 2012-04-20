@@ -16,7 +16,7 @@ echo "Minifying CSS..."
 
 for SITE in "brighton-wok" "convict-films"
 do
-    CSSFILES=`$VAFROOT/cmd/src/vafan-cli/vafan-cli -list-css-files "$SITE" | tr "\\n" " "`
+    CSSFILES=`$VAFROOT/src/vafan-cli/vafan-cli -list-css-files "$SITE" | tr "\\n" " "`
     cat $CSSFILES | $YUICOMPRESSOR --type css -o $VAFROOT/static/css/$SITE.min.css > /dev/null
 done
 
