@@ -57,7 +57,14 @@ h1, h2, h3, h4, h5, h6 {
     color: black;
 }
 .jumbotron h1, .jumbotron p {
-    color: #333;
+    color: #BC412D;
+}
+
+.table {
+    background-color: #D4D973;
+}
+.table th, .table td, .table-bordered, .table-bordered th + th, .table-bordered td + td, .table-bordered th + td, .table-bordered td + th {
+    border-color: black;
 }
 
 /* ==========================================================================
@@ -565,6 +572,10 @@ padding: 0;
 }
 .other-links ul a i {
     padding-left: 5px;
+    color: #5DBCE9;
+}
+.other-links ul a:hover i {
+    color: black;
 }
 
 /*
@@ -605,13 +616,45 @@ padding: 0;
     font-size: 20px;
 }
 .dvd-small .buy form {
-    margin-bottom: 0;
+    margin-bottom: 10px;
 }
 .dvd-small .buy table.product-details {
     margin: 10px auto;
 }
+.dvd-small h1 {
+    font-family: "HelveticaNeue-CondensedBold", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 48px;
+    text-shadow: 1px 1px 1px black;
+    margin-top: 10px;
+}
+.dvd-small h1 a {
+    color: yellow;
+}
 
 
+/*
+ * DVD page
+ */
+.dvd-image img {
+    margin: 0 auto;
+    display: block;
+}
+body.dvd form {
+    margin: 10px auto 0 auto;
+    text-align: center;
+}
+.paypal-links {
+    background-color: white;
+    padding: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    width: 400px;
+    margin: 25px auto;
+    box-shadow:inset 0px 0px 20px rgba(0,0,0,0.6);
+}
 
 /* ==|== media queries ======================================================
    Media Queries for Responsive Design.

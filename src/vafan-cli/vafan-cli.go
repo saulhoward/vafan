@@ -1,3 +1,8 @@
+/*
+    Vafan CLI command
+    
+    Provides access to various vafan library functions.
+*/
 package main
 
 import (

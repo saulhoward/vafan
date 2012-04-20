@@ -25,6 +25,7 @@ type dvd struct {
 	ShortDescription string            `json:"shortDescription"`
 	Description      Markdown          `json:"description"`
 	URL              string            `json:"url"`
+	LargeImage       Image             `json:"largeImage"`
 	Thumbnail        Image             `json:"thumbnail"`
 	sites            []*site           // the sites that display this dvd
 }
@@ -42,9 +43,12 @@ func (d dvd) GetURL(req *http.Request, s *site) *url.URL {
 }
 
 func (d dvd) GetContent(req *http.Request, s *site) (c resourceContent) {
-	c.title = "DVD"
-	c.description = "DVD page"
+	c.title = d.Title
+	c.description = d.ShortDescription
+
+	d.URL = d.GetURL(req, nil).String()
 	c.content = map[string]interface{}{"dvd": d}
+
 	return
 }
 
@@ -77,16 +81,18 @@ func getBrightonWokDVD() *dvd {
 	desc := `## DVD
 dvddvdvd`
 	descMarkdown := Markdown(desc)
-	thumb := Image{URL: "/img/brighton-wok/dvd.png", Width: "640", Height: "360"}
+	lgImg := Image{URL: "/img/brighton-wok/dvd/box.png", Width: "346", Height: "476"}
+	thumb := Image{URL: "/img/brighton-wok/dvd/box-174x240.png", Width: "174", Height: "240"}
 	allSites := []*site{&sites[0], &sites[1]}
 	prices := map[string]string{"GBP": "9.99", "USD": "19.99"}
 	return &dvd{
 		ID:               "001",
 		Name:             "brighton-wok-pal",
-		Title:            "Brighton Wok DVD",
+		Title:            "Brighton Wok: The DVD",
 		Date:             createdOn,
-		ShortDescription: "Brighton Wok DVD",
+		ShortDescription: "The first edition of Brighton Wok: The Legend of Ganja Boxing on DVD-5.",
 		Description:      descMarkdown,
+		LargeImage:       lgImg,
 		Thumbnail:        thumb,
 		Prices:           prices,
 		sites:            allSites,

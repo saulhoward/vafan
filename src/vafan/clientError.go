@@ -1,6 +1,6 @@
 // Copyright 2012 Saul Howard. All rights reserved.
 
-// 4XX Client Error. Eg, 403, 404.
+// Provides content for 4XX Client Errors. Eg, 403, 404.
 
 package vafan
 
@@ -10,6 +10,7 @@ import (
 )
 
 // 404 - Not Found.
+
 type notFound struct {
 }
 
@@ -34,6 +35,7 @@ func (res notFound) ServeHTTP(w http.ResponseWriter, r *http.Request, u *user) {
 }
 
 // 403 - Forbidden 
+
 type forbidden struct {
 }
 

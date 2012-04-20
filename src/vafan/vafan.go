@@ -287,6 +287,7 @@ func getLinks(req *http.Request) map[string]interface{} {
 
 	bwLinks["index"] = index{}.GetURL(req, brightonWok).String()
 	bwLinks["videos"] = videos{}.GetURL(req, brightonWok).String()
+	bwLinks["dvd"] = getBrightonWokDVD().GetURL(req, brightonWok).String()
 
 	siteLinks["index"] = index{}.GetURL(req, nil).String()
 	siteLinks["videos"] = videos{}.GetURL(req, nil).String()

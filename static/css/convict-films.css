@@ -154,6 +154,27 @@ h2 i, .what-we-do i {
     text-indent: -3000px;
 }
 
+/*
+ * DVD page
+ */
+body.dvd .dvd-image img {
+    margin: 0 auto;
+    display: block;
+}
+body.dvd form {
+    margin: 0 auto;
+    text-align: center;
+}
+.paypal-links {
+    background-color: white;
+    padding: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    width: 400px;
+    margin: 25px auto;
+}
+
 /* ==========================================================================
  * Forms
    ========================================================================== */

@@ -37,7 +37,7 @@ type video struct {
 
 // Image type.
 type Image struct {
-	URL    string `json:"id"`
+	URL    string `json:"url"`
 	Height string `json:"height"`
 	Width  string `json:"width"`
 }
