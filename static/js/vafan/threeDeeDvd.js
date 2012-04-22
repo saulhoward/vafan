@@ -43,7 +43,7 @@ vafan.threeDeeDvd = {
         var mouseX = 0;                                       // Mouse X pos relative to window centre
         var mouseY = 0;                                       // Mouse Y pos relative to window centre
         var width = 450; // renderer w
-        var height = 600; // renderer h
+        var height = 594; // renderer h
         var windowCentreX = window.innerWidth / 2;            // Window centre (X pos)
         var windowCentreY = window.innerHeight / 2;           // Window centre (Y pos)
         var WebGLSupported = vafan.threeDeeDvd.isWebGLSupported();  // Check for WebGL support
@@ -58,7 +58,7 @@ vafan.threeDeeDvd = {
         var renderer = WebGLSupported ? new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
         renderer.setSize( width, height );
         //document.getElementById('dvd').appendChild( renderer.domElement );
-        $('#dvd').append(renderer.domElement);
+        $('#movie .dvd').append(renderer.domElement);
 
         // Create the scene to hold the object
         var scene = new THREE.Scene();
@@ -123,18 +123,19 @@ vafan.threeDeeDvd = {
                 ];
 
         // Create the dvd and add it to the scene
-        $('#dvd').addClass('three-dee');
+        $('#movie .dvd').addClass('three-dee');
         var dvd =  new THREE.Mesh( new THREE.CubeGeometry( 4.24, 6, 0.45, 4, 4, 1, materials ), new THREE.MeshFaceMaterial() );
         scene.add(dvd);
 
         // Begin the animation
         animate();
 
+        var step = 0.002;
         var frame = 0;
         function animate() {
             // Rotate the dvd based on the current mouse position
-            dvd.rotation.y = mouseX * 0.002;
-            dvd.rotation.x = mouseY * 0.002;
+            dvd.rotation.y =  vafan.threeDeeDvd.getRotation(mouseX * step, dvd.rotation.y, -1, 1);
+            dvd.rotation.x =  vafan.threeDeeDvd.getRotation(mouseY * step, dvd.rotation.x, -0.4, 0.65);
             // animate the camera to bob slightly
             camera.position.x = (Math.sin(frame) * 0.1);
             camera.position.y = (Math.cos(frame) * 0.1);
@@ -143,6 +144,29 @@ vafan.threeDeeDvd = {
             renderer.render( scene, camera );
             requestAnimationFrame( animate );
         }
+    },
+
+    // Calculate DVD bounded rotation
+    getRotation: function(pos, rotation, posLow, posHigh) 
+    {
+        var difference = function (a, b) { return Math.abs(a - b) }
+        var step = 0.002;
+        if ((pos < posHigh) && (pos > posLow)) {
+            if (difference(pos, rotation) < 0.1) {
+                return pos;
+            } else {
+                if (pos > rotation) {
+                    return rotation + 0.05;
+                } else if (pos < rotation) {
+                    return rotation - 0.05;
+                }
+            }
+        } else if (rotation > 0.2) {
+            return rotation - step;
+        } else if (rotation < -0.1) {
+            return rotation + step;
+        }
+        return rotation;
     }
 }
 

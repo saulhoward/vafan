@@ -171,10 +171,13 @@ body.dvd form {
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
-    width: 400px;
+    max-width: 400px;
     margin: 25px auto;
 }
-
+body.dvd table.dvd-details {
+    width: 400px;
+    margin: 0 auto 25px auto;
+}
 /* ==========================================================================
  * Forms
    ========================================================================== */
@@ -220,4 +223,15 @@ input, textarea, select, .uneditable-input {
         background-image: none;
     }
 }
+@media (max-width: 979px) and (min-width: 768px) {
+    body.dvd table.dvd-details {
+        width: 100%;
+    }
+}
+@media screen and (max-width: 767px) {
+    body.dvd table.dvd-details {
+        width: 100%;
+    }
+}
+
 

@@ -265,6 +265,7 @@ padding: 0;
     top: 0;
     left: 50%;
     outline: 0;
+    border: 0;
 }
 #brighton-wok-trailer {
     outline: 0;
@@ -651,9 +652,13 @@ body.dvd form {
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
-    width: 400px;
+    max-width: 400px;
     margin: 25px auto;
     box-shadow:inset 0px 0px 20px rgba(0,0,0,0.6);
+}
+body.dvd table.dvd-details {
+    width: 400px;
+    margin: 0 auto 25px auto;
 }
 
 /* ==|== media queries ======================================================
@@ -858,6 +863,9 @@ body.dvd form {
     #links .about {
         padding-left: 0;
     }
+    body.dvd table.dvd-details {
+        width: 100%;
+    }
 }
 @media screen and (max-width: 767px) {
     #links .tweets-wrapper {
@@ -880,6 +888,9 @@ body.dvd form {
     }
     #links .about {
         padding-left: 0;
+    }
+    body.dvd table.dvd-details {
+        width: 100%;
     }
 }
 

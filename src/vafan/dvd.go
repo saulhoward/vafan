@@ -28,6 +28,7 @@ type dvd struct {
 	LargeImage       Image             `json:"largeImage"`
 	Thumbnail        Image             `json:"thumbnail"`
 	sites            []*site           // the sites that display this dvd
+	ThankUser         bool              // true if the user has already purchased
 }
 
 // Video constructor.
@@ -71,6 +72,13 @@ func (d dvd) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 			notFound{}.ServeHTTP(w, r, reqU)
 			return
 		}
+
+		// Thankyou query string, used after user has purchased
+		thanks := r.URL.Query().Get("thankyou")
+		if thanks != "" {
+			d.ThankUser = true
+		}
+
 		writeResource(w, r, &d, reqU)
 		return
 	}

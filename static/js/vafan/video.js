@@ -44,10 +44,13 @@ vafan.video = {
  
         /* Needed as the 'video-wrapper' div is relative and doesn't
          * close the modal */
-        $('#video-selector .video-wrapper').live('click', function(){
+        $('#video-selector .video-wrapper, #video-selector .video').live('click', function(){
             if ($('#brighton-wok-trailer').is(":visible")) {
                 $('#brighton-wok-trailer').modal('hide');
+            } else {
+                $('#brighton-wok-trailer').modal('show');
             }
+            return true;
         });
     },
 

@@ -11,8 +11,8 @@ $(function () {
     }
 
     // 3D DVD Case
-    if ($('#dvd').length > 0) {
-        //vafan.threeDeeDvd.start();
+    if ($('#movie .dvd').length > 0) {
+        vafan.threeDeeDvd.start();
     }
 
     // Modal videos
