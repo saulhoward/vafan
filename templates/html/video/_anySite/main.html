@@ -42,7 +42,7 @@
                     Link:
                     </dt>
                     <dd>
-                    <a href="{{.video.ExternalVideos.Youtube.Location}}">
+                    <a href="{{.video.ExternalVideos.Youtube.URL}}">
                        {{.video.ExternalVideos.Youtube.Data.Title}}</a>
                     </dd>
                     <dt>
@@ -75,7 +75,7 @@
                     Link:
                     </dt>
                     <dd>
-                    <a href="{{.video.ExternalVideos.Vimeo.Location}}">
+                    <a href="{{.video.ExternalVideos.Vimeo.URL}}">
                        {{.video.ExternalVideos.Vimeo.Data.Title}}</a>
                     </dd>
                     <dt>
@@ -112,7 +112,7 @@
                     {{range .relatedVideos}}
                         <li class="span3">
                             <div class="thumbnail">
-                                <a href="{{.Location}}">
+                                <a href="{{.URL}}">
                                     {{if eq .Thumbnail ""}}
                                         <img 
                                             src="http://placehold.it/210x180"
