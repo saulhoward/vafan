@@ -36,15 +36,15 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *user, err error) {
 		if err == http.ErrNoCookie {
 			err = nil
 		} else {
-			_ = logger.Err(fmt.Sprintf("Failed getting cookie: %v", err))
+			logger.Err(fmt.Sprintf("Failed getting cookie: %v", err))
 		}
 	} else {
-		_ = logger.Info(fmt.Sprintf("Login cookie found: %v", c.Value))
+		logger.Info(fmt.Sprintf("Login cookie found: %v", c.Value))
 		u, err = getLoginUser(c.Value)
 		if err == nil {
 			return
 		} else {
-			_ = logger.Err(fmt.Sprintf("Failed getting login user: %v", err))
+			logger.Err(fmt.Sprintf("Failed getting login user: %v", err))
 		}
 	}
 
@@ -58,7 +58,7 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *user, err error) {
 			u = NewUser()
 			setUserCookie(u, w, r)
 		} else {
-			_ = logger.Err(fmt.Sprintf("Failed getting cookie user: %v", err))
+			logger.Err(fmt.Sprintf("Failed getting cookie user: %v", err))
 			u = NewUser()
 		}
 	} else {
@@ -71,7 +71,7 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *user, err error) {
 
 func setUserCookie(u *user, w http.ResponseWriter, r *http.Request) {
 	s, env := getSite(r)
-	_ = logger.Info(fmt.Sprintf("Setting a new user cookie: %v", u.ID))
+	logger.Info(fmt.Sprintf("Setting a new user cookie: %v", u.ID))
 	c := new(http.Cookie)
 	c.Name = "vafanUser"
 	c.Value = u.ID
@@ -91,7 +91,7 @@ func setSyncedUserCookie(w http.ResponseWriter, r *http.Request) (err error) {
 		// redirect to the user sync!
 		syncUrl := userSync{}.GetURL(r, nil)
 		redirectUrl := syncUrl.String() + "?redirect-url=" + url.QueryEscape(getCurrentUrl(r).String())
-		_ = logger.Info(fmt.Sprintf("Redirecting to sync url: %v", redirectUrl))
+		logger.Info(fmt.Sprintf("Redirecting to sync url: %v", redirectUrl))
 		http.Redirect(w, r, redirectUrl, http.StatusTemporaryRedirect)
 		err = ErrResourceRedirected
 		return
@@ -138,7 +138,7 @@ func newLoginSession(w http.ResponseWriter, r *http.Request, u *user) (s *sessio
 	reply := db.Command("hmset", sessionKey, userInfo)
 	if reply.Error() != nil {
 		errText := fmt.Sprintf("Failed to set Session data (Redis): %v", reply.Error())
-		_ = logger.Err(errText)
+		logger.Err(errText)
 		err = errors.New(errText)
 		return
 	}
@@ -148,7 +148,7 @@ func newLoginSession(w http.ResponseWriter, r *http.Request, u *user) (s *sessio
 		if err == http.ErrNoCookie {
 			//no cookie, set one
 			err = nil
-			_ = logger.Info("Setting login cookie.")
+			logger.Info("Setting login cookie.")
 			si, env := getSite(r)
 			c := new(http.Cookie)
 			c.Name = "vafanLogin"
@@ -157,11 +157,11 @@ func newLoginSession(w http.ResponseWriter, r *http.Request, u *user) (s *sessio
 			c.Domain = "." + env + "." + si.Host
 			http.SetCookie(w, c)
 		} else {
-			_ = logger.Err(fmt.Sprintf("Failed getting login cookie (when trying to set): %v", err))
+			logger.Err(fmt.Sprintf("Failed getting login cookie (when trying to set): %v", err))
 			return
 		}
 	} else {
-		_ = logger.Notice("Login cookie already set!")
+		logger.Notice("Login cookie already set!")
 		err = nil
 	}
 	return
@@ -176,11 +176,11 @@ func logout(w http.ResponseWriter, r *http.Request, u *user) {
 			err = nil
 			return
 		} else {
-			_ = logger.Err(fmt.Sprintf("Failed getting login cookie (when trying to logout): %v", err))
+			logger.Err(fmt.Sprintf("Failed getting login cookie (when trying to logout): %v", err))
 			return
 		}
 	} else {
-		_ = logger.Info("Attempting to delete login cookie.")
+		logger.Info("Attempting to delete login cookie.")
 		si, env := getSite(r)
 		c = new(http.Cookie)
 		c.Name = "vafanLogin"
@@ -205,14 +205,14 @@ func getLoginUser(sId string) (u *user, err error) {
 	reply := db.Command("hgetall", sessionKey)
 	if reply.Error() != nil {
 		errText := fmt.Sprintf("Failed to get Session data (Redis): %v", reply.Error())
-		_ = logger.Err(errText)
+		logger.Err(errText)
 		err = errors.New(errText)
 		return
 	}
 	userInfo, err := reply.StringMap()
 	if err != nil {
 		errText := fmt.Sprintf("Stringmap failed (Redis): %v", reply.Error())
-		_ = logger.Err(errText)
+		logger.Err(errText)
 		err = errors.New(errText)
 		return
 	}
@@ -221,12 +221,12 @@ func getLoginUser(sId string) (u *user, err error) {
 		return
 	}
 	u.setLoggedIn()
-	_ = logger.Info(fmt.Sprintf("User is logged in: %v", u.ID))
+	logger.Info(fmt.Sprintf("User is logged in: %v", u.ID))
 	return
 }
 
 func addFlash(w http.ResponseWriter, r *http.Request, msg string, level string) {
-	_ = logger.Info(fmt.Sprintf("Flashing: %v - %v", level, msg))
+	logger.Info(fmt.Sprintf("Flashing: %v - %v", level, msg))
 	flash, _ := sessionStore.Get(r, "vafanFlashes")
 	flash.AddFlash(msg, level)
 	flash.Save(r, w)
@@ -236,7 +236,7 @@ func getFlashContent(w http.ResponseWriter, r *http.Request) (content map[string
 	content = make(map[string]interface{})
 	flash, err := sessionStore.Get(r, "vafanFlashes")
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed getting flashes: %v", err))
+		logger.Err(fmt.Sprintf("Failed getting flashes: %v", err))
 		return
 	}
 	if f := flash.Flashes("error"); len(f) > 0 {
@@ -253,7 +253,7 @@ func getFlashContent(w http.ResponseWriter, r *http.Request) (content map[string
 	}
 	err = flash.Save(r, w)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed saving flashes: %v", err))
+		logger.Err(fmt.Sprintf("Failed saving flashes: %v", err))
 		return
 	}
 	return

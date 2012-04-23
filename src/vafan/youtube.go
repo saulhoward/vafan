@@ -57,22 +57,22 @@ func (y *youtubeVideo) FetchData() (err error) {
 	r := strings.NewReplacer("{id}", y.ID, "{key}", vafanConf.youtubeDevKey)
 	res, err := http.Get(r.Replace(singleYoutubeVideoURL))
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to GET youtube URL: %v", err))
+		logger.Err(fmt.Sprintf("Failed to GET youtube URL: %v", err))
 		return
 	}
 	data, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed reading youtube response body: %v", err))
+		logger.Err(fmt.Sprintf("Failed reading youtube response body: %v", err))
 		return
 	}
 	err = xml.Unmarshal([]byte(data), &y.Data)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed unmarshalling youtube XML: %v", err))
+		logger.Err(fmt.Sprintf("Failed unmarshalling youtube XML: %v", err))
 		return
 	}
 	y.URL, err = y.getLocation()
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed setting youtube video URL: %v", err))
+		logger.Err(fmt.Sprintf("Failed setting youtube video URL: %v", err))
 	}
 	return
 }
@@ -91,7 +91,7 @@ func (y *youtubeVideo) getDefaultThumbnail() (i Image, err error) {
 	}
 	if t.URL == "" {
 		err = errors.New("youtube: default thumbnail not found")
-		_ = logger.Err(fmt.Sprintf("Failed getting default youtube thumbnail: %v", err))
+		logger.Err(fmt.Sprintf("Failed getting default youtube thumbnail: %v", err))
 		return
 	}
 	i = Image{URL: t.URL, Width: t.Width, Height: t.Height}
@@ -106,7 +106,7 @@ func (y *youtubeVideo) getLocation() (l string, err error) {
 		}
 	}
 	err = errors.New("youtube: video location not found")
-	_ = logger.Err(fmt.Sprintf("Failed getting youtube video URL: %v", err))
+	logger.Err(fmt.Sprintf("Failed getting youtube video URL: %v", err))
 	return
 }
 

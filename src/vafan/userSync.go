@@ -34,14 +34,14 @@ func (res userSync) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user
 	}
 	ru, err := url.Parse(ruStr)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to parse redirect URL: %v", err))
+		logger.Err(fmt.Sprintf("Failed to parse redirect URL: %v", err))
 		ru, _ = url.Parse("/")
 	}
 	q := ru.Query()
 	ru.RawQuery = "" // remove the query string
 	q.Set("canonical-user-id", url.QueryEscape(reqU.ID))
 	fullURL := ru.String() + "?" + q.Encode() // and add it back
-	_ = logger.Info(fmt.Sprintf("Returning to URL: %v", fullURL))
+	logger.Info(fmt.Sprintf("Returning to URL: %v", fullURL))
 	http.Redirect(w, r, fullURL, http.StatusTemporaryRedirect)
 	return
 }

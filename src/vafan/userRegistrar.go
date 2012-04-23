@@ -65,7 +65,7 @@ func (res userRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU 
 		err := u.save(r.Form.Get("Password"))
 		var url *url.URL
 		if err != nil {
-			_ = logger.Err(fmt.Sprintf("Failed to save new user: %v", err))
+			logger.Err(fmt.Sprintf("Failed to save new user: %v", err))
 			url = res.GetURL(r, nil)
 			addFlash(w, r, "Failed to save new user", "error")
 		} else {

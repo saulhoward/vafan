@@ -94,7 +94,7 @@ func (v video) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 				notFound{}.ServeHTTP(w, r, reqU)
 				return
 			}
-			_ = logger.Err(fmt.Sprintf("Failed to get video by name: %v", err))
+			logger.Err(fmt.Sprintf("Failed to get video by name: %v", err))
 			notFound{}.ServeHTTP(w, r, reqU)
 			return
 		}
@@ -107,7 +107,7 @@ func (v video) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 func (v *video) save() (err error) {
 	session, err := mgo.Dial("127.0.0.1")
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
+		logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
 		return
 	}
 	defer session.Close()
@@ -117,10 +117,10 @@ func (v *video) save() (err error) {
 	id, err := c.Upsert(bson.M{"name": v.Name}, v)
 
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to insert or update video (Mongo): %v", err))
+		logger.Err(fmt.Sprintf("Failed to insert or update video (Mongo): %v", err))
 		return
 	}
-	_ = logger.Info(fmt.Sprintf("Inserted or updated video (Mongo): %v", id))
+	logger.Info(fmt.Sprintf("Inserted or updated video (Mongo): %v", id))
 
 	return
 }
@@ -128,7 +128,7 @@ func (v *video) save() (err error) {
 // Fetches external data from the External Video Providers and saves it
 // to the video.
 func (v *video) UpdateExternalData() (err error) {
-	_ = logger.Info("Updating video external data.")
+	logger.Info("Updating video external data.")
 	externalVideos := map[string]externalVideoProvider{}
 	if v.ExternalVideos.Youtube.ID != "" {
 		externalVideos["youtube"] = v.ExternalVideos.Youtube
@@ -140,12 +140,12 @@ func (v *video) UpdateExternalData() (err error) {
 	for provider, extVid := range externalVideos {
 		err = extVid.FetchData()
 		if err != nil {
-			_ = logger.Err(fmt.Sprintf("Failed to fetch external video details (%v): %v", provider, err))
+			logger.Err(fmt.Sprintf("Failed to fetch external video details (%v): %v", provider, err))
 			continue
 		}
 		err = v.save()
 		if err != nil {
-			_ = logger.Err(fmt.Sprintf("Failed to save video (%v): %v", provider, err))
+			logger.Err(fmt.Sprintf("Failed to save video (%v): %v", provider, err))
 			continue
 		}
 
@@ -154,7 +154,7 @@ func (v *video) UpdateExternalData() (err error) {
 		if err == nil {
 			thumbs = append(thumbs, thumb)
 		}
-		_ = logger.Info(fmt.Sprintf("Fetched video data for %v.", provider))
+		logger.Info(fmt.Sprintf("Fetched video data for %v.", provider))
 	}
 	// Choose a thumbnail to be the default.
 	v.Thumbnail = thumbs[0]
@@ -178,7 +178,7 @@ func GetVideoByName(name string) (v *video, err error) {
 	v = new(video)
 	session, err := mgo.Dial("127.0.0.1")
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
+		logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
 		return
 	}
 	defer session.Close()
@@ -189,7 +189,7 @@ func GetVideoByName(name string) (v *video, err error) {
 			err = ErrVideoNotFound
 			return
 		}
-		_ = logger.Err(fmt.Sprintf("Failed to get video (Mongo): %v", err))
+		logger.Err(fmt.Sprintf("Failed to get video (Mongo): %v", err))
 		return
 	}
 	return
@@ -200,7 +200,7 @@ func getVideos(selector bson.M) (vids []*video, err error) {
 	vids = []*video{}
 	session, err := mgo.Dial("127.0.0.1")
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
+		logger.Err(fmt.Sprintf("Failed to dial db (Mongo): %v", err))
 		return
 	}
 	defer session.Close()
@@ -211,7 +211,7 @@ func getVideos(selector bson.M) (vids []*video, err error) {
 			err = ErrVideoNotFound
 			return
 		}
-		_ = logger.Err(fmt.Sprintf("Failed to get video (Mongo): %v", err))
+		logger.Err(fmt.Sprintf("Failed to get video (Mongo): %v", err))
 		return
 	}
 	return

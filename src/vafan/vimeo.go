@@ -45,19 +45,19 @@ func (v *vimeoVideo) FetchData() (err error) {
 	r := strings.NewReplacer("{id}", v.ID)
 	res, err := http.Get(r.Replace(singleVimeoVideoURLSchema))
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to GET Vimeo URL: %v", err))
+		logger.Err(fmt.Sprintf("Failed to GET Vimeo URL: %v", err))
 		return
 	}
 	data, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed reading Vimeo response body: %v", err))
+		logger.Err(fmt.Sprintf("Failed reading Vimeo response body: %v", err))
 		return
 	}
 	// Vimeo data is returned as an array
 	vArr := []vimeoJSON{}
 	err = json.Unmarshal([]byte(data), &vArr)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed unmarshalling Vimeo JSON (%v): %v", r.Replace(singleVimeoVideoURLSchema), err))
+		logger.Err(fmt.Sprintf("Failed unmarshalling Vimeo JSON (%v): %v", r.Replace(singleVimeoVideoURLSchema), err))
 		return
 	}
 	// Just use the first element

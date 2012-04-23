@@ -111,11 +111,11 @@ func (vids videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user)
 
 			var url *url.URL
 			if err != nil {
-				_ = logger.Err(fmt.Sprintf("Failed to save new video: %v", err))
+				logger.Err(fmt.Sprintf("Failed to save new video: %v", err))
 				url = videos{}.GetURL(r, nil)
 				addFlash(w, r, "Failed to save new video", "error")
 			} else {
-				_ = logger.Info(fmt.Sprintf("Saved new video: %v", vids.video.ID))
+				logger.Info(fmt.Sprintf("Saved new video: %v", vids.video.ID))
 				url = vids.video.GetURL(r, nil)
 				addFlash(w, r, "Added a video!", "success")
 			}

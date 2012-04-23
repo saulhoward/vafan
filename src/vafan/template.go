@@ -23,7 +23,7 @@ func resourceDirName(res Resource) string {
 }
 
 func getTemplatePath(file string, format string, res Resource, s *site) string {
-	//_ = logger.Info(fmt.Sprintf("Looking for template format: %v and resource: %v", format, resourceDirName(res)))
+	//logger.Info(fmt.Sprintf("Looking for template format: %v and resource: %v", format, resourceDirName(res)))
 
 	//Check for the most specific template first
 	checkFormat := format
@@ -44,7 +44,7 @@ func getTemplatePath(file string, format string, res Resource, s *site) string {
 		} else if i == 4 {
 			checkFormat = "_anyFormat"
 		} else if i > 4 {
-			_ = logger.Err("Failed to find a matching template! This is bad!")
+			logger.Err("Failed to find a matching template! This is bad!")
 			// if you ever get here, come back and rewrite this horrible
 			// func
 			os.Exit(1)
@@ -78,7 +78,7 @@ func getPageTemplate(format string, res Resource, s *site, env string) (t *templ
     Funcs(template.FuncMap{"eq": reflect.DeepEqual, "markdown": markdownToHtml, "javascriptLibrary": javascriptLibraryHTMLForSite}).
 		ParseFiles(paths...)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to create template: %v", err))
+		logger.Err(fmt.Sprintf("Failed to create template: %v", err))
 		return
 	}
 	return

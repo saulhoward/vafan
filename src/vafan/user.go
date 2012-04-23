@@ -86,7 +86,7 @@ func createSalt() string {
 	b := make([]byte, 16)
 	_, err := io.ReadFull(rand.Reader, b)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to create random salt: %v", err))
+		logger.Err(fmt.Sprintf("Failed to create random salt: %v", err))
 		return "defaultSalt"
 	}
 	return string(b)
@@ -106,12 +106,12 @@ func getUserByUsername(username string) (u *user) {
 	defer db.Close()
 	selectUser, err := db.Prepare(`select id, username, emailAddress, role, passwordHash, salt from users where username=?`)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
+		logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
 		return
 	}
 	err = selectUser.QueryRow(username).Scan(&u.ID, &u.Username, &u.EmailAddress, &u.Role, &u.passwordHash, &u.salt)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
+		logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
 		return
 	}
 	return
@@ -123,12 +123,12 @@ func getUserByEmailAddress(emailAddress string) (u *user) {
 	defer db.Close()
 	selectUser, err := db.Prepare(`select id, username, emailAddress, role, passwordHash, salt from users where emailAddress=?`)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
+		logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
 		return
 	}
 	err = selectUser.QueryRow(emailAddress).Scan(&u.ID, &u.Username, &u.EmailAddress, &u.Role, &u.passwordHash, &u.salt)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
+		logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
 		return
 	}
 	return
@@ -140,12 +140,12 @@ func getUserById(id string) (u *user) {
 	defer db.Close()
 	selectUser, err := db.Prepare(`select id, username, emailAddress, role, passwordHash, salt from users where id=?`)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
+		logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
 		return
 	}
 	err = selectUser.QueryRow(id).Scan(&u.ID, &u.Username, &u.EmailAddress, &u.Role, &u.passwordHash, &u.salt)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
+		logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
 		return
 	}
 	return
@@ -172,7 +172,7 @@ func newUUID() string {
 	b := make([]byte, 16)
 	_, err := io.ReadFull(rand.Reader, b)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to create random uuid: %v", err))
+		logger.Err(fmt.Sprintf("Failed to create random uuid: %v", err))
 		return "00000000-0000-0000-0000-000000000000"
 	}
 	b[6] = (b[6] & 0x0F) | 0x40
@@ -194,12 +194,12 @@ func (u *user) save(password string) error {
 	query := `insert into users values (?, ?, ?, ?, ?, ?)`
 	stmt, err := db.Prepare(query)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
+		logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
 		return err
 	}
 	_, err = stmt.Exec(u.ID, u.Username, u.EmailAddress, u.passwordHash, u.salt, u.Role)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to create user (MySQL): %v", err))
+		logger.Err(fmt.Sprintf("Failed to create user (MySQL): %v", err))
 		return err
 	}
 	return nil
@@ -211,12 +211,12 @@ func (u *user) changeRole(role string) (err error) {
 	query := `update users set role=? where id=?`
 	stmt, err := db.Prepare(query)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
+		logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
 		return
 	}
 	_, err = stmt.Exec(role, u.ID)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to change user role (MySQL): %v", err))
+		logger.Err(fmt.Sprintf("Failed to change user role (MySQL): %v", err))
 		return
 	}
 	return nil
@@ -244,7 +244,7 @@ func (u *user) isRegistered() bool {
 	defer db.Close()
 	selectUser, err := db.Prepare(`select id from users where id=?`)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
+		logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
 		return false
 	}
 	var id int
@@ -253,7 +253,7 @@ func (u *user) isRegistered() bool {
 		if err == sql.ErrNoRows {
 			return false
 		} else {
-			_ = logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
+			logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
 			return false
 		}
 	}
@@ -265,7 +265,7 @@ func (u *user) isUsernameNew() bool {
 	defer db.Close()
 	selectUser, err := db.Prepare(`select username from users where username=?`)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
+		logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
 		return false
 	}
 	var username string
@@ -274,7 +274,7 @@ func (u *user) isUsernameNew() bool {
 		if err == sql.ErrNoRows {
 			return true
 		} else {
-			_ = logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
+			logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
 			return false
 		}
 	}
@@ -293,7 +293,7 @@ func (u *user) isEmailAddressNew() bool {
 	defer db.Close()
 	selectUser, err := db.Prepare(`select emailAddress from users where emailAddress=?`)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
+		logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
 		return false
 	}
 	var emailAddress string
@@ -302,7 +302,7 @@ func (u *user) isEmailAddressNew() bool {
 		if err == sql.ErrNoRows {
 			return true
 		} else {
-			_ = logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
+			logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
 			return false
 		}
 	}

@@ -68,7 +68,7 @@ func (d dvd) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 				notFound{}.ServeHTTP(w, r, reqU)
 				return
 			}
-			_ = logger.Err(fmt.Sprintf("Failed to get dvd by name: %v", err))
+			logger.Err(fmt.Sprintf("Failed to get dvd by name: %v", err))
 			notFound{}.ServeHTTP(w, r, reqU)
 			return
 		}

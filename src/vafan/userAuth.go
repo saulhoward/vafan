@@ -43,7 +43,7 @@ func (res userAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user
 			// login user
 			loginUser, err := login(r.Form.Get("UsernameOrEmailAddress"), r.Form.Get("Password"))
 			if err != nil {
-				_ = logger.Info(fmt.Sprintf("Failed to login user: %v", err))
+				logger.Info(fmt.Sprintf("Failed to login user: %v", err))
 				url = res.GetURL(r, nil)
 				addFlash(w, r, "Failed to login", "error")
 			} else {
@@ -52,7 +52,7 @@ func (res userAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user
 				if err == nil {
 					addFlash(w, r, "Login!", "success")
 				} else {
-					_ = logger.Err(fmt.Sprintf("Failed to set user session: %v", err))
+					logger.Err(fmt.Sprintf("Failed to set user session: %v", err))
 				}
 				url = index{}.GetURL(r, nil)
 				addFlash(w, r, "Login!", "success")

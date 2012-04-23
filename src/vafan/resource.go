@@ -77,7 +77,7 @@ func makeURL(res Resource, req *http.Request, s *site, urlData []string) *url.UR
 	}
 	url, err := router.GetRoute(resourceName(res)).Host(hostRe).URL(urlPairs...)
 	if err != nil {
-		_ = logger.Err(fmt.Sprintf("Failed to get URL for resource: %v", err))
+		logger.Err(fmt.Sprintf("Failed to get URL for resource: %v", err))
 		url, _ = url.Parse("/")
 	}
 	return url
