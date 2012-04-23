@@ -10,8 +10,8 @@ $(function () {
         $('.datepicker').datepicker();
     }
 
-    // 3D DVD Case
-    if ($('#movie .dvd').length > 0) {
+    // 3D DVD Case - only webgl looks good, really
+    if ((Modernizr.webgl) && $('#movie .dvd').length > 0) {
         vafan.threeDeeDvd.start();
     }
 

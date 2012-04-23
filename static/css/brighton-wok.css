@@ -277,7 +277,8 @@ padding: 0;
     background: #151515 url(/img/brighton-wok/micro-carbon.png) top left repeat;
     box-shadow:inset 0px 6px 150px #000;
     height: auto;
-    padding: 25px 0 50px 0;
+    /* padding: 25px 0 50px 0; */
+    padding: 25px 0 25px 0;
     text-align: center;
 }
 #video a.video {
@@ -305,6 +306,22 @@ padding: 0;
 }
 #video div#video-selector.playing h2 {
     color: black !important;
+}
+
+/*
+* Video links underneath trailer
+*/
+#video .video-links nav ul {
+    margin: 15px 0 0 0;
+    width: auto;
+}
+#video .video-links nav li {
+    display: inline;
+    line-height: 40px;
+    padding: 0 15px;
+}
+#video div#video-selector.playing .video-links a {
+    color: #333;
 }
 
 /*
@@ -781,6 +798,43 @@ body.dvd table.dvd-details {
     #gallery img {
         width: 500px;
         height: 281px;
+    }
+    /*
+     * Video links to the right of the trailer
+     */
+    #video .video-links nav {
+        position: absolute;
+        right: -10px;
+        top: 25px;
+    }
+    #video .video-links nav li {
+        display: block;
+        background: black;
+        box-shadow:0px 0px 10px rgba(255,255,255,0.1);
+        margin-top: 10px;
+        height: 40px;
+        line-height: 40px;
+        position: relative;
+        padding-right: 10px;
+        -webkit-transform: rotate(-3deg);
+        -moz-transform: rotate(-3deg);
+        -ms-transform: rotate(-3deg);
+        -o-transform: rotate(-3deg);
+    }
+    #video .video-links nav li:before {
+        position:absolute;
+        left:-20px;
+        border-width: 20px 10px;
+        border-color: black black transparent transparent;
+        border-style: solid;
+        content: " ";
+        height:0;
+        width:0;
+    }
+    #video .video-links nav li i {
+        float: left;
+        margin-right: 10px;
+        font-size: 125%;
     }
 }
 
