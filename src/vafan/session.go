@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"github.com/fzzbt/radix"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -53,60 +54,9 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *user, err error) {
 		if err == http.ErrNoCookie {
 			err = nil
 			// we have no user cookie
-			s, env := getSite(r)
-			// REMOVED USER SYNC
-			/*
-				canUserId := r.URL.Query().Get("canonical-user-id")
-				userSyncSite := resourceCanonicalSites["usersSyncResource"]
-				if s.Name != userSyncSite.Name && canUserId == "" {
-					// We're on another site to the sync resource -
-					// redirect to the user sync!
-					syncUrl := userSync{}.GetURL(r, nil)
-					redirectUrl := syncUrl.String() + "?redirect-url=" + url.QueryEscape(getCurrentUrl(r).String())
-					_ = logger.Info(fmt.Sprintf("Redirecting to sync url: %v", redirectUrl))
-					http.Redirect(w, r, redirectUrl, http.StatusTemporaryRedirect)
-					err = ErrResourceRedirected
-					return
-				} else {
-			*/
-
-			/*
-				// ok set a new cookie then
-				if canUserId != "" {
-					u = GetUser(canUserId)
-				} else {
-					u = NewUser()
-				}
-			*/
+			// err = setSyncedUserCookie(w, r)
 			u = NewUser()
-
-			_ = logger.Info(fmt.Sprintf("Setting a new user cookie: %v", u.ID))
-			c = new(http.Cookie)
-			c.Name = "vafanUser"
-			c.Value = u.ID
-			c.Domain = "." + env + "." + s.Host
-			c.Path = "/"
-			http.SetCookie(w, c)
-
-			/*
-				if canUserId != "" {
-					// still got that query string? redirect again!
-					curUrl := getCurrentUrl(r)
-					q := curUrl.Query()
-					curUrl.RawQuery = "" // remove the query string
-					q.Del("canonical-user-id")
-					var curUrlStr string
-					if len(q) > 0 {
-						curUrlStr = curUrl.String() + "?" + q.Encode() // and add it back
-					} else {
-						curUrlStr = curUrl.String()
-					}
-					http.Redirect(w, r, curUrlStr, http.StatusTemporaryRedirect)
-				}
-			*/
-			/*
-				}
-			*/
+			setUserCookie(u, w, r)
 		} else {
 			_ = logger.Err(fmt.Sprintf("Failed getting cookie user: %v", err))
 			u = NewUser()
@@ -116,6 +66,59 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *user, err error) {
 		u = GetUser(c.Value)
 	}
 
+	return
+}
+
+func setUserCookie(u *user, w http.ResponseWriter, r *http.Request) {
+	s, env := getSite(r)
+	_ = logger.Info(fmt.Sprintf("Setting a new user cookie: %v", u.ID))
+	c := new(http.Cookie)
+	c.Name = "vafanUser"
+	c.Value = u.ID
+	c.Domain = "." + env + "." + s.Host
+	c.Path = "/"
+	http.SetCookie(w, c)
+}
+
+// Does a redirect to set a consistent user id across domains
+func setSyncedUserCookie(w http.ResponseWriter, r *http.Request) (err error) {
+	// we have no user cookie
+	s, _ := getSite(r)
+	canUserId := r.URL.Query().Get("canonical-user-id")
+	userSyncSite := resourceCanonicalSites["usersSyncResource"]
+	if s.Name != userSyncSite.Name && canUserId == "" {
+		// We're on another site to the sync resource -
+		// redirect to the user sync!
+		syncUrl := userSync{}.GetURL(r, nil)
+		redirectUrl := syncUrl.String() + "?redirect-url=" + url.QueryEscape(getCurrentUrl(r).String())
+		_ = logger.Info(fmt.Sprintf("Redirecting to sync url: %v", redirectUrl))
+		http.Redirect(w, r, redirectUrl, http.StatusTemporaryRedirect)
+		err = ErrResourceRedirected
+		return
+	} else {
+		// ok set a new cookie then
+		var u *user
+		if canUserId != "" {
+			u = GetUser(canUserId)
+		} else {
+			u = NewUser()
+		}
+		setUserCookie(u, w, r)
+		if canUserId != "" {
+			// still got that query string? redirect again!
+			curUrl := getCurrentUrl(r)
+			q := curUrl.Query()
+			curUrl.RawQuery = "" // remove the query string
+			q.Del("canonical-user-id")
+			var curUrlStr string
+			if len(q) > 0 {
+				curUrlStr = curUrl.String() + "?" + q.Encode() // and add it back
+			} else {
+				curUrlStr = curUrl.String()
+			}
+			http.Redirect(w, r, curUrlStr, http.StatusTemporaryRedirect)
+		}
+	}
 	return
 }
 

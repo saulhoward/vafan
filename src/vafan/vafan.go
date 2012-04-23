@@ -70,7 +70,7 @@ func StartServer() {
 		fullHost = fullHost + ":" + vafanConf.port
 	}
 
-	_ = logger.Info(fmt.Sprintf("Starting the Vafan server, host '%v', port '%v.'", vafanConf.host, vafanConf.port))
+	logger.Info(fmt.Sprintf("Starting the Vafan server, host '%v', port '%v.'", vafanConf.host, vafanConf.port))
 	registerHandlers()
 	http.Handle("/", router)
 	http.ListenAndServe(fullHost, router)
@@ -124,7 +124,7 @@ func callHandler(res Resource) http.HandlerFunc {
 
 // Set mux handlers
 func registerHandlers() {
-	_ = logger.Info("Setting Handlers.")
+	logger.Info("Setting Handlers.")
 
 	// Static directories
 	router.PathPrefix("/css").Handler(
@@ -211,12 +211,12 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *us
 	// get the site and env requested
 	s, env := getSite(req)
 	format := getFormat(req)
-	_ = logger.Info(fmt.Sprintf("Requested url: '%v' writing resource '%v' as format '%v'.", req.URL.String(), resourceName(res), format))
+	logger.Info(fmt.Sprintf("Requested url: '%v' writing resource '%v' as format '%v'.", req.URL.String(), resourceName(res), format))
 	// should we redirect to a canonical host for this resource?
 	canonicalSite, err := getCanonicalSite(res)
 	if err == nil && canonicalSite.Name != s.Name {
 		rUrl := res.GetURL(req, nil)
-		_ = logger.Info(fmt.Sprintf("Redirecting to canonical url: " + rUrl.String()))
+		logger.Info(fmt.Sprintf("Redirecting to canonical url: " + rUrl.String()))
 		http.Redirect(w, req, rUrl.String(), http.StatusMovedPermanently)
 		return
 	}
@@ -250,12 +250,12 @@ func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *us
 		w.Header().Add("Content-Type", "text/html; charset=UTF-8")
 		t, err := getPageTemplate(format, res, s, env)
 		if err != nil {
-			_ = logger.Err(fmt.Sprintf("Failed to get template: %v", err))
+			logger.Err(fmt.Sprintf("Failed to get template: %v", err))
 			return
 		}
 		err = t.Execute(w, content)
 		if err != nil {
-			_ = logger.Err(fmt.Sprintf("Failed executing template: %v", err))
+			logger.Err(fmt.Sprintf("Failed executing template: %v", err))
 		}
 	} else if format == "json" {
 		w.Header().Add("Content-Type", "application/json")
