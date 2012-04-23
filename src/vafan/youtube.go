@@ -25,7 +25,7 @@ var ErrYoutubeNotFound = errors.New("youtube: id doesn't exist")
 
 type youtubeVideo struct {
 	ID       string
-	Location string
+	URL string
 	Data     youtubeXML
 }
 
@@ -50,7 +50,7 @@ type youtubeThumbnail struct {
 }
 type youtubeLink struct {
 	Rel      string `xml:"rel,attr"`
-	Location string `xml:"href,attr"`
+	URL string `xml:"href,attr"`
 }
 
 func (y *youtubeVideo) FetchData() (err error) {
@@ -70,7 +70,7 @@ func (y *youtubeVideo) FetchData() (err error) {
 		_ = logger.Err(fmt.Sprintf("Failed unmarshalling youtube XML: %v", err))
 		return
 	}
-	y.Location, err = y.getLocation()
+	y.URL, err = y.getLocation()
 	if err != nil {
 		_ = logger.Err(fmt.Sprintf("Failed setting youtube video URL: %v", err))
 	}
@@ -101,7 +101,7 @@ func (y *youtubeVideo) getDefaultThumbnail() (i Image, err error) {
 func (y *youtubeVideo) getLocation() (l string, err error) {
 	for _, link := range y.Data.Links {
 		if link.Rel == "alternate" {
-			l = link.Location
+			l = link.URL
 			return
 		}
 	}
