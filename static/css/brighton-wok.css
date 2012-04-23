@@ -158,14 +158,20 @@ header.navbar h1 a.brighton-wok {
     background-color: black;
 }
 #movie {
-margin: 0;
+    margin: 0;
     height: 600px;
+}
+#movie canvas {
+    z-index: 1;
+
 }
 .information {
     width: 500px;
     float: right;
     margin-top: 100px;
-padding: 0;
+    padding: 0;
+    z-index: 2;
+    position: relative;
 }
 #movie .dvd {
     margin-top: 50px;
@@ -501,7 +507,7 @@ padding: 0;
  * Facebook like box
  */
 .facebook {
-    width: 420px;
+    width: 405px;
     margin: 0 auto 45px auto;
     padding: 5px 10px;
     background: #feffff;
@@ -824,6 +830,9 @@ body.dvd table.dvd-details {
         -ms-transform: rotate(-3deg);
         -o-transform: rotate(-3deg);
     }
+    #video .video-links nav li:hover {
+        box-shadow:0px 0px 20px rgba(232, 74, 95, 0.4);
+    }
     #video .video-links nav li:before {
         position:absolute;
         left:-20px;
@@ -846,11 +855,15 @@ body.dvd table.dvd-details {
         padding-top: 0;
         padding-bottom: 0;
     }
+    #video .video-wrapper  {
+        background: black;
+    }
     #video a.video {
         width: 100%;
         height: auto;
-        min-height: 225px;
+        min-height: 325px;
         background-size: 100%;
+        background-position: 50% 50%;
     }
 }
 @media only screen and (max-width: 450px) {
@@ -873,9 +886,15 @@ body.dvd table.dvd-details {
         width: 100%;
     }
 }
-
+@media (max-width: 979px) {
+    .title h1 {
+        width: 100%;
+        background-size: 100%;
+    }
+}
+ 
 @media (max-width: 979px) and (min-width: 768px) {
-    #links .container {
+   #links .container {
         background: transparent;
         box-shadow: none;
         border: none;
@@ -947,6 +966,47 @@ body.dvd table.dvd-details {
         padding-left: 0;
     }
     body.dvd table.dvd-details {
+        width: 100%;
+    }
+    /*
+     * DVD div at top
+     */
+    #movie .information {
+        margin: 0 auto;
+        width: 100%;
+    }
+    #movie .information h1 {
+        width: 500px;
+    }
+    #movie .dvd {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 560px) {
+    /*
+     * DVD div at top
+     */
+    #movie .information h1 {
+        width: 100%;
+    }
+    /*
+     * Video trailer div
+     */
+    #video .video-links nav li {
+        display: block;
+        padding: 3px 0;
+        line-height: 1;
+        text-align: left;
+    }
+    #video .video-links nav {
+        margin-left: 15px;
+        margin-bottom: 15px;
+    }
+    /*
+     * Bottom DVD div (should be in bootstrap?)
+     */
+    .span7 {
         width: 100%;
     }
 }
