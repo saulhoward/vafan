@@ -802,6 +802,9 @@ body.dvd table.dvd-details {
     /*
      * Video links to the right of the trailer
      */
+    #video #video-selector {
+        padding: 25px 0 50px 0;
+    }
     #video .video-links nav {
         position: absolute;
         right: -10px;
