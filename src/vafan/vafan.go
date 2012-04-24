@@ -146,9 +146,10 @@ func registerHandlers() {
 			filepath.Join(vafanConf.baseDir, "static"))))
 
 	// Regex strings used in url schemas
-	formatRe := `{format:(\.{1}[a-z]+)?}`   // matches '.json' etc.
-	uuidRe := `{id:[a-f0-9\-]+}`            // matches UUIDs
-	nameRe := `{name:[\p{L}\p{M}\p{N}\-]+}` // matches unicode alphanumerics
+	formatRe := `{format:(\.{1}[a-z]+)?}`         // matches '.json' etc.
+	uuidRe := `{id:[a-f0-9\-]+}`                  // matches UUIDs
+	alphaNumericRe := `{%v:[\p{L}\p{M}\p{N}\-]+}` // matches unicode alphanumerics
+	nameRe := fmt.Sprintf(alphaNumericRe, "name")
 
 	// -- Resources
 
@@ -168,14 +169,19 @@ func registerHandlers() {
 	router.Host(hostRe).Path(`/users/` + uuidRe + formatRe).
 		Name("user").Handler(callHandler(user{}))
 
-	// Media resources
+	// Media resources (videos)
 	router.Host(hostRe).Path(`/videos` + formatRe).
 		Name("videos").Handler(callHandler(videos{}))
 	router.Host(hostRe).Path(`/videos/` + nameRe + formatRe).
 		Name("video").Handler(callHandler(video{}))
 
+	// DVD resources
 	router.Host(hostRe).Path(`/dvds/` + nameRe + formatRe).
 		Name("dvd").Handler(callHandler(dvd{}))
+	router.Host(hostRe).Path(`/dvds/` + nameRe + `/stockists/` + fmt.Sprintf(alphaNumericRe, "dvdStockist") + formatRe).
+		Name("dvdStockist").Handler(callHandler(dvdStockist{}))
+	router.Host(hostRe).Path(`/dvds/` + nameRe + `/stockists` + formatRe).
+		Name("dvdStockists").Handler(callHandler(dvdStockists{}))
 
 	// Twitter resource, inc. websockets resource.
 	router.Host(hostRe).Path(`/tweets` + formatRe).
@@ -288,6 +294,7 @@ func getLinks(req *http.Request) map[string]interface{} {
 	bwLinks["index"] = index{}.GetURL(req, brightonWok).String()
 	bwLinks["videos"] = videos{}.GetURL(req, brightonWok).String()
 	bwLinks["dvd"] = getBrightonWokDVD().GetURL(req, brightonWok).String()
+	bwLinks["dvdStockists"] = getBrightonWokDVDStockists().GetURL(req, brightonWok).String()
 
 	siteLinks["index"] = index{}.GetURL(req, nil).String()
 	siteLinks["videos"] = videos{}.GetURL(req, nil).String()

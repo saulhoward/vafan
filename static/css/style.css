@@ -130,6 +130,10 @@ header.navbar .navbar-search {
     filter: none;
 }
 
+section {
+    padding-top: 60px;
+}
+
 /*
  * Flashes
  */

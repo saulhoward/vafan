@@ -25,6 +25,9 @@
  * stronger green/yellow
  *     #D4D973
  *
+ * burnt orange
+    color: #BC412D;
+ *
    ========================================================================== */
 /* =============================================================================
    Links
@@ -65,6 +68,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 .table th, .table td, .table-bordered, .table-bordered th + th, .table-bordered td + td, .table-bordered th + td, .table-bordered td + th {
     border-color: black;
+}
+
+.page-header {
+    border-color: #BC412D;
+}
+/* Take the pink color off headers */
+.page-header a {
+    color: #BC412D;
 }
 
 /* ==========================================================================

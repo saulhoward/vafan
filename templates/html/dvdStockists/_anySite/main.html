@@ -1,0 +1,38 @@
+<header class="jumbotron subhead" id="overview">
+        <h1>Where to buy {{.dvd.Title}}</h1>
+        <p class="lead">
+        Shops and businesses where you can buy {{.dvd.Title}}
+        </p>
+</header>
+
+<div class="row">
+    <div class="span12">
+
+        {{range .stockists}}
+            <section>
+                <div class="page-header">
+                    <h1>
+                        <a href="{{.URL}}">
+                            {{.Title}}, {{.Address.ShortAddress}}
+                    </a></h1>
+                </div>
+
+                {{markdown .Description}}
+
+                {{if .Website.URL}}
+                    <p>
+                    <a href="{{.Website.URL}}">
+                        <i class="icon-external-link"></i> {{.Website.Title}}</a>
+                    </p>
+                {{end}}
+
+                <img src="{{.MapImage.URL}}" 
+                    width="{{.MapImage.Width}}"
+                    height="{{.MapImage.Height}}" />
+
+            </section>
+        {{end}}
+
+    </div>
+</div>
+

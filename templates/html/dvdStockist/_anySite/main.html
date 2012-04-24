@@ -1,0 +1,30 @@
+<header class="jumbotron subhead" id="overview">
+        <h1>{{.stockist.Title}}</h1>
+        <p class="lead">
+        {{.stockist.Address.ShortAddress}}
+        </p>
+</header>
+
+<div class="row">
+    <div class="span12">
+
+        <p>
+        Buy <a
+            href="{{.stockist.DVD.URL}}">{{.stockist.DVD.Title}}</a> at {{.stockist.Title}}.
+        </p>
+
+        {{markdown .stockist.Description}}
+
+        {{if .stockist.Website.URL}}
+            <p>
+            <a href="{{.stockist.Website.URL}}">
+                <i class="icon-external-link"></i> {{.stockist.Website.Title}}</a>
+            </p>
+        {{end}}
+
+        <img src="{{.stockist.MapImage.URL}}" 
+            width="{{.stockist.MapImage.Width}}"
+            height="{{.stockist.MapImage.Height}}" />
+    </div>
+</div>
+
