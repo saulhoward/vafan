@@ -207,6 +207,76 @@ input, textarea, select, .uneditable-input {
     color: #777;
 }
 
+/*
+ * Speech bubble  for latest tweet
+ */
+
+.latest-tweet {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 15px;
+    margin: 0 auto;
+}
+
+.tweet-bubble {
+    position:relative;
+    padding:15px 30px;
+    margin:0;
+    color:#000;
+
+    background: #D1E751; /* Old browsers */
+    background: -moz-linear-gradient(top, #dae590 0%, #d1e751 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#dae590), color-stop(100%,#d1e751)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #dae590 0%,#d1e751 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #dae590 0%,#d1e751 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #dae590 0%,#d1e751 100%); /* IE10+ */
+    background: linear-gradient(top, #dae590 0%,#d1e751 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dae590', endColorstr='#d1e751',GradientType=0 ); /* IE6-9 */
+
+    /* Using longhand to avoid inconsistencies between Safari 4 and Chrome 4 */
+    -webkit-border-top-left-radius:25px 50px;
+    -webkit-border-top-right-radius:25px 50px;
+    -webkit-border-bottom-right-radius:25px 50px;
+    -webkit-border-bottom-left-radius:25px 50px;
+    -moz-border-radius:25px / 50px;
+    border-radius:25px / 50px;
+}
+
+/* display of quote author (alternatively use a class on the element following the blockquote) */
+.tweet-bubble + p {
+    margin:10px 150px 2em 0;
+    text-align:right; font-style:italic;
+    color: #4DBCE9;
+    font-size: 16px;
+}
+/* creates the larger triangle */
+.tweet-bubble:before {
+    content:"";
+    position:absolute;
+    bottom:-30px;
+    right:80px;
+    border-width:0 0 30px 50px;
+    border-style:solid;
+    border-color:transparent #D1E751;
+    /* reduce the damage in FF3.0 */
+    display:block; 
+    width:0;
+}
+/* creates the smaller triangle */
+.tweet-bubble:after {
+    content:"";
+    position:absolute;
+    bottom:-30px;
+    right:110px; 
+    border-width:0 0 30px 20px;
+    border-style:solid;
+    border-color:transparent #2A363B;
+    /* reduce the damage in FF3.0 */
+    display:block; 
+    width:0;
+}
+
+
 /* ==|== media queries ======================================================
    Media Queries for Responsive Design.
    These override the primary ('mobile first') styles
@@ -232,6 +302,11 @@ input, textarea, select, .uneditable-input {
     body.dvd table.dvd-details {
         width: 100%;
     }
+    .brighton-wok {
+        background: black;
+        padding-left: 20px;
+        padding-right: 20px;
+        margin-bottom: 25px !important; 
+    }
 }
-
 

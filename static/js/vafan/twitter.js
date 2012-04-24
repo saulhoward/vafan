@@ -40,9 +40,9 @@ vafan.twitter = {
         div.innerText = "init\n" + div.innerText;
     },
 
-    linkifyTweets: function()
+    linkifyTweets: function(tweetTexts)
     {
-        _.each($('.tweet-box span.text'), function(t) {
+        _.each(tweetTexts, function(t) {
             $(t).html(vafan.twitter.linkify(t.innerHTML));
         });
     },

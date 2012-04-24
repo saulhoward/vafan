@@ -131,7 +131,8 @@ header.navbar .navbar-search {
 }
 
 section {
-    padding-top: 60px;
+    padding-top: 20px;
+    padding-bottom: 40px;
 }
 
 /*
@@ -423,6 +424,15 @@ footer i.icon-facebook-sign {
     header.navbar h1 a{
         width: 141px;
         background-image: url(/img/convict-films/convict-small-header.png);
+    }
+    body {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    #complementary > .container,
+    #main > .container {
+        padding-left: 20px;
+        padding-right: 20px;
     }
 }
 

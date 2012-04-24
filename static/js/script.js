@@ -22,8 +22,11 @@ $(function () {
 
     // Tweets
     if ($('.tweet-box').length > 0) {
-        vafan.twitter.linkifyTweets()
+        vafan.twitter.linkifyTweets($('.tweet-box span.text'))
        //vafan.twitter.streamTweets()
+    }
+    if ($('.tweet-bubble').length > 0) {
+        vafan.twitter.linkifyTweets($('.tweet-bubble'))
     }
 
     $('.carousel').carousel();

@@ -56,18 +56,43 @@
     </div>
 
     <div class="span6">
+
         <h2><i class="icon-flag icon-large"></i> We are <b>Convict
                 Films</b></h2>
+ 
+        {{/* Latest Tweet display */}}
+        <div class="latest-tweet pull-right">
+            {{range $i, $t := .tweets}}
+                {{if eq $i 0}}
+                    <div class="tweet-bubble">
+                        {{$t.Text}}
+                    </div>
+                    <p>@{{$t.User.Screen_name}}</p>
+                {{end}}
+            {{end}}
+        </div>
+
         <p>
         Our company started back in 2001 when a group of friends came
-        together to make the film <b>Brighton Wok</b>. Since then
+        together to make the film <b>Brighton Wok</b>. Since its
+        succesful release, we've been making viral films and shorts,
+        working on contract film projects and we are now pre-producing
+        our next feature film.
         </p>
+
+        <p>
+        If you're interested in working with us, get in touch!
+        </p>
+ 
         <ul>
             <li>
             <a href="{{.links.brightonWok.index}}">Brighton Wok</a>
             </li>
             <li>
             <a href="{{.links.site.videos}}">Video Library</a>
+            </li>
+            <li>
+            <a href="{{.links.site.contact}}">Contact Us</a>
             </li>
         </ul>
     </div>
