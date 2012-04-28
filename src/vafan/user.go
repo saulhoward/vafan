@@ -265,6 +265,7 @@ func (u *user) isRegistered() bool {
 	return true
 }
 
+// TODO: Saul saul and SaUl should be the same here.
 func (u *user) isUsernameNew() bool {
 	db := connectSQLDB()
 	defer db.Close()

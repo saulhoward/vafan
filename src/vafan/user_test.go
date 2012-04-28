@@ -9,8 +9,6 @@ import (
 	"testing"
 )
 
-// Tests.
-
 func TestNewUser(t *testing.T) {
 	u := NewUser()
 	if reflect.TypeOf(u).String() != "*vafan.user" {
@@ -110,5 +108,115 @@ func TestNewUUID(t *testing.T) {
 		t.Error("UUID created not 36 characters long.")
 	} else {
 		t.Log("newUUID test passed.")
+	}
+}
+
+func TestIsUsernameLegal(t *testing.T) {
+	good := []string{
+		"matthew",
+		"Mark123",
+		"123Mark",
+		//`Λουκᾶς`, // TODO: Why do these fail?
+		//`สมชาย`,
+	}
+	for _, n := range good {
+		u := user{Username: n}
+		if !u.isUsernameLegal() {
+			t.Error("Good username declared illegal.")
+		} else {
+			t.Log("isUsernameLegal test passed for good usernames.")
+		}
+	}
+
+	bad := []string{
+		" p",
+		"::LeetHaxx::",
+		"delete table users;",
+	}
+	for _, n := range bad {
+		u := user{Username: n}
+		if u.isUsernameLegal() {
+			t.Error("Bad username declared legal.")
+		} else {
+			t.Log("isUsernameLegal test passed for bad usernames.")
+		}
+	}
+}
+
+func TestIsEmailAddressLegal(t *testing.T) {
+	good := []string{
+		"bob@example.com",
+		"b@b",
+	}
+	for _, e := range good {
+		u := user{EmailAddress: e}
+		if !u.isEmailAddressLegal() {
+			t.Error("Good email address declared illegal.")
+		} else {
+			t.Log("isEmailAddressLegal test passed for good email addresses.")
+		}
+	}
+
+	bad := []string{
+		"imnotgivingyoumydox",
+		" not an email ",
+	}
+	for _, e := range bad {
+		u := user{EmailAddress: e}
+		if u.isEmailAddressLegal() {
+			t.Error("Bad email address declared legal.")
+		} else {
+			t.Log("isEmailAddressLegal test passed for bad email addresses.")
+		}
+	}
+}
+
+func TestIsPasswordLegal(t *testing.T) {
+	good := []string{
+		"password123",
+		"doobie",
+	}
+	for _, p := range good {
+		u := user{}
+		if !u.isPasswordLegal(p) {
+			t.Error("Good password declared illegal.")
+		} else {
+			t.Log("isPasswordLegal test passed for good passwords.")
+		}
+	}
+
+	bad := []string{
+		"x",
+		"god",
+	}
+	for _, p := range bad {
+		u := user{}
+		if u.isPasswordLegal(p) {
+			t.Error("Bad password declared legal.")
+		} else {
+			t.Log("isPasswordLegal test passed for bad passwords.")
+		}
+	}
+}
+
+func TestSetLoggedIn(t *testing.T) {
+	u := user{}
+	u.setLoggedIn()
+	if u.IsLoggedIn != true {
+		t.Error("Set logged in failed.")
+	} else {
+		t.Log("setLoggedIn test passed.")
+	}
+}
+
+func TestUserIsSame(t *testing.T) {
+	u1 := user{ID: "123"}
+	u2 := user{ID: "456"}
+	if userIsSame(&u1, &u1) != true {
+		t.Error("Test user is same failed.")
+	} else if userIsSame(&u1, &u2) == true {
+		t.Error("Test user is same failed.")
+	} else {
+		t.Log("userIsSame test passed.")
 	}
 }
