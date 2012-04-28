@@ -14,23 +14,21 @@ import (
 type notFound struct {
 }
 
-func (res notFound) GetURL(req *http.Request, s *site) *url.URL {
-	return makeURL(res, req, s, nil)
+func (nf notFound) GetURL(req *http.Request, s *site) *url.URL {
+	return makeURL(nf, req, s, nil)
 }
 
-func (res notFound) GetContent(req *http.Request, s *site) (c resourceContent) {
-	c.title = "404 - Not Found"
-	c.description = "The requested resource does not exist."
-	content := map[string]interface{}{}
-	content["message"] = "404 Not found"
-	content["body"] = "Sorry, this resource could not be found."
-	c.content = content
-	return
-}
+func (nf notFound) ServeHTTP(w http.ResponseWriter, r *http.Request, u *user) {
+	res := Resource{
+		title:       "404 - Not Found",
+		description: "The requested resource does not exist.",
+	}
+	res.content = make(resourceContent)
+	res.content["message"] = "404 Not found"
+	res.content["body"] = "Sorry, this resource could not be found."
 
-func (res notFound) ServeHTTP(w http.ResponseWriter, r *http.Request, u *user) {
 	w.WriteHeader(http.StatusNotFound)
-	writeResource(w, r, res, u)
+	res.write(w, r, nf, u)
 	return
 }
 
@@ -39,22 +37,20 @@ func (res notFound) ServeHTTP(w http.ResponseWriter, r *http.Request, u *user) {
 type forbidden struct {
 }
 
-func (res forbidden) GetURL(req *http.Request, s *site) *url.URL {
-	return makeURL(res, req, s, nil)
+func (fb forbidden) GetURL(req *http.Request, s *site) *url.URL {
+	return makeURL(fb, req, s, nil)
 }
 
-func (res forbidden) GetContent(req *http.Request, s *site) (c resourceContent) {
-	c.title = "403 - Forbidden"
-	c.description = "You are forbidden to access this resource"
-	content := map[string]interface{}{}
-	content["message"] = "403 Forbidden"
-	content["body"] = "Sorry, you may not access this resource."
-	c.content = content
-	return
-}
+func (fb forbidden) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
+	res := Resource{
+		title:       "403 - Forbidden",
+		description: "You are forbidden to access this resource",
+	}
+	res.content = make(resourceContent)
+	res.content["message"] = "403 Forbidden"
+	res.content["body"] = "Sorry, you may not access this resource."
 
-func (res forbidden) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 	w.WriteHeader(http.StatusForbidden)
-	writeResource(w, r, res, reqU)
+	res.write(w, r, fb, reqU)
 	return
 }

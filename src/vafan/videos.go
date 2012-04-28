@@ -13,49 +13,37 @@ import (
 
 // Represents a collection of videos.
 type videos struct {
-	video  *video       // a new video, as it is being added
-	videos []*video     // the collection of videos
-	data   resourceData // assembled data for response
+	video  *video   // a new video, as it is being added
+	videos []*video // the collection of videos
 }
 
 func (vids videos) GetURL(req *http.Request, s *site) *url.URL {
 	return makeURL(vids, req, s, nil)
 }
 
-func (vids videos) GetContent(req *http.Request, s *site) (c resourceContent) {
-	c.title = "Video Library"
-	c.description = "Video collection"
-	if vids.data != nil {
-		c.content = vids.data
-	} else {
-		c.content = emptyContent
-	}
-	if vids.video != nil {
-		vids.data["video"] = vids.video
-	}
-	if vids.videos != nil {
-		for i, v := range vids.videos {
-			vids.videos[i].URL = v.GetURL(req, nil).String()
-		}
-		vids.data["videos"] = vids.videos
-	}
-	return
-}
-
 // View the videos, and, if user has permission, get a form to post a
 // new video.
 func (vids videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
-	vids.data = emptyContent
-	var err error
-	site, _ := getSite(r)
-	vids.videos, err = getAllVideos(site)
-	if err != nil {
-		vids.videos = nil
+	res := Resource{
+		title:       "Video Library",
+		description: "Video collection",
 	}
+	res.content = make(resourceContent)
+
 	switch r.Method {
 	case "GET":
-		writeResource(w, r, vids, reqU)
+		var err error
+		site, _ := getSite(r)
+		vids.videos, err = getAllVideos(site)
+		if err == nil {
+			for i, v := range vids.videos {
+				vids.videos[i].URL = v.GetURL(r, nil).String()
+			}
+			res.content["videos"] = vids.videos
+		}
+		res.write(w, r, vids, reqU)
 		return
+
 	case "POST":
 		if reqU.Role == "superadmin" {
 			// This is a post to create a new video
@@ -98,8 +86,10 @@ func (vids videos) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user)
 				if vids.video.Sites == nil {
 					errors["Sites"] = "Must have at least one site."
 				}
-				vids.data["errors"] = errors
-				writeResource(w, r, vids, reqU)
+				res.content["errors"] = errors
+
+				res.content["video"] = vids.video
+				res.write(w, r, vids, reqU)
 				return
 			}
 

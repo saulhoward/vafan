@@ -16,14 +16,13 @@ func (con contact) GetURL(req *http.Request, s *site) *url.URL {
 	return makeURL(con, req, s, nil)
 }
 
-func (con contact) GetContent(req *http.Request, s *site) (c resourceContent) {
-	c.title = "Contact Us"
-	c.description = "Contact details for " + s.Name
-	c.content = emptyContent
-	return
-}
-
 func (con contact) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
-	writeResource(w, r, con, reqU)
+	s, _ := getSite(r)
+	res := Resource{
+		title:       "Contact Us",
+		description: "Contact details for " + s.Name,
+	}
+	res.content = make(resourceContent)
+	res.write(w, r, con, reqU)
 	return
 }

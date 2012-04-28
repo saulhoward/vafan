@@ -8,7 +8,6 @@ package vafan
 import (
 	"code.google.com/p/go.net/websocket"
 	"code.google.com/p/gorilla/mux"
-	"encoding/json"
 	"errors"
 	"fmt"
 	gzipFileServer "github.com/saulhoward/go-gzip-file-server"
@@ -21,6 +20,7 @@ import (
 )
 
 // Setup logging.
+
 var logger = getLogger()
 
 func getLogger() (l *syslog.Writer) {
@@ -32,6 +32,7 @@ func getLogger() (l *syslog.Writer) {
 	return
 }
 
+// Config! Srsly...
 var author string = "Saul Howard - saul@convictfilms.com"
 
 // Represents a site served by this server
@@ -106,7 +107,7 @@ func getCurrentUrl(r *http.Request) *url.URL {
 }
 
 // Handler wrapper - wraps resource requests
-func callHandler(res Resource) http.HandlerFunc {
+func callHandler(res ResourceServer) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		u, err := userCookie(w, r)
 		if err != nil {
@@ -202,7 +203,7 @@ func registerHandlers() {
 	router.NotFoundHandler = callHandler(notFound{})
 }
 
-func getCanonicalSite(r Resource) (s *site, err error) {
+func getCanonicalSite(r ResourceServer) (s *site, err error) {
 	err = nil
 	if resourceCanonicalSites[resourceName(r)] != nil {
 		s = resourceCanonicalSites[resourceName(r)]
@@ -210,69 +211,6 @@ func getCanonicalSite(r Resource) (s *site, err error) {
 	}
 	err = errors.New("No canonical site set.")
 	s = defaultSite
-	return
-}
-
-func writeResource(w http.ResponseWriter, req *http.Request, res Resource, u *user) {
-	// get the site and env requested
-	s, env := getSite(req)
-	format := getFormat(req)
-	logger.Info(fmt.Sprintf("Requested url: '%v' writing resource '%v' as format '%v'.", req.URL.String(), resourceName(res), format))
-	// should we redirect to a canonical host for this resource?
-	canonicalSite, err := getCanonicalSite(res)
-	if err == nil && canonicalSite.Name != s.Name {
-		rUrl := res.GetURL(req, nil)
-		logger.Info(fmt.Sprintf("Redirecting to canonical url: " + rUrl.String()))
-		http.Redirect(w, req, rUrl.String(), http.StatusMovedPermanently)
-		return
-	}
-
-	// Add defaults to the content, that are in every format
-	resContent := res.GetContent(req, s)
-	content := resContent.content
-	content["links"] = getLinks(req)
-	u.URL = u.GetURL(req, nil).String()
-	content["requestingUser"] = u
-
-	// write the resource in requested format
-	if format == "html" {
-		content["author"] = author
-		content["title"] = resContent.title
-		content["description"] = resContent.description
-		content["site"] = s
-		content["environment"] = env
-		content["url"] = res.GetURL(req, nil)
-		content["resource"] = resourceDirName(res)
-		if flashes := getFlashContent(w, req); len(flashes) > 0 {
-			content["flashes"] = flashes
-		} else {
-			content["flashes"] = ""
-		}
-
-		// add in CSS & JS (may be minified)
-		content["javascriptLibraryHTML"] = getJavascriptLibraryHTML(s, env)
-		content["cssHTML"] = getCSSHTML(s, env)
-
-		w.Header().Add("Content-Type", "text/html; charset=UTF-8")
-		t, err := getPageTemplate(format, res, s, env)
-		if err != nil {
-			logger.Err(fmt.Sprintf("Failed to get template: %v", err))
-			return
-		}
-		err = t.Execute(w, content)
-		if err != nil {
-			logger.Err(fmt.Sprintf("Failed executing template: %v", err))
-		}
-	} else if format == "json" {
-		w.Header().Add("Content-Type", "application/json")
-		enc := json.NewEncoder(w)
-		err := enc.Encode(content)
-		if err != nil {
-			err = logger.Err(fmt.Sprintf("Failed encoding JSON: %v", err))
-		}
-	} else {
-		err = logger.Err(fmt.Sprintf("Format unknown: %v", format))
-	}
 	return
 }
 

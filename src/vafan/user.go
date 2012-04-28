@@ -31,7 +31,7 @@ type user struct {
 	Username     string `json:"username"`
 	EmailAddress string `json:"emailAddress"`
 	Role         string `json:"role"`
-	URL     string `json:"url"`
+	URL          string `json:"url"`
 	IsLoggedIn   bool   `json:"isLoggedIn"`
 	passwordHash string
 	salt         string
@@ -43,19 +43,19 @@ func (u user) GetURL(req *http.Request, s *site) *url.URL {
 	return makeURL(u, req, s, []string{"id", u.ID})
 }
 
-func (u user) GetContent(req *http.Request, s *site) (c resourceContent) {
-	c.title = "User"
-	c.description = "User page"
-	c.content = map[string]interface{}{"user": u}
-	return
-}
-
 func (u user) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
+	res := Resource{
+		title:       "User",
+		description: "User page",
+	}
+	res.content = make(resourceContent)
+
 	// check if user has permission? whose user page is this?
 	vars := mux.Vars(r)
 	u = *getUserById(vars["id"])
 	if userIsSame(reqU, &u) || reqU.Role == "superadmin" {
-		writeResource(w, r, &u, reqU)
+		res.content["user"] = u
+		res.write(w, r, &u, reqU)
 		return
 	}
 	forbidden{}.ServeHTTP(w, r, reqU)

@@ -67,20 +67,6 @@ func (v video) GetURL(req *http.Request, s *site) *url.URL {
 	return makeURL(v, req, s, []string{"name", v.Name})
 }
 
-func (v video) GetContent(req *http.Request, s *site) (c resourceContent) {
-	c.title = "Video"
-	c.description = "Video page"
-	c.content = map[string]interface{}{"video": v}
-	relatedVideos, err := getRelatedVideos(&v, s)
-	if err == nil && len(relatedVideos) > 0 {
-		for i, v := range relatedVideos {
-			relatedVideos[i].URL = v.GetURL(req, nil).String()
-		}
-		c.content["relatedVideos"] = relatedVideos
-	}
-	return
-}
-
 // GET sets the video from the URL vars.
 func (v video) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 	switch r.Method {
@@ -98,9 +84,25 @@ func (v video) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 			notFound{}.ServeHTTP(w, r, reqU)
 			return
 		}
-		writeResource(w, r, &v, reqU)
+
+		res := Resource{
+			title:       v.Title,
+			description: "Video page",
+		}
+		res.content = make(resourceContent)
+		res.content["video"] = v
+		s, _ := getSite(r)
+		relatedVideos, err := getRelatedVideos(&v, s)
+		if err == nil && len(relatedVideos) > 0 {
+			for i, v := range relatedVideos {
+				relatedVideos[i].URL = v.GetURL(r, nil).String()
+			}
+			res.content["relatedVideos"] = relatedVideos
+		}
+		res.write(w, r, &v, reqU)
 		return
 	}
+	return
 }
 
 // Save a video to the DB.

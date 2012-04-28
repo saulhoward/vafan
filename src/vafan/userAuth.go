@@ -11,25 +11,20 @@ import (
 )
 
 type userAuth struct {
-	data resourceData
 }
 
 func (res userAuth) GetURL(req *http.Request, s *site) *url.URL {
-	// limit authentication to default site
+	// limit authentication url to default site
 	return makeURL(res, req, defaultSite, nil)
 }
 
-func (res userAuth) GetContent(req *http.Request, s *site) (c resourceContent) {
-	c.title = "Login"
-	c.description = "Login here to access Convict Films"
-	if res.data == nil {
-		res.data = emptyContent
+func (auth userAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
+	res := Resource{
+		title:       "Login",
+		description: "Login here to access Convict Films",
 	}
-	c.content = res.data
-	return
-}
+	res.content = make(resourceContent)
 
-func (res userAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 	switch r.Method {
 	case "POST":
 		// This is a post to login or logout
@@ -44,7 +39,7 @@ func (res userAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user
 			loginUser, err := login(r.Form.Get("UsernameOrEmailAddress"), r.Form.Get("Password"))
 			if err != nil {
 				logger.Info(fmt.Sprintf("Failed to login user: %v", err))
-				url = res.GetURL(r, nil)
+				url = auth.GetURL(r, nil)
 				addFlash(w, r, "Failed to login", "error")
 			} else {
 				// set the login session
@@ -66,7 +61,7 @@ func (res userAuth) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user
 			http.Redirect(w, r, url.String(), http.StatusSeeOther)
 		}
 	case "GET":
-		writeResource(w, r, res, reqU)
+		res.write(w, r, auth, reqU)
 	}
 	return
 }

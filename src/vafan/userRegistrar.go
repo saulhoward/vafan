@@ -11,25 +11,20 @@ import (
 )
 
 type userRegistrar struct {
-	data resourceData
 }
 
-func (res userRegistrar) GetURL(req *http.Request, s *site) *url.URL {
+func (reg userRegistrar) GetURL(req *http.Request, s *site) *url.URL {
 	// limit registration to default site
-	return makeURL(res, req, defaultSite, nil)
+	return makeURL(reg, req, defaultSite, nil)
 }
 
-func (res userRegistrar) GetContent(req *http.Request, s *site) (c resourceContent) {
-	c.title = "Register"
-	c.description = "Register here to access Convict Films"
-	if res.data == nil {
-		res.data = emptyContent
+func (reg userRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
+	res := Resource{
+		title:       "Register",
+		description: "Register here to access Convict Films",
 	}
-	c.content = res.data
-	return
-}
+	res.content = make(resourceContent)
 
-func (res userRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 	switch r.Method {
 	case "POST":
 		// This is a post to register the requesting user
@@ -56,8 +51,8 @@ func (res userRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU 
 			} else if r.Form.Get("Password") != r.Form.Get("RepeatPassword") {
 				errors["Password"] = "Password must match repeat password."
 			}
-			res.data["errors"] = errors
-			writeResource(w, r, res, u)
+			res.content["errors"] = errors
+			res.write(w, r, reg, u)
 			return
 		}
 
@@ -66,18 +61,18 @@ func (res userRegistrar) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU 
 		var url *url.URL
 		if err != nil {
 			logger.Err(fmt.Sprintf("Failed to save new user: %v", err))
-			url = res.GetURL(r, nil)
+			url = reg.GetURL(r, nil)
 			addFlash(w, r, "Failed to save new user", "error")
 		} else {
 			url = userAuth{}.GetURL(r, nil)
 			addFlash(w, r, "Registered a new user, please log in.", "success")
 		}
-
 		http.Redirect(w, r, url.String(), http.StatusSeeOther)
 		return
+
 	case "GET":
 		if reqU.isNew() {
-			writeResource(w, r, res, reqU)
+			res.write(w, r, reg, reqU)
 		} else {
 			url := userAuth{}.GetURL(r, nil)
 			addFlash(w, r, "Your user ID already has an account, please log in.", "warning")

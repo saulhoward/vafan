@@ -58,8 +58,9 @@ type reverseCreatedAtTweets struct {
 
 // Sort on 'created_at' timestamp, latest first.
 func (tws reverseCreatedAtTweets) Less(i, j int) bool {
-	iTime, _ := time.Parse("Mon Jan 02 15:04:05 +0000 2006", tws.tweets[i].Created_at)
-	jTime, _ := time.Parse("Mon Jan 02 15:04:05 +0000 2006", tws.tweets[j].Created_at)
+	const twDateFormat = "Mon Jan 02 15:04:05 +0000 2006"
+	iTime, _ := time.Parse(twDateFormat, tws.tweets[i].Created_at)
+	jTime, _ := time.Parse(twDateFormat, tws.tweets[j].Created_at)
 	return iTime.After(jTime)
 }
 
@@ -69,22 +70,20 @@ func (tw tweets) GetURL(req *http.Request, s *site) *url.URL {
 	return makeURL(tw, req, s, nil)
 }
 
-func (tw tweets) GetContent(req *http.Request, s *site) (c resourceContent) {
-	c.title = "Crew Tweets"
-	c.description = "Tweets about Convict Films"
-	c.content = emptyContent
-	if tw != nil {
-		c.content["tweets"] = tw
-	}
-	return
-}
-
 func (tw tweets) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
+	res := Resource{
+		title:       "Crew Tweets",
+		description: "Tweets about Convict Films",
+	}
+	res.content = make(resourceContent)
 	tw, err := getFeaturedTweets()
 	if err != nil {
 		logger.Err(fmt.Sprintf("Error when getting tweets: %v", err))
 	}
-	writeResource(w, r, tw, reqU)
+	if tw != nil {
+		res.content["tweets"] = tw
+	}
+	res.write(w, r, tw, reqU)
 	return
 }
 

@@ -14,16 +14,9 @@ import (
 type userSync struct {
 }
 
-func (res userSync) GetURL(req *http.Request, s *site) *url.URL {
+func (syn userSync) GetURL(req *http.Request, s *site) *url.URL {
 	// limit sync to default site
-	return makeURL(res, req, defaultSite, nil)
-}
-
-func (res userSync) GetContent(req *http.Request, s *site) (c resourceContent) {
-	c.title = "User Sync"
-	c.description = "Performs a user sync redirect"
-	c.content = emptyContent
-	return
+	return makeURL(syn, req, defaultSite, nil)
 }
 
 // send people back to the redirect-url param, with a canonical user id

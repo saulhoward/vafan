@@ -18,11 +18,11 @@ import (
 )
 
 // Strip the 'Resource' from the name
-func resourceDirName(res Resource) string {
+func resourceDirName(res ResourceServer) string {
 	return strings.Replace(resourceName(res), "Resource", "", 1)
 }
 
-func getTemplatePath(file string, format string, res Resource, s *site) string {
+func getTemplatePath(file string, format string, res ResourceServer, s *site) string {
 	//logger.Info(fmt.Sprintf("Looking for template format: %v and resource: %v", format, resourceDirName(res)))
 
 	//Check for the most specific template first
@@ -53,7 +53,7 @@ func getTemplatePath(file string, format string, res Resource, s *site) string {
 	return filepath.Join(vafanConf.baseDir, "templates", checkFormat, checkResName, checkSite, file)
 }
 
-func getPageTemplate(format string, res Resource, s *site, env string) (t *template.Template, err error) {
+func getPageTemplate(format string, res ResourceServer, s *site, env string) (t *template.Template, err error) {
 	// Templates that make up a page
 	// See http://www.w3.org/WAI/PF/aria/roles#landmark_roles 
 	var tmplFiles = [...]string{
@@ -75,7 +75,7 @@ func getPageTemplate(format string, res Resource, s *site, env string) (t *templ
 	}
 
 	t, err = template.New("page.html").
-    Funcs(template.FuncMap{"eq": reflect.DeepEqual, "markdown": markdownToHtml, "javascriptLibrary": javascriptLibraryHTMLForSite}).
+		Funcs(template.FuncMap{"eq": reflect.DeepEqual, "markdown": markdownToHtml, "javascriptLibrary": javascriptLibraryHTMLForSite}).
 		ParseFiles(paths...)
 	if err != nil {
 		logger.Err(fmt.Sprintf("Failed to create template: %v", err))
@@ -85,7 +85,7 @@ func getPageTemplate(format string, res Resource, s *site, env string) (t *templ
 }
 
 // Uses black friday library to convert markdown to html, this is
-// assumed safe
+// assumed safe HTML.
 func markdownToHtml(md Markdown) template.HTML {
 	bmd := []byte(md)
 	bhtml := blackfriday.MarkdownCommon(bmd)

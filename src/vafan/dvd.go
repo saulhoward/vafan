@@ -44,16 +44,6 @@ func (d dvd) GetURL(req *http.Request, s *site) *url.URL {
 	return makeURL(d, req, s, []string{"name", d.Name})
 }
 
-func (d dvd) GetContent(req *http.Request, s *site) (c resourceContent) {
-	c.title = d.Title
-	c.description = d.ShortDescription
-
-	d.URL = d.GetURL(req, nil).String()
-	c.content = map[string]interface{}{"dvd": d}
-
-	return
-}
-
 func (d dvd) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 	switch r.Method {
 	case "GET":
@@ -79,8 +69,14 @@ func (d dvd) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 		if thanks != "" {
 			d.ThankUser = true
 		}
-
-		writeResource(w, r, &d, reqU)
+		d.URL = d.GetURL(r, nil).String()
+		res := Resource{
+			title:       d.Title,
+			description: d.ShortDescription,
+		}
+		res.content = make(resourceContent)
+		res.content["dvd"] = d
+		res.write(w, r, &d, reqU)
 		return
 	}
 }
@@ -184,14 +180,6 @@ func (d dvdStockist) GetURL(req *http.Request, s *site) *url.URL {
 	return makeURL(d, req, s, []string{"name", d.DVD.Name, "dvdStockist", d.Name})
 }
 
-func (d dvdStockist) GetContent(req *http.Request, s *site) (c resourceContent) {
-	c.title = d.Title
-	c.description = d.Title
-	d.DVD.URL = d.DVD.GetURL(req, nil).String()
-	c.content = map[string]interface{}{"stockist": d}
-	return
-}
-
 func (d dvdStockist) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 	switch r.Method {
 	case "GET":
@@ -222,7 +210,14 @@ func (d dvdStockist) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *use
 			return
 		}
 
-		writeResource(w, r, &d, reqU)
+		d.DVD.URL = d.DVD.GetURL(r, nil).String()
+		res := Resource{
+			title:       d.Title,
+			description: d.Title,
+		}
+		res.content = make(resourceContent)
+		res.content["stockist"] = d
+		res.write(w, r, &d, reqU)
 		return
 	}
 	return
@@ -232,17 +227,6 @@ func (d dvdStockist) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *use
 
 func (d dvdStockists) GetURL(req *http.Request, s *site) *url.URL {
 	return makeURL(d, req, s, []string{"name", d.DVD.Name})
-}
-
-func (d dvdStockists) GetContent(req *http.Request, s *site) (c resourceContent) {
-	c.title = "Where to buy the " + d.DVD.Title
-	c.description = "Shops and businesses where you can buy " + d.DVD.Title
-	d.DVD.URL = d.DVD.GetURL(req, nil).String()
-	for _, s := range d.Stockists {
-		s.URL = s.GetURL(req, nil).String()
-	}
-	c.content = map[string]interface{}{"stockists": d.Stockists, "dvd": d.DVD}
-	return
 }
 
 func (d dvdStockists) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
@@ -266,7 +250,19 @@ func (d dvdStockists) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *us
 			return
 		}
 
-		writeResource(w, r, &d, reqU)
+		d.DVD.URL = d.DVD.GetURL(r, nil).String()
+		for _, s := range d.Stockists {
+			s.URL = s.GetURL(r, nil).String()
+		}
+
+		res := Resource{
+			title:       "Where to buy the " + d.DVD.Title,
+			description: "Shops and businesses where you can buy " + d.DVD.Title,
+		}
+		res.content = make(resourceContent)
+		res.content["stockists"] = d.Stockists
+		res.content["dvd"] = d.DVD
+		res.write(w, r, &d, reqU)
 		return
 	}
 	return
