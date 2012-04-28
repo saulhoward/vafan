@@ -163,13 +163,13 @@ func getUserForUserInfo(userInfo map[string]string) (u *user, err error) {
 		err = errors.New("User: ID must be set")
 		return
 	}
-    newU := user{
-        ID: userInfo["Id"],
-        Username: userInfo["Username"],
-        EmailAddress: userInfo["EmailAddress"],
-        Role: userInfo["Role"],
-    }
-    return &newU, err
+	newU := user{
+		ID:           userInfo["Id"],
+		Username:     userInfo["Username"],
+		EmailAddress: userInfo["EmailAddress"],
+		Role:         userInfo["Role"],
+	}
+	return &newU, err
 }
 
 // Use UUID v4 as user IDs
@@ -237,7 +237,8 @@ func (u *user) isLegal(password string) bool {
 }
 
 func (u *user) isUsernameLegal() bool {
-	var re = regexp.MustCompile(`[^\d+|\w+]`)
+	const illegalCharsRe = `[^\p{L}\p{N}]+`
+	var re = regexp.MustCompile(illegalCharsRe)
 	if re.MatchString(u.Username) {
 		return false
 	}
@@ -258,20 +259,22 @@ func (u *user) isRegistered() bool {
 		if err == sql.ErrNoRows {
 			return false
 		} else {
-			logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
+			logger.Err(fmt.Sprintf(
+				"Failed to select user (MySQL): %v", err))
 			return false
 		}
 	}
 	return true
 }
 
-// TODO: Saul saul and SaUl should be the same here.
 func (u *user) isUsernameNew() bool {
 	db := connectSQLDB()
 	defer db.Close()
-	selectUser, err := db.Prepare(`select username from users where username=?`)
+	selectUser, err := db.Prepare(
+		`select username from users where username=?`)
 	if err != nil {
-		logger.Err(fmt.Sprintf("Failed to prepare db (MySQL): %v", err))
+		logger.Err(fmt.Sprintf(
+			"Failed to prepare db (MySQL): %v", err))
 		return false
 	}
 	var username string
@@ -280,7 +283,8 @@ func (u *user) isUsernameNew() bool {
 		if err == sql.ErrNoRows {
 			return true
 		} else {
-			logger.Err(fmt.Sprintf("Failed to select user (MySQL): %v", err))
+			logger.Err(fmt.Sprintf(
+				"Failed to select user (MySQL): %v", err))
 			return false
 		}
 	}

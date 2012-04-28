@@ -116,8 +116,8 @@ func TestIsUsernameLegal(t *testing.T) {
 		"matthew",
 		"Mark123",
 		"123Mark",
-		//`Λουκᾶς`, // TODO: Why do these fail?
-		//`สมชาย`,
+		`Λουκᾶς`,
+		`สมชาย`,
 	}
 	for _, n := range good {
 		u := user{Username: n}
