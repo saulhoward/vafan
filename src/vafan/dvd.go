@@ -32,7 +32,7 @@ type dvd struct {
 	ThankUser        bool              `json:"thankUser"` // true if the user has already purchased
 }
 
-// Video constructor.
+// DVD constructor.
 func newDVD() (d *dvd) {
 	d = new(dvd)
 	return
