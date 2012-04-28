@@ -163,8 +163,13 @@ func getUserForUserInfo(userInfo map[string]string) (u *user, err error) {
 		err = errors.New("User: ID must be set")
 		return
 	}
-	newU := user{ID: userInfo["Id"], Username: userInfo["Username"], EmailAddress: userInfo["EmailAddress"], Role: userInfo["Role"]}
-	return &newU, err
+    newU := user{
+        ID: userInfo["Id"],
+        Username: userInfo["Username"],
+        EmailAddress: userInfo["EmailAddress"],
+        Role: userInfo["Role"],
+    }
+    return &newU, err
 }
 
 // Use UUID v4 as user IDs

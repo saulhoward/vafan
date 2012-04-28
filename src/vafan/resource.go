@@ -20,7 +20,6 @@ var decoder = schema.NewDecoder()
 // ResourceServer types serve Resource data over HTTP.
 type ResourceServer interface {
 	GetURL(req *http.Request, s *site) *url.URL
-	//GetContent(req *http.Request, s *site) resourceContent
 	ServeHTTP(w http.ResponseWriter, r *http.Request, u *user)
 }
 
@@ -94,7 +93,7 @@ func resourceName(r ResourceServer) string {
 	return m[1]
 }
 
-// Helper function for resource ServeHTTP methods.
+// Write resource. Helper function for resource ServeHTTP methods.
 func (res Resource) write(w http.ResponseWriter, req *http.Request, serv ResourceServer, u *user) {
 	// get the site and env requested
 	s, env := getSite(req)
