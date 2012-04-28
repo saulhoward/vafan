@@ -75,19 +75,16 @@ vafan.threeDeeDvd = {
         camera.position.z = 13;
 
         // Add the lights
-        scene.add(new THREE.AmbientLight(0xbbbbbb));
-        var mlight = new THREE.PointLight( 0xffffff, 0.6 );
+        scene.add(new THREE.AmbientLight(0x444444));
+        var mlight = new THREE.PointLight( 0xffffff, 0.3 );
         mlight.position.set( 25, -10, 50 );
         scene.add( mlight );
-        var llight = new THREE.PointLight( 0xffffff, 0.6 );
+        var llight = new THREE.PointLight( 0xffffff, 0.3 );
         llight.position.set( -25, 10, 70 );
         scene.add( llight );
-        /*
-        // Another light seems to kill performance
         var rlight = new THREE.PointLight( 0xffffff, 0.2 );
         rlight.position.set( 25, 0, 70 );
         scene.add( rlight );
-        */
 
         // Create the materials
         var materialClass = WebGLSupported ? THREE.MeshPhongMaterial : THREE.MeshBasicMaterial;
@@ -95,13 +92,13 @@ vafan.threeDeeDvd = {
         var dvdCover = new materialClass( {
             color: 0xffffff,
             shininess: 100,
-            specular:  0x333333,
+            specular:  0x666666,
             map: THREE.ImageUtils.loadTexture( '/img/brighton-wok/dvd/cover.png' ) 
         } );
         var dvdSpine = new materialClass( {
             color: 0xffffff,
             shininess: 100,
-            specular:  0x333333,
+            specular:  0x666666,
             map: THREE.ImageUtils.loadTexture( '/img/brighton-wok/dvd/spine.png' ) 
         } );
         var dvdRight = new materialClass( {
