@@ -13,6 +13,7 @@ const minifiedJavascriptFile = "/js/vafan.min.js"
 
 var javascriptFiles = [...]string{
 	"/js/libs/underscore.js",
+	"/js/libs/backbone.js",
 	"/js/libs/bootstrap.js",
 	"/js/libs/Three.js",
 	"/js/libs/froogaloop.js",

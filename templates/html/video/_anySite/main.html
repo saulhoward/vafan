@@ -30,9 +30,15 @@
 
     </div>
     <div class="span4">
-        <div class="well">
-            {{markdown .video.Description}}
-        </div>
+        {{if eq .requestingUser.IsLoggedIn true}}
+            <div class="well" contentEditable="true">
+                {{.video.Description}}
+            </div>
+        {{else}}
+            <div class="well">
+                {{markdown .video.Description}}
+            </div>
+        {{end}}
 
         {{if .video.ExternalVideos.Youtube.Data.Title}}
             <div class="youtube-details">

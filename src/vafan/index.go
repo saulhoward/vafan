@@ -22,6 +22,9 @@ func (ind index) GetURL(req *http.Request, s *site) *url.URL {
 }
 
 func (ind index) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
+
+	logger.Info("index")
+
 	s, _ := getSite(r)
 	res := Resource{
 		title:       s.Tagline,

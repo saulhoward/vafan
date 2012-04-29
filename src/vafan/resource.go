@@ -95,6 +95,7 @@ func resourceName(r ResourceServer) string {
 
 // Write resource. Helper function for resource ServeHTTP methods.
 func (res Resource) write(w http.ResponseWriter, req *http.Request, serv ResourceServer, u *user) {
+	logger.Info("write index")
 	// get the site and env requested
 	s, env := getSite(req)
 	format := getFormat(req)
@@ -109,13 +110,6 @@ func (res Resource) write(w http.ResponseWriter, req *http.Request, serv Resourc
 	}
 
 	// Add defaults to the content, that are in every format
-	/* resContent := *new(resourceContent) */
-	/* resContent = res.GetContent(req, s) */
-	//logger.Info(fmt.Sprintf("%v", resContent.content["javascriptLibraryHTML"]))
-
-	/* var content map[string]interface{} */
-	/* content = resContent.content */
-
 	res.content["links"] = getLinks(req)
 	u.URL = u.GetURL(req, nil).String()
 	res.content["requestingUser"] = u

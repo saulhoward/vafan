@@ -36,15 +36,18 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *user, err error) {
 		if err == http.ErrNoCookie {
 			err = nil
 		} else {
-			logger.Err(fmt.Sprintf("Failed getting cookie: %v", err))
+			logger.Err(fmt.Sprintf(
+				"Failed getting cookie: %v", err))
 		}
 	} else {
-		logger.Info(fmt.Sprintf("Login cookie found: %v", c.Value))
+		logger.Info(fmt.Sprintf(
+			"Login cookie found: %v", c.Value))
 		u, err = getLoginUser(c.Value)
 		if err == nil {
 			return
 		} else {
-			logger.Err(fmt.Sprintf("Failed getting login user: %v", err))
+			logger.Err(fmt.Sprintf(
+				"Failed getting login user: %v", err))
 		}
 	}
 
@@ -58,7 +61,8 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *user, err error) {
 			u = NewUser()
 			setUserCookie(u, w, r)
 		} else {
-			logger.Err(fmt.Sprintf("Failed getting cookie user: %v", err))
+			logger.Err(fmt.Sprintf(
+                "Failed getting cookie user: %v", err))
 			u = NewUser()
 		}
 	} else {
@@ -204,14 +208,17 @@ func getLoginUser(sId string) (u *user, err error) {
 	defer db.Close()
 	reply := db.Command("hgetall", sessionKey)
 	if reply.Error() != nil {
-		errText := fmt.Sprintf("Failed to get Session data (Redis): %v", reply.Error())
+		errText := fmt.Sprintf(
+			"Failed to get Session data (Redis): %v",
+			reply.Error())
 		logger.Err(errText)
 		err = errors.New(errText)
 		return
 	}
 	userInfo, err := reply.StringMap()
 	if err != nil {
-		errText := fmt.Sprintf("Stringmap failed (Redis): %v", reply.Error())
+		errText := fmt.Sprintf(
+			"Stringmap failed (Redis): %v", reply.Error())
 		logger.Err(errText)
 		err = errors.New(errText)
 		return

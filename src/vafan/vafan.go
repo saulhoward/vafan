@@ -110,11 +110,16 @@ func getCurrentUrl(r *http.Request) *url.URL {
 func callHandler(res ResourceServer) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		u, err := userCookie(w, r)
+
+        logger.Info(fmt.Sprintf(
+            "User: %v", u.ID))
+
 		if err != nil {
 			if err == ErrResourceRedirected {
 				return
 			} else {
-				err = logger.Err(fmt.Sprintf("Failed getting user: %v", err))
+				logger.Err(fmt.Sprintf(
+                    "Failed getting user: %v", err))
 				u = NewUser()
 			}
 		}

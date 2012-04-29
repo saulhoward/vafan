@@ -230,6 +230,9 @@ func getAllVideos(s *site) (v []*video, err error) {
 func getFeaturedVideos(s *site) (v []*video, err error) {
 	v = []*video{}
 	v, err = getVideos(bson.M{"sites.name": s.Name})
+	if len(v) > 4 {
+		v = v[:4]
+	}
 	return
 }
 

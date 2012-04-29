@@ -97,7 +97,9 @@ func getFeaturedTweets() (tws tweets, err error) {
 			go storeFeaturedTweets()
 			err = nil
 		} else {
-			logger.Err(fmt.Sprintf("Failed getting featured tweets (from cache): %v", err))
+			logger.Err(fmt.Sprintf(
+                "Failed getting featured tweets (from cache): %v",
+                err))
 		}
 	}
 	return

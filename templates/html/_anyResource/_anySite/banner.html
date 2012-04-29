@@ -10,7 +10,7 @@
 
 {{if eq .requestingUser.IsLoggedIn true}}
     <p class="navbar-text pull-right">
-        Logged in as <a href="{{.requestingUser.Location}}">{{.requestingUser.Username}}</a>
+        Logged in as <a href="{{.requestingUser.URL}}">{{.requestingUser.Username}}</a>
         {{if eq .requestingUser.Role "superadmin"}}
             <span class="label label-info">{{.requestingUser.Role}}</span>
         {{end}}
