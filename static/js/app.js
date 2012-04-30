@@ -5,7 +5,9 @@
  */
 
 $(function () {
-    var fonts, dvd, indexVideoView, tweetBox, tweetBubble;
+    var fonts, dvd, bwT,
+        tweetBox, tweetBubble,
+        video, videoView;
 
     // Webfonts.
     fonts = new vafan.view.fonts();
@@ -18,8 +20,8 @@ $(function () {
     }
 
     // Modal videos - trailer only for now.
-    if ($('#video').length > 0) {
-        indexVideoView = new vafan.view.video();
+    if ($('body.index #video').length > 0) {
+        bwT = new vafan.view.brightonWokTrailer();
     }
 
     // Tweets.
@@ -48,8 +50,7 @@ $(function () {
 
     // Video page view
     if ($('body.video').length > 0) {
-        var video, videoPage;
-        // Create a video model, with this page's URL.
+        // Create a video model, with the JSON from this page's URL.
         video = new vafan.model.video({
             url: window.jsonURL
         });
@@ -57,7 +58,7 @@ $(function () {
         video.fetch({
             success: function() 
             {
-                videoPage = new vafan.view.videoPage({
+                videoView = new vafan.view.video({
                     model: video
                 });
             }

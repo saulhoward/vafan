@@ -6,13 +6,16 @@ package vafan
 
 import (
 	"code.google.com/p/gorilla/mux"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"launchpad.net/mgo"
 	"launchpad.net/mgo/bson"
 	"net/http"
 	"net/url"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -33,6 +36,7 @@ type video struct {
 	Thumbnail        Image          `json:"thumbnail"`
 	Sites            []*site        `json:"sites"` // the sites that display this vid
 	ExternalVideos   externalVideos `json:"externalVideos"`
+	IsEditable       bool           `json:"isEditable"`
 }
 
 // Image type.
@@ -84,6 +88,10 @@ func (v video) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 			notFound{}.ServeHTTP(w, r, reqU)
 			return
 		}
+		// Set video isEditable
+		if reqU.IsLoggedIn && reqU.Role == "superadmin" {
+			v.IsEditable = true
+		}
 
 		res := Resource{
 			title:       v.Title,
@@ -101,6 +109,35 @@ func (v video) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 		}
 		res.write(w, r, &v, reqU)
 		return
+	case "POST":
+		switch strings.ToLower(r.Header["Content-Type"][0]) {
+		case "application/json":
+		case "application/json; charset=utf-8":
+			b, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				logger.Err(fmt.Sprintf(
+					"Error reading post body: %v", err))
+				return
+			}
+			//vidPost := newVideo()
+			err = json.Unmarshal(b, &v)
+			if err != nil {
+				logger.Err(fmt.Sprintf(
+					"Error unmarshalling posted json: %v", err))
+				return
+			}
+
+			logger.Info(fmt.Sprintf("%v", v.Description))
+			logger.Info(fmt.Sprintf("%v", v.ID))
+
+			/* pv := newVideo() */
+			/* decoder.Decode(pv, r.Form) */
+			/* logger.Info(fmt.Sprintf("%v", pv)) */
+
+			return
+		default:
+			return
+		}
 	}
 	return
 }

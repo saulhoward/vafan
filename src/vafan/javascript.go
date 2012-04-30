@@ -23,7 +23,7 @@ var javascriptFiles = [...]string{
 	"/js/vafan/views/threeDeeDvd.js",
 	"/js/vafan/views/twitter.js",
 	"/js/vafan/views/video.js",
-	"/js/vafan/views/videoPage.js",
+	"/js/vafan/views/brightonWokTrailer.js",
 	"/js/global.js",
 }
 
