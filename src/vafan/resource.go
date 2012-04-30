@@ -101,9 +101,9 @@ func (res Resource) write(w http.ResponseWriter, req *http.Request, serv Resourc
 	format := getFormat(req)
 	logger.Info(fmt.Sprintf("Requested url: '%v' writing resource '%v' as format '%v'.", req.URL.String(), resourceName(serv), format))
 	// should we redirect to a canonical host for this resource?
+    rUrl := serv.GetURL(req, nil)
 	canonicalSite, err := getCanonicalSite(serv)
 	if err == nil && canonicalSite.Name != s.Name {
-		rUrl := serv.GetURL(req, nil)
 		logger.Info(fmt.Sprintf("Redirecting to canonical url: " + rUrl.String()))
 		http.Redirect(w, req, rUrl.String(), http.StatusMovedPermanently)
 		return
@@ -123,6 +123,7 @@ func (res Resource) write(w http.ResponseWriter, req *http.Request, serv Resourc
 		res.content["environment"] = env
 		res.content["url"] = serv.GetURL(req, nil)
 		res.content["resource"] = resourceDirName(serv)
+		res.content["jsonURL"] = rUrl.String() + ".json"
 		if flashes := getFlashContent(w, req); len(flashes) > 0 {
 			res.content["flashes"] = flashes
 		} else {

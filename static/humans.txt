@@ -1,43 +1,69 @@
-/* the humans responsible & colophon */
-/* humanstxt.org */
-
-
 /* TEAM */
-  <your title>: <your name>
-  Site: 
-  Twitter: 
-  Location: 
 
-/* THANKS */
-  Names (& URL): 
+  Org:     Convict Films
+  Twitter: @convictfilms
+  Site:    http://convictfilms.com
+
+  Producer/Dev:  Saul Howard
+  Twitter:       @saulhoward
+  Site:          http://saulhoward.com
+  Location:      Bangkok, Thailand
+
+  Director: Gabriel Howard
+  Location: Brighton, England
+
+  Producer: Moya Howard
+  Location: Brighton, England
 
 /* SITE */
-  Standards: HTML5, CSS3
-  Components: Modernizr, jQuery
-  Software:
-  
 
-                                    
-                               -o/-                       
-                               +oo//-                     
-                              :ooo+//:                    
-                             -ooooo///-                   
-                             /oooooo//:                   
-                            :ooooooo+//-                  
-                           -+oooooooo///-                 
-           -://////////////+oooooooooo++////////////::    
-            :+ooooooooooooooooooooooooooooooooooooo+:::-  
-              -/+ooooooooooooooooooooooooooooooo+/::////:-
-                -:+oooooooooooooooooooooooooooo/::///////:-
-                  --/+ooooooooooooooooooooo+::://////:-   
-                     -:+ooooooooooooooooo+:://////:--     
-                       /ooooooooooooooooo+//////:-        
-                      -ooooooooooooooooooo////-           
-                      /ooooooooo+oooooooooo//:            
-                     :ooooooo+/::/+oooooooo+//-           
-                    -oooooo/::///////+oooooo///-          
-                    /ooo+::://////:---:/+oooo//:          
-                   -o+/::///////:-      -:/+o+//-         
-                   :-:///////:-            -:/://         
-                     -////:-                 --//:        
-                       --                       -:        
+  Codebase:  http://github.com/saulhoward/vafan
+  Languages: go, javascript
+
+  
+                                        N                                       
+                                        8.                                      
+                                       ,O?                                      
+                                       N7N                                      
+                                       NOMN.                                    
+                                      IO8MM                                     
+                                      NNMDM                                     
+                                    O8$M8MNN                                    
+                                    .OOMN?$$                                    
+                                     +NNINZ8 .                                  
+                                    MMDD$ZI$I.                                  
+                                  :.ZMMM??MMM.                                  
+                                  ZMNMNM+NZD+Z                                  
+                                  .MDMMN+DM?M8                                  
+                                  MMDN7+~MDN+MN                          .DZ    
+       ZD .                       MMMMM7=7MMIMN                    .  DMMNO.    
+        MMDD.                    NO~M$M?I~=DMND                 . ZNDNMZND      
+         NMNOM$ ..               NNNIDM$~8N=8ZN                M.+MMD$MND       
+           MMNM78Z+.             $MNNMI8?NN8D?,M            N$NM8NM7NNMM.       
+          ~M8MMMMOOD$            NMMNNMM?8MNM?DM.        N7+D8MO8NMMNND         
+           ..MMM,DDDDIZ          MODM+8M?M8Z+M8.        :MNDMONDNNMMNO          
+            MZMMZDI:MMD$M.      $MN8DZM8I7N+~N8$     .MNDMNNNZMOONDD            
+            ..DMMOIMNDNMZ:D      MNNMMMM?NNM+8M.     NDMMMM8DIMM8MN .           
+              MIDMMNMZ$M8,MII.   MMMN?MIIM8MONIN  .MMNMMMN8NMM$M?.              
+                :878DDM=DN7NO8  .,IZDNNOINM=DMO  .MMDDDN7MDD8NN$M               
+                ONZNMON8M?~INDNZ  ~DMDM$I~$8MM. NMNN?NINNMMN+NN .               
+                  MNDDNODIM7ZOOOO+.MN?ZN7NMDMD.NN8NM+8NDNDNMMD                  
+                   .NNMMMNDDZDD788M8MNMMZMON$.DNNNMNMMMMMZN                     
+                     MN$8DNMMM,ND=MMN7NDZNOMM=NMM7MMDM8DMM                      
+                       . NOOD7ZD:OMMZDM$$8MO+MNM78DMNNN  .                      
+                        .NNMMDMNNM=NNMMM7M8MNM=MMM8NZ.                          
+                      .     .MMMMMM$$DMM+NNOMMMMON  . ...... .                  
+                 .NMDMM8MMNMOMNNMMNDN7NM?D8ZDNZNNOINNNNN8M~DD +:                
+            .DNMDNN$NMNMMNN8D7M$NZNMN8M~I+NN?MNMDMNMMNNDMMDN=NMMN?$8.           
+         .DNNDOI$MMMM7DZ$77$7ZOD8Z8DDO8N7MDOZI?++I~~~~7MNDNMN?NNDNMDNDND.       
+      .NMDOO8NMDDNMMN8ONMMNNMZMM7N$MMNIN7MZMNNDN7MMNN8NINMNMMNNNDDDMMMNNDNNN    
+     ..NDNMND8MMMMN$MM7MMOMM?ZDD$NM878MNINMNMMNNDNN8MOMMMNNNNMNNNDDOMNN$Z ...   
+            ,NM.NOMN8MNNMMMND..NN8NN$MD.I.MMM7N8D  NM DNN ND?  .                
+                      ~.     NMMMDMNDN  I. MNNDIM8MZ..                          
+                            NMMONMMMD   $.  NNNDDNONN                           
+                           MDMMMNM~I    8.   .NMNMNND?                          
+                          ZM8MNN..      D      +MNNN8M.                         
+                          NMD           D8       =,,NNN.                        
+                          .             N8.            .                        
+                                        N8                                      
+                                        .             

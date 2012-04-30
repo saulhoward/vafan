@@ -61,7 +61,7 @@
                 Films</b></h2>
  
         {{/* Latest Tweet display */}}
-        <div class="latest-tweet pull-right">
+        <div id="latest-tweet" class="pull-right">
             {{range $i, $t := .tweets}}
                 {{if eq $i 0}}
                     <div class="tweet-bubble">

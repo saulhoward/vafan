@@ -18,10 +18,12 @@ var javascriptFiles = [...]string{
 	"/js/libs/Three.js",
 	"/js/libs/froogaloop.js",
 	"/js/libs/bootstrap-datepicker.js",
-	"/js/vafan/fonts.js",
-	"/js/vafan/threeDeeDvd.js",
-	"/js/vafan/video.js",
-	"/js/vafan/twitter.js",
+	"/js/vafan/models/video.js",
+	"/js/vafan/views/fonts.js",
+	"/js/vafan/views/threeDeeDvd.js",
+	"/js/vafan/views/twitter.js",
+	"/js/vafan/views/video.js",
+	"/js/vafan/views/videoPage.js",
 	"/js/global.js",
 }
 

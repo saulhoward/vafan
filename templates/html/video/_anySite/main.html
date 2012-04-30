@@ -5,7 +5,7 @@
         </p>
 </header>
 
-<div class="row">
+<div id="video" class="row">
     <div class="span8">
 
         {{/* Video Player */}}
@@ -30,15 +30,9 @@
 
     </div>
     <div class="span4">
-        {{if eq .requestingUser.IsLoggedIn true}}
-            <div class="well" contentEditable="true">
-                {{.video.Description}}
-            </div>
-        {{else}}
-            <div class="well">
-                {{markdown .video.Description}}
-            </div>
-        {{end}}
+        <div class="description well">
+            {{markdown .video.Description}}
+        </div>
 
         {{if .video.ExternalVideos.Youtube.Data.Title}}
             <div class="youtube-details">

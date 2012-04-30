@@ -1,14 +1,12 @@
 /*
- * Loads the webfonts for vafan's use
+ * Loads the webfonts using Google's API
  * Saul <saul@saulhoward.com>
  */
-if ('undefined' === typeof vafan) {
-    vafan = {};
-}
+if ('undefined' === typeof vafan){vafan={};}
+if ('undefined' === typeof vafan.view){vafan.view={};}
 
-vafan.fonts = {
-    // Web fonts
-    load: function ()
+vafan.view.fonts = Backbone.View.extend({
+    initialize: function ()
     {
         WebFontConfig = {
             google: { families: [ 
@@ -28,4 +26,4 @@ vafan.fonts = {
         s.parentNode.insertBefore(wf, s);
         })(); 
     }
-}
+});

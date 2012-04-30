@@ -111,15 +111,15 @@ func callHandler(res ResourceServer) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		u, err := userCookie(w, r)
 
-        logger.Info(fmt.Sprintf(
-            "User: %v", u.ID))
+		logger.Info(fmt.Sprintf(
+			"User: %v", u.ID))
 
 		if err != nil {
 			if err == ErrResourceRedirected {
 				return
 			} else {
 				logger.Err(fmt.Sprintf(
-                    "Failed getting user: %v", err))
+					"Failed getting user: %v", err))
 				u = NewUser()
 			}
 		}
@@ -148,6 +148,15 @@ func registerHandlers() {
 
 	// web standard static files
 	router.Path("/favicon.ico").Handler(
+		http.FileServer(http.Dir(
+			filepath.Join(vafanConf.baseDir, "static"))))
+	router.Path(`/apple-touch-icon{appleIcon:[a-z0-9\-]*}.png`).Handler(
+		http.FileServer(http.Dir(
+			filepath.Join(vafanConf.baseDir, "static"))))
+	router.Path(`/robots.txt`).Handler(
+		http.FileServer(http.Dir(
+			filepath.Join(vafanConf.baseDir, "static"))))
+	router.Path(`/humans.txt`).Handler(
 		http.FileServer(http.Dir(
 			filepath.Join(vafanConf.baseDir, "static"))))
 

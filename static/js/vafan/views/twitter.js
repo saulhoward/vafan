@@ -2,11 +2,21 @@
  * Streams tweets from the vafan server using websockets.
  * Saul <saul@saulhoward.com>
  */
-if ('undefined' === typeof vafan) {
-    vafan = {};
-}
+if ('undefined' === typeof vafan){vafan={};}
+if ('undefined' === typeof vafan.view){vafan.view={};}
 
-vafan.twitter = {
+vafan.view.twitter = Backbone.View.extend({
+
+    // Defaults here are for a 'tweetbox'
+    el:      'div',
+    tweetEl: 'span.text',
+
+    initialize: function()
+    {
+        this.tweetEl = this.options.tweetEl;
+        this.linkifyTweets();
+    },
+
     streamTweets: function() 
     {
         console.log("init");
@@ -40,10 +50,12 @@ vafan.twitter = {
         div.innerText = "init\n" + div.innerText;
     },
 
-    linkifyTweets: function(tweetTexts)
+    linkifyTweets: function()
     {
+        var twitterView = this;
+        var tweetTexts = $(twitterView.tweetEl, twitterView.el);
         _.each(tweetTexts, function(t) {
-            $(t).html(vafan.twitter.linkify(t.innerHTML));
+            $(t).html(twitterView.linkify(t.innerHTML));
         });
     },
 
@@ -65,4 +77,4 @@ vafan.twitter = {
 
         return replacedText
     }
-}
+});

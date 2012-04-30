@@ -7,19 +7,20 @@
         <title>{{.title}} - {{.site.Title}}</title>
         <meta name="description" content="{{.description}}">
         <meta name="author" content="{{.author}}">
+        <link type="text/plain" rel="author" href="/humans.txt" />
 
         {{/* Open graph meta tags */}}
         <meta property="og:title" content="{{.title}} - {{.site.Title}}" /> 
         <meta property="og:description" content="{{.description}}" /> 
         <meta property="og:image" content="{{.thumbnail.URL}}" />
 
-        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+        {{/* Mobile viewport optimized: j.mp/bplateviewport */}}
         <meta name="viewport" content="width=device-width,initial-scale=1">
 
         {{/* CSS: implied media=all */}}
         {{.cssHTML}}
 
-        <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
+        {{/* More ideas for your <head> here: h5bp.com/d/head-Tips */}}
         <script src="/js/libs/modernizr-2.5.3.min.js"></script>
     </head>
 
@@ -155,8 +156,13 @@
         <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
+
         {{.javascriptLibraryHTML}}
         <script defer src="/js/script.js"></script>
+        {{/* Extra JS goodies set on every page */}}
+        <script>
+            window.jsonURL = "{{.jsonURL}}";
+        </script>
         <!-- end scripts-->
 
         <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.

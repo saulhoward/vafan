@@ -1,5 +1,5 @@
 /**
- * Vafan video controller.
+ * Vafan video view.
  *
  * Uses Vimeo lib and bootstrap modals.
  *
@@ -13,28 +13,32 @@
  *
  * Saul <saul@saulhoward.com
  */
-if ('undefined' === typeof vafan) {
-    vafan = {};
-}
+if ('undefined' === typeof vafan){vafan={};}
+if ('undefined' === typeof vafan.view){vafan.view={};}
 
-vafan.video = {
+vafan.view.video = Backbone.View.extend({
     /*
      * Set up any video links
      */
-    start: function()
+    initialize: function()
     {
-        var modalHtml = $('#modal-template').html();
+        var vidView, modalHtml, videoHtml;
+
+        vidView = this;
+        modalHtml = $('#modal-template').html();
         $('#video .video-wrapper').append(modalHtml);
 
-        var videoHtml = $('#video-template').html();
+        videoHtml = $('#video-template').html();
 
         $('#brighton-wok-trailer').on('show', function () {
-            var $modalBody = $('#brighton-wok-trailer .modal-body');
+            var $modalBody = $(
+                '#brighton-wok-trailer .modal-body');
             if ($('iframe', $modalBody).length == 0) {
                 $modalBody.html(videoHtml);
             }
             jQuery('iframe.vimeo', this).each(function(){
-                Froogaloop(this).addEvent('ready', vafan.video.videoReady);
+                Froogaloop(this).addEvent(
+                    'ready', vidView.videoReady);
             });
             $('#video-selector').addClass('playing');
         })
@@ -42,8 +46,8 @@ vafan.video = {
             $('#video-selector').removeClass('playing');
         })
  
-        /* Needed as the 'video-wrapper' div is relative and doesn't
-         * close the modal */
+        /* Needed as the 'video-wrapper' div is relative 
+         * and doesn't close the modal */
         $('#video-selector .video-wrapper, #video-selector .video').live('click', function(){
             if ($('#brighton-wok-trailer').is(":visible")) {
                 $('#brighton-wok-trailer').modal('hide');
@@ -66,5 +70,5 @@ vafan.video = {
             Froogaloop(playerID).api('play');
         })
     }
-}
+});
 
