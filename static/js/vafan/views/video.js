@@ -49,9 +49,8 @@ vafan.view.video = Backbone.View.extend({
 
         // Description
         $desc = $('.description', v.el);
-        this.prevDescVal = $desc.html();
         $descTextarea = $('<textarea/>', {
-            val: v.model.get('video').description
+            val: v.model.get('video').description.markdown
         });
         $desc.html($descTextarea);
 
@@ -71,19 +70,23 @@ vafan.view.video = Backbone.View.extend({
         var v, $desc, $descTextarea, $title, $shortDesc;
         v = this;
 
-        // Description
-        $desc = $('.description', v.el);
-        $desc.html(this.prevDescVal);
+        v.model.fetch({
+            success: function() {
+                         // Description
+                         $desc = $('.description', v.el);
+                         $desc.html(v.model.get('video').description.html);
 
-        //Title
-        $title = $('.title', v.el);
-        $title.attr('contenteditable', 'false');
-        $title.html(v.model.get('video').title);
+                         //Title
+                         $title = $('.title', v.el);
+                         $title.attr('contenteditable', 'false');
+                         $title.html(v.model.get('video').title);
 
-        // ShortDescription
-        $shortDesc = $('.shortDescription', v.el);
-        $shortDesc.attr('contenteditable', 'false');
-        $shortDesc.html(v.model.get('video').shortDescription);
+                         // ShortDescription
+                         $shortDesc = $('.shortDescription', v.el);
+                         $shortDesc.attr('contenteditable', 'false');
+                         $shortDesc.html(v.model.get('video').shortDescription);
+                     }
+            });
     },
 
     saveVideo: function()
@@ -103,12 +106,12 @@ vafan.view.video = Backbone.View.extend({
         $('.shortDescription', v.el).html(shortDesc);
         v.model.set('shortDescription', shortDesc);
 
-        desc = $('.description textarea', v.el).val();
+        desc = {"markdown": $('.description textarea', v.el).val()};
         v.model.set('description', desc);
 
         // Save model
         v.model.save({
-            // empty properties
+            //description: desc
         }, {
             success: function() 
             {

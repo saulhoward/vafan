@@ -32,7 +32,7 @@
         </div>
         <div class="span4">
             <div class="description well">
-                {{markdown .video.Description}}
+                {{.video.Description.HTML}}
             </div>
 
             {{if .video.ExternalVideos.Youtube.Data.Title}}
