@@ -170,7 +170,7 @@ vafan.view.threeDeeDVD = Backbone.View.extend({
         }
         if ( ctx ) return true;
         return false;
-    },
+    }
 
 
 });

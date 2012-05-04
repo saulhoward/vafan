@@ -158,10 +158,13 @@
         <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
 
         {{.javascriptLibraryHTML}}
-        <script defer src="/js/app.js"></script>
-        {{/* Extra JS goodies set on every page */}}
-        <script>
+        <script defer>
+            // Global vars
             window.jsonURL = "{{.jsonURL}}";
+            // Start app view onload
+            $(function () {
+                var appView = new vafan.view.app();
+            });
         </script>
         <!-- end scripts-->
 

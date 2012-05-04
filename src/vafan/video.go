@@ -122,8 +122,9 @@ func (v video) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 		}
 
 		switch strings.ToLower(r.Header["Content-Type"][0]) {
-		case "application/json":
 		case "application/json; charset=utf-8":
+			fallthrough
+		case "application/json":
 			b, err := ioutil.ReadAll(r.Body)
 			if err != nil {
 				logger.Err(fmt.Sprintf(

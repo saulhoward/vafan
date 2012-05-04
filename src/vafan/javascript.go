@@ -19,6 +19,7 @@ var javascriptFiles = [...]string{
 	"/js/libs/froogaloop.js",
 	"/js/libs/bootstrap-datepicker.js",
 	"/js/vafan/models/video.js",
+	"/js/vafan/views/app.js",
 	"/js/vafan/views/fonts.js",
 	"/js/vafan/views/threeDeeDvd.js",
 	"/js/vafan/views/twitter.js",

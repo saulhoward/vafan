@@ -1,6 +1,7 @@
 /**
  * Vafan video view.
- * Saul <saul@saulhoward.com
+ * A video as seen on a 'video page' (eg, /videos/brighton-wok-trailer)
+ * Saul <saul@saulhoward.com>
  */
 if ('undefined' === typeof vafan){vafan={};}
 if ('undefined' === typeof vafan.view){vafan.view={};}
@@ -9,36 +10,46 @@ vafan.view.video = Backbone.View.extend({
 
     el: '#video',
 
-    $saveButton: null,
-
-    initialize: function()
+    initialize: function(props)
     {
+        var v = this;
         this.$el = $(this.el);
-        log(this.model);
-        this.model.bind('change', this.render);
+        this.appView = props.appView;
+        this.model.on('change', this.render);
+
+        // Edit features
+        if (this.model != null) {
+            if (this.model.get('video').isEditable == true) {
+                this.appView.on('vafan:startEdit', function() {
+                    v.startEdit();
+                });
+                this.appView.on('vafan:stopEdit', function() {
+                    v.stopEdit();
+                });
+                this.appView.on('vafan:saveEdits', function(){
+                    v.saveVideo();
+                });
+            }
+        }
+
         this.render();
     },
 
     render: function ()
     {
-        // Edit features
-        if (this.model != null) {
-            if (this.model.get('video').isEditable == true) {
-                console.log("rendering editable interface...");
-                this.makeEditable();
-            }
-        }
-        return this;
+       // var v = this;
+       // return this;
     },
 
     // Open the interface for editing.
-    makeEditable: function()
+    startEdit: function()
     {
         var v, $desc, $descTextarea, $title, $shortDesc;
         v = this;
 
         // Description
         $desc = $('.description', v.el);
+        this.prevDescVal = $desc.html();
         $descTextarea = $('<textarea/>', {
             val: v.model.get('video').description
         });
@@ -53,11 +64,26 @@ vafan.view.video = Backbone.View.extend({
         $shortDesc = $('.shortDescription', v.el);
         $shortDesc.attr('contenteditable', 'true');
         $shortDesc.html(v.model.get('video').shortDescription);
+    },
 
-        // Save button
-        $('header.navbar .page-actions.btn-group').prepend(v.getSaveButton());
+    stopEdit: function()
+    {
+        var v, $desc, $descTextarea, $title, $shortDesc;
+        v = this;
 
-        //v.$el.before(v.getSaveButton());
+        // Description
+        $desc = $('.description', v.el);
+        $desc.html(this.prevDescVal);
+
+        //Title
+        $title = $('.title', v.el);
+        $title.attr('contenteditable', 'false');
+        $title.html(v.model.get('video').title);
+
+        // ShortDescription
+        $shortDesc = $('.shortDescription', v.el);
+        $shortDesc.attr('contenteditable', 'false');
+        $shortDesc.html(v.model.get('video').shortDescription);
     },
 
     saveVideo: function()
@@ -65,58 +91,31 @@ vafan.view.video = Backbone.View.extend({
         var v, desc, shortDesc, title;
 
         v = this;
-        v.disableSave();
+        v.appView.trigger('vafan:saving');
 
         title = $('.title', v.el).html();
         title = v.stripHTML(title);
         $('.title', v.el).html(title);
+        v.model.set('title', title);
 
         shortDesc = $('.shortDescription', v.el).html();
         shortDesc = v.stripHTML(shortDesc);
         $('.shortDescription', v.el).html(shortDesc);
+        v.model.set('shortDescription', shortDesc);
 
         desc = $('.description textarea', v.el).val();
+        v.model.set('description', desc);
 
         // Save model
         v.model.save({
-            title: title,
-            description: desc,
-            shortDescription: shortDesc
+            // empty properties
         }, {
             success: function() 
             {
-                v.enableSave();
+                v.appView.trigger('vafan:saved');
             }
         });
 
-    },
-
-    disableSave: function() 
-    {
-        this.getSaveButton().attr({"disabled": "disabled"});    
-    },
-
-    enableSave: function() 
-    {
-        this.getSaveButton().removeAttr('disabled');
-    },
-
-    getSaveButton: function()
-    {
-        var v = this;
-        if (v.$saveButton == null) {
-            v.$saveButton = $('<button/>', {
-                id: 'saveEdits',
-                html: 'Save Edits',
-                "class": 'btn btn-success pull-right',
-                click: function(e) {
-                    log("Saving...");
-                    v.saveVideo();
-                }
-            });
-            v.$saveButton.prepend('<i class="icon-ok"></i> ');
-        }
-        return v.$saveButton;
     },
 
     stripHTML: function(html) 
