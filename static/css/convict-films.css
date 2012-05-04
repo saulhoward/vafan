@@ -36,12 +36,6 @@ a:visited { color: #E84A5F; }
 a:hover { color: #E84A5F; }
 a:focus { outline: thin dotted; }
 
-
-
-p a { color: white; border-bottom: 1px dotted #E84A5F; }
-p a:visited { color: white; }
-p a:hover { text-decoration: none; border-bottom: 1px solid #E84A5F; background-color: #E84A5F; }
-
 /* Improve readability when focused and hovered in all browsers: h5bp.com/h */
 a:hover, a:active { outline: 0; }
 

@@ -2,18 +2,30 @@
     <a class="convict-films pull-left" href="{{.links.convictFilms.index}}">Convict Films</a>
 </h1>
 
+{{if eq .requestingUser.IsLoggedIn true}}
+    <div class="user btn-group pull-right">
+        <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" href="#">
+            {{if eq .requestingUser.Role "superadmin"}}
+                <i class="icon-key"></i> {{.requestingUser.Username}}
+            {{else}}
+                <i class="icon-user"></i> {{.requestingUser.Username}}
+            {{end}}
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a href="{{.requestingUser.URL}}">User Profile</a></li>
+            <li class="divider"></li>
+            <li><a href="{{.links.site.userAuth}}">Sign Out</a></li>
+        </ul>
+    </div>
+{{end}}
+
+<div class="page-actions btn-group pull-right">
+</div>
+
 {{/* Search form
 <form class="navbar-search pull-right">
     <input type="text" class="search-query" placeholder="Search">
 </form>
 */}}
-
-{{if eq .requestingUser.IsLoggedIn true}}
-    <p class="navbar-text pull-right">
-        Logged in as <a href="{{.requestingUser.URL}}">{{.requestingUser.Username}}</a>
-        {{if eq .requestingUser.Role "superadmin"}}
-            <span class="label label-info">{{.requestingUser.Role}}</span>
-        {{end}}
-    </p>
-{{end}}
 

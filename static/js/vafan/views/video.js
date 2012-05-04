@@ -9,52 +9,121 @@ vafan.view.video = Backbone.View.extend({
 
     el: '#video',
 
+    $saveButton: null,
+
     initialize: function()
     {
-        var v = this;
-        console.log(this.model);
-        v.$el = $(v.el);
-        if (v.model.get('video').isEditable == true) {
-            v.makeEditable();
+        this.$el = $(this.el);
+        log(this.model);
+        this.model.bind('change', this.render);
+        this.render();
+    },
+
+    render: function ()
+    {
+        // Edit features
+        if (this.model != null) {
+            if (this.model.get('video').isEditable == true) {
+                console.log("rendering editable interface...");
+                this.makeEditable();
+            }
         }
+        return this;
     },
 
     // Open the interface for editing.
     makeEditable: function()
     {
-        var v, $desc;
+        var v, $desc, $descTextarea, $title, $shortDesc;
         v = this;
+
         // Description
         $desc = $('.description', v.el);
-        $desc.attr('contenteditable', 'true');
+        $descTextarea = $('<textarea/>', {
+            val: v.model.get('video').description
+        });
+        $desc.html($descTextarea);
+
+        //Title
+        $title = $('.title', v.el);
+        $title.attr('contenteditable', 'true');
+        $title.html(v.model.get('video').title);
+
+        // ShortDescription
+        $shortDesc = $('.shortDescription', v.el);
+        $shortDesc.attr('contenteditable', 'true');
+        $shortDesc.html(v.model.get('video').shortDescription);
 
         // Save button
-        v.$el.before(v.getSaveButton());
+        $('header.navbar .page-actions.btn-group').prepend(v.getSaveButton());
+
+        //v.$el.before(v.getSaveButton());
     },
 
     saveVideo: function()
     {
-        var v;
-        v = this;
-        //v.stopEditable();
+        var v, desc, shortDesc, title;
 
+        v = this;
+        v.disableSave();
+
+        title = $('.title', v.el).html();
+        title = v.stripHTML(title);
+        $('.title', v.el).html(title);
+
+        shortDesc = $('.shortDescription', v.el).html();
+        shortDesc = v.stripHTML(shortDesc);
+        $('.shortDescription', v.el).html(shortDesc);
+
+        desc = $('.description textarea', v.el).val();
+
+        // Save model
         v.model.save({
-            description: v.$('.description', v.el).html()
+            title: title,
+            description: desc,
+            shortDescription: shortDesc
+        }, {
+            success: function() 
+            {
+                v.enableSave();
+            }
         });
 
+    },
+
+    disableSave: function() 
+    {
+        this.getSaveButton().attr({"disabled": "disabled"});    
+    },
+
+    enableSave: function() 
+    {
+        this.getSaveButton().removeAttr('disabled');
     },
 
     getSaveButton: function()
     {
         var v = this;
-        return $('<button/>', {
-            id: 'saveEdits',
-            html: 'Save',
-            click: function(e) {
-                log("Saving...");
-                v.saveVideo();
-            }
-        });
+        if (v.$saveButton == null) {
+            v.$saveButton = $('<button/>', {
+                id: 'saveEdits',
+                html: 'Save Edits',
+                "class": 'btn btn-success pull-right',
+                click: function(e) {
+                    log("Saving...");
+                    v.saveVideo();
+                }
+            });
+            v.$saveButton.prepend('<i class="icon-ok"></i> ');
+        }
+        return v.$saveButton;
+    },
+
+    stripHTML: function(html) 
+    {
+        var tempDiv = document.createElement("DIV");
+        tempDiv.innerHTML = html;
+        return tempDiv.textContent;
     }
 });
 

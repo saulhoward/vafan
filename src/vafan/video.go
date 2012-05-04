@@ -73,26 +73,29 @@ func (v video) GetURL(req *http.Request, s *site) *url.URL {
 
 // GET sets the video from the URL vars.
 func (v video) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
-	switch r.Method {
-	case "GET":
-		vars := mux.Vars(r)
-		var err error
-		vp, err := GetVideoByName(vars["name"])
-		v = *vp
-		if err != nil {
-			if err == ErrVideoNotFound {
-				notFound{}.ServeHTTP(w, r, reqU)
-				return
-			}
-			logger.Err(fmt.Sprintf("Failed to get video by name: %v", err))
+	// Get the video.
+	vars := mux.Vars(r)
+	var err error
+	vp, err := GetVideoByName(vars["name"])
+	v = *vp
+	if err != nil {
+		if err == ErrVideoNotFound {
 			notFound{}.ServeHTTP(w, r, reqU)
 			return
 		}
-		// Set video isEditable
-		if reqU.IsLoggedIn && reqU.Role == "superadmin" {
-			v.IsEditable = true
-		}
+		logger.Err(fmt.Sprintf("Failed to get video by name: %v", err))
+		notFound{}.ServeHTTP(w, r, reqU)
+		return
+	}
+	// Set video isEditable.
+	if reqU.IsLoggedIn && reqU.Role == "superadmin" {
+		v.IsEditable = true
+	} else {
+		v.IsEditable = false
+	}
 
+	switch r.Method {
+	case "GET":
 		res := Resource{
 			title:       v.Title,
 			description: "Video page",
@@ -109,7 +112,15 @@ func (v video) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 		}
 		res.write(w, r, &v, reqU)
 		return
+
 	case "POST":
+		// Only allowing superadmin posts for now
+		if v.IsEditable != true {
+			logger.Info(fmt.Sprintf("Rejected POST, user role %v", reqU.Role))
+			forbidden{}.ServeHTTP(w, r, reqU)
+			return
+		}
+
 		switch strings.ToLower(r.Header["Content-Type"][0]) {
 		case "application/json":
 		case "application/json; charset=utf-8":
@@ -119,7 +130,7 @@ func (v video) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 					"Error reading post body: %v", err))
 				return
 			}
-			//vidPost := newVideo()
+			//nv := newVideo()
 			err = json.Unmarshal(b, &v)
 			if err != nil {
 				logger.Err(fmt.Sprintf(
@@ -127,12 +138,8 @@ func (v video) ServeHTTP(w http.ResponseWriter, r *http.Request, reqU *user) {
 				return
 			}
 
-			logger.Info(fmt.Sprintf("%v", v.Description))
-			logger.Info(fmt.Sprintf("%v", v.ID))
-
-			/* pv := newVideo() */
-			/* decoder.Decode(pv, r.Form) */
-			/* logger.Info(fmt.Sprintf("%v", pv)) */
+			// There is no sanity checking of the posted video here!
+			v.save()
 
 			return
 		default:
