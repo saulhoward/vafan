@@ -62,7 +62,7 @@ func userCookie(w http.ResponseWriter, r *http.Request) (u *user, err error) {
 			setUserCookie(u, w, r)
 		} else {
 			logger.Err(fmt.Sprintf(
-                "Failed getting cookie user: %v", err))
+				"Failed getting cookie user: %v", err))
 			u = NewUser()
 		}
 	} else {
@@ -163,7 +163,12 @@ func newLoginSession(w http.ResponseWriter, r *http.Request, u *user) (s *sessio
 			c.Name = "vafanLogin"
 			c.Value = s.id
 			c.Path = "/"
-			c.Domain = "." + env + "." + si.Host
+			//c.Domain = "." + env + "." + si.Host
+			if env == "production" {
+				c.Domain = "." + si.Host
+			} else {
+				c.Domain = "." + env + "." + si.Host
+			}
 			http.SetCookie(w, c)
 		} else {
 			logger.Err(fmt.Sprintf("Failed getting login cookie (when trying to set): %v", err))
@@ -195,7 +200,12 @@ func logout(w http.ResponseWriter, r *http.Request, u *user) {
 		c.Name = "vafanLogin"
 		c.Value = ""
 		c.Path = "/"
-		c.Domain = "." + env + "." + si.Host
+		//c.Domain = "." + env + "." + si.Host
+        if env == "production" {
+            c.Domain = "." + si.Host
+        } else {
+            c.Domain = "." + env + "." + si.Host
+        }
 		c.MaxAge = -1
 		t := time.Time{}
 		c.Expires = t
