@@ -79,7 +79,12 @@ func setUserCookie(u *user, w http.ResponseWriter, r *http.Request) {
 	c := new(http.Cookie)
 	c.Name = "vafanUser"
 	c.Value = u.ID
-	c.Domain = "." + env + "." + s.Host
+	//c.Domain = "." + env + "." + s.Host
+	if env == "production" {
+		c.Domain = "." + s.Host
+	} else {
+		c.Domain = "." + env + "." + s.Host
+	}
 	c.Path = "/"
 	http.SetCookie(w, c)
 }
